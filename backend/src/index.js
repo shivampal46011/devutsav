@@ -99,6 +99,20 @@ cron.schedule('30 0 1 * *', async () => {
     await generateAndStoreHoroscopes('monthly');
 });
 
+// Serve React SPA in production
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const distPath = path.join(__dirname, '../../sattva/dist');
+
+app.use(express.static(distPath));
+
+// SPA catch-all: any non-API route serves index.html for client-side routing
+app.get(/^\/(?!api\/).*/, (req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'));
+});
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'DevUtsav API is running' });
 });
