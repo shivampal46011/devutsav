@@ -1,0 +1,1623 @@
+<!-- Engagement Hub -->
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-tertiary-container": "#584000",
+              "surface-tint": "#8f4e00",
+              "on-surface": "#211b10",
+              "surface-container-high": "#f3e6d4",
+              "on-tertiary": "#ffffff",
+              "surface-container-highest": "#eee1cf",
+              "on-surface-variant": "#554336",
+              "inverse-primary": "#ffb77a",
+              "error": "#ba1a1a",
+              "background": "#fff8f3",
+              "on-error-container": "#93000a",
+              "outline": "#887364",
+              "on-background": "#211b10",
+              "surface-bright": "#fff8f3",
+              "secondary-fixed-dim": "#ffb3ac",
+              "surface-dim": "#e5d8c7",
+              "surface-container-lowest": "#ffffff",
+              "secondary": "#b6171e",
+              "outline-variant": "#dbc2b0",
+              "tertiary-fixed-dim": "#fabd00",
+              "tertiary": "#785900",
+              "on-primary-fixed-variant": "#6d3a00",
+              "tertiary-container": "#e0a900",
+              "on-tertiary-fixed-variant": "#5b4300",
+              "on-primary-container": "#693800",
+              "on-secondary-container": "#fffbff",
+              "surface-container": "#f9ecda",
+              "surface": "#fff8f3",
+              "surface-container-low": "#fff2e0",
+              "on-secondary-fixed-variant": "#930010",
+              "on-secondary-fixed": "#410003",
+              "tertiary-fixed": "#ffdf9e",
+              "surface-variant": "#eee1cf",
+              "on-secondary": "#ffffff",
+              "on-primary-fixed": "#2e1500",
+              "error-container": "#ffdad6",
+              "primary": "#8f4e00",
+              "secondary-container": "#da3433",
+              "primary-fixed-dim": "#ffb77a",
+              "on-error": "#ffffff",
+              "primary-container": "#ff9933",
+              "on-tertiary-fixed": "#261a00",
+              "secondary-fixed": "#ffdad6",
+              "primary-fixed": "#ffdcc2",
+              "on-primary": "#ffffff",
+              "inverse-surface": "#362f23",
+              "inverse-on-surface": "#fcefdd"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass-panel { background: rgba(255, 248, 243, 0.8); backdrop-filter: blur(20px); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 w-full flex justify-between items-center px-6 h-16 bg-[#fff8f3]/80 dark:bg-stone-900/80 backdrop-blur-xl z-50 shadow-[0_20px_40px_rgba(85,67,54,0.08)]">
+<div class="flex items-center gap-4">
+<button class="text-[#8f4e00] dark:text-[#ff9933] hover:opacity-80 transition-opacity active:scale-95 active:duration-150">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-['Noto_Serif'] text-2xl tracking-[0.2em] font-bold text-[#8f4e00] dark:text-[#ff9933]">SATTVA</h1>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex gap-8">
+<a class="font-['Noto_Serif'] tracking-widest uppercase text-sm font-bold text-[#8f4e00] hover:opacity-80 transition-opacity" href="#">Home</a>
+<a class="font-['Noto_Serif'] tracking-widest uppercase text-sm font-bold text-[#8f4e00] hover:opacity-80 transition-opacity" href="#">Catalog</a>
+<a class="font-['Noto_Serif'] tracking-widest uppercase text-sm font-bold text-[#8f4e00] hover:opacity-80 transition-opacity" href="#">Calendar</a>
+<a class="font-['Noto_Serif'] tracking-widest uppercase text-sm font-bold text-[#b6171e]" href="#">Rituals</a>
+</nav>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="close-up portrait of a serene man with a warm smile in soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmIkRk1-My3vUwmOaFmM-zFee3jVpqNxjo6vYhusw5FzN4Tz5uuxWS9x0BuDMzHSUEX53paLVf3PKmOR9lrU5KemAag61AAu6T867cM1AASJs_PqJTw5N8CuDYAS_-rXdwjRJaktN5NElxe1tHc4YiC6zSIRX3933XUcJY66fMRJuhDd5P_UKT1htWNKgLQUPK2fUj6nqalxvjzmYC5Gr31vl1xP86O279XtcUrefD1vRlgCnzm_0ZfUMcMy7Ss2_3L8MRvw3qcuNx"/>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-4 md:px-8 max-w-7xl mx-auto">
+<!-- Hero Engagement Section: Asymmetric Layout -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16 items-center">
+<div class="lg:col-span-7 space-y-6">
+<div class="flex items-center gap-2">
+<span class="bg-tertiary-fixed text-on-tertiary-fixed px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Community Hub</span>
+<div class="h-px flex-grow bg-outline-variant/30"></div>
+</div>
+<h2 class="font-headline text-5xl md:text-7xl font-bold text-primary tracking-tight leading-tight">
+                    Share your <span class="italic text-secondary">Sacred</span> Space.
+                </h2>
+<p class="text-on-surface-variant text-lg max-w-xl leading-relaxed">
+                    Connect with fellow seekers, showcase your festive marigold arrangements, and earn blessing points for spreading light.
+                </p>
+<div class="flex gap-4 pt-4">
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-8 py-4 rounded-xl font-bold shadow-lg hover:opacity-90 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_a_photo</span>
+                        Post Your Setup
+                    </button>
+<button class="bg-surface-container-highest text-primary px-8 py-4 rounded-xl font-bold hover:bg-surface-container-high transition-all">
+                        Ask a Question
+                    </button>
+</div>
+</div>
+<!-- Gamification Card: Blessing Points -->
+<div class="lg:col-span-5 bg-surface-container rounded-[2.5rem] p-8 shadow-[0_20px_40px_rgba(85,67,54,0.05)] border border-outline-variant/10 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary-container/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+<div class="flex justify-between items-start mb-12">
+<div>
+<p class="font-label text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">Your Rewards</p>
+<h3 class="font-headline text-3xl font-bold text-primary">Blessing Points</h3>
+</div>
+<div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-md border border-outline-variant/20">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">stars</span>
+</div>
+</div>
+<div class="flex items-baseline gap-2 mb-8">
+<span class="text-6xl font-headline font-bold text-secondary tracking-tighter">2,480</span>
+<span class="text-on-surface-variant font-bold">BP</span>
+</div>
+<div class="space-y-4">
+<div class="bg-white/50 p-4 rounded-2xl flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container">volunteer_activism</span>
+<span class="text-sm font-semibold">Festive Interaction Bonus</span>
+</div>
+<span class="text-secondary font-bold text-sm">+50 BP</span>
+</div>
+<div class="bg-white/50 p-4 rounded-2xl flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container">shopping_bag</span>
+<span class="text-sm font-semibold">Affiliate Purchase</span>
+</div>
+<span class="text-secondary font-bold text-sm">+500 BP</span>
+</div>
+</div>
+<button class="w-full mt-8 py-3 border-b-2 border-secondary text-secondary font-bold hover:bg-secondary/5 transition-colors flex items-center justify-center gap-2">
+                    Redeem for Curated Kits
+                    <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</section>
+<!-- Bento Grid Feed -->
+<section class="mb-16">
+<div class="flex justify-between items-end mb-8">
+<div>
+<h2 class="font-headline text-3xl font-bold text-primary">Sacred Setups</h2>
+<p class="text-on-surface-variant">Handpicked moments from our global community.</p>
+</div>
+<div class="flex gap-2">
+<button class="p-2 rounded-full border border-outline-variant/30 text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+<button class="p-2 rounded-full border border-outline-variant/30 text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">grid_view</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Large Featured Post -->
+<div class="md:col-span-2 md:row-span-2 group relative rounded-[2rem] overflow-hidden bg-surface-container-high border border-outline-variant/10 shadow-lg">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="vibrant traditional indian home altar decorated with marigold flowers and brass oil lamps in warm golden light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOsslIa_Aua-PYIwb565Y_x_TrdxMxlWkI5YUJYcAGLaA_oyZWNmiFldVd1tWWMXYjuG89Op_iXPcyFyLDDdhj6LafLu8FstFNTyl5PD1yliRubvtqCgI_Zb3pFjQelydl2XntBSvEgLiyLAIYniQmmqyOJ-g2-NO4PC6yhObXDIOqC6ZKAD4OVqM1p4pnJsJWrgjOXDDUMPWFKqyiidVQ1ijmbEMR70ClHzcChy6mQr9MyyVX_T6jADRBNbaJbJNBCA6xKyvC5u5u"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-90 group-hover:opacity-100 transition-opacity"></div>
+<div class="absolute bottom-0 left-0 p-8 w-full">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 rounded-full border-2 border-white/40 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="smiling woman's headshot for user profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3l4V7Hx5ay4KbipwZhaLvU5stVYRonwsBK8BS1fcQk4LH8qoINz2PHITe_rp81PsOGzrs5dKIKE4kIvJS-vwB3r8Nz9FBCZyzgtOyFlzaC8FOnO9_NLB9_npZ6mt1_xtIA9BS3OGGMRPIKpe2uEhWf_EUnouJ2_wZFhYwRyoVWOY7oso2-3eDEH5O73QADaGwvENpJ7tJJdasuS8-85cqaCXcv_tGVi6EvgK2epzLIgKCgdOASlWAxHbC4EBTJwirCLod0Ub2GQYy"/>
+</div>
+<span class="text-white font-bold">Priya K.</span>
+</div>
+<h3 class="text-2xl font-headline font-bold text-white mb-2 leading-tight">My Diwali Corner: Marigolds &amp; Brass</h3>
+<div class="flex gap-4">
+<button class="flex items-center gap-1 text-white/90 text-sm">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">favorite</span> 1.2k
+                            </button>
+<button class="flex items-center gap-1 text-white/90 text-sm">
+<span class="material-symbols-outlined text-sm">chat_bubble</span> 48
+                            </button>
+</div>
+</div>
+</div>
+<!-- Post 2 -->
+<div class="group relative aspect-square rounded-[2rem] overflow-hidden bg-surface-container-high shadow-md">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="close-up of intricate henna hand patterns with traditional spiritual jewelry in soft diffused light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOKSda1B9HtA2wJGmGv7dZeSTF2IRoWckTZcTwDV9U64tQlwpxpXAI4yyd_mBvbPXQ8XWVvL8HQXY_txyhuQvzB_QSgZ0t-gWgDPrVgNx5jRD3zGDFk5EUW0ZYrV4DaZyu4L7EEXiEoQuN5LCzWGr1b73wFGi_5e59jA5b0KlxPLo1Du24ehnFpJJ13MSYuGuye_gDJbPHGNBKeQElv8eglzDgXPqhk18ST93hmCYcd04vpnmoaMeoTUaGqN92jP0k6wgumtHtsiRW"/>
+<div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-all"></div>
+</div>
+<!-- Post 3 -->
+<div class="group relative aspect-square rounded-[2rem] overflow-hidden bg-surface-container-high shadow-md">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="atmospheric scene of incense smoke rising from a carved wood holder with warm side lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuv_VEPxMnh8BySAe_2Z7uTc5OpOgrgCwUIAYq1q_g1AlAnkQXNJjLgra1pxdONpFMnCsobIVTOGIfU4aGyp_qTUGTiWRt_XRGCScna0a40faoX4YGjHjRe1AKKmBhXHVLlxW8cVWU-_KRPBK9IO2TVMhk6RUj4LNU1CmK2T_hODXTmOO4KM9RDdyHnTLbjDkozAU8fSGkCWmIrimB3SaHKQLAfJAeb2NDwjBB6TSnZTu8T3uHFKhLjuVH3HRYle25x7whc6XtdIwS"/>
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur p-2 rounded-xl text-primary flex items-center gap-1 text-xs font-bold">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">shopping_cart</span> Shop
+                    </div>
+</div>
+<!-- Post 4 -->
+<div class="group relative aspect-square rounded-[2rem] overflow-hidden bg-surface-container-high shadow-md">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="minimalist spiritual altar with a single white candle and smooth stones on a light wood surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfeD29MthEWgxWcapDLsdxtsMdL_bPYvERHlabUE2vqBF7XPStvoeELf4r3s-5GhROnHD2cbjAn92FUJ7_S5L5weMLfzCR6u2t_OwICt5wr_bcqkuSJ4lwLZjV0vFw6Aj3idXvVL34oY48BEu9EB8opvesQGHWZIOr1A-Wb974SRxbWaqboMuc4yIJBBvn4W0hHFbkLSU_NyPy0awI3UCstPF6qqJ__ibZycS7OhtJ_FOFlqHG-7YjNTdYo13Xz9Q-OhmswGkymDsT"/>
+</div>
+<!-- Post 5 -->
+<div class="group relative aspect-square rounded-[2rem] overflow-hidden bg-surface-container-high shadow-md">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="colorful floating lotus flowers with small oil lamps in a traditional stone vessel" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWwZ6ONtKV6x13QFoMFooV4c16BDbV7Qx0TrOC2C_PMkdRKs12BQDJguznWydBw8r8RNalWxDy2HEJ7EeNc6rk8Fp8T3hJsrgOBVLUi0sriuKFuxTi7-UvdUM-DklKoOAkFAj00QSyNJwj0cuGIpUuNxAPzDw2t_dTTVWEPXavHdji2e0DAnz_puYIhMoO79sSPOkbGIsmhXIRQX86qcxoB0s2Fvy7SnpHNFPNAxgFxGLStj_AXAL5F_bK2qLUWLVtd21uBsESZ7k2"/>
+</div>
+</div>
+</section>
+<!-- Q&A & Guides: Horizontal Scroll -->
+<section class="mb-20">
+<h2 class="font-headline text-3xl font-bold text-primary mb-8">Ask the Community</h2>
+<div class="flex overflow-x-auto gap-6 no-scrollbar pb-8">
+<!-- Question Card 1 -->
+<div class="min-w-[320px] bg-surface-container-lowest p-6 rounded-[2rem] border-b-4 border-secondary/20 shadow-sm flex flex-col justify-between h-[280px]">
+<div>
+<div class="flex items-center gap-2 mb-4">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-[10px] font-label font-bold uppercase text-on-surface-variant tracking-widest">Ritual Basics</span>
+</div>
+<h4 class="font-headline text-xl font-bold text-primary leading-snug">"Which direction should the home temple face for Kartik?"</h4>
+</div>
+<div class="flex items-center justify-between mt-6">
+<div class="flex -space-x-3">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-surface-container-high"></div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-surface-container-highest"></div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-surface-variant"></div>
+</div>
+<span class="text-sm font-bold text-secondary">12 Answers</span>
+</div>
+</div>
+<!-- Question Card 2 -->
+<div class="min-w-[320px] bg-surface-container-lowest p-6 rounded-[2rem] border-b-4 border-secondary/20 shadow-sm flex flex-col justify-between h-[280px]">
+<div>
+<div class="flex items-center gap-2 mb-4">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="text-[10px] font-label font-bold uppercase text-on-surface-variant tracking-widest">Affiliate Help</span>
+</div>
+<h4 class="font-headline text-xl font-bold text-primary leading-snug">"Has anyone tried the Saffron Sandalwood incense kit?"</h4>
+</div>
+<div class="flex items-center justify-between mt-6">
+<div class="flex -space-x-3">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-surface-container-high"></div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-surface-container-highest"></div>
+</div>
+<span class="text-sm font-bold text-secondary">8 Answers</span>
+</div>
+</div>
+<!-- Question Card 3 -->
+<div class="min-w-[320px] bg-surface-container-lowest p-6 rounded-[2rem] border-b-4 border-secondary/20 shadow-sm flex flex-col justify-between h-[280px]">
+<div>
+<div class="flex items-center gap-2 mb-4">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="text-[10px] font-label font-bold uppercase text-on-surface-variant tracking-widest">Decor Tips</span>
+</div>
+<h4 class="font-headline text-xl font-bold text-primary leading-snug">"Best way to preserve fresh jasmine flowers overnight?"</h4>
+</div>
+<div class="flex items-center justify-between mt-6">
+<div class="flex -space-x-3">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-surface-container-high"></div>
+</div>
+<span class="text-sm font-bold text-secondary">3 Answers</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Navigation Shells -->
+<nav class="md:hidden fixed bottom-0 w-full flex justify-around items-center px-4 h-20 pb-safe bg-[#fff8f3]/80 dark:bg-stone-900/80 backdrop-blur-xl z-50 rounded-t-[2rem] shadow-[0_-10px_30px_rgba(85,67,54,0.05)]">
+<a class="flex flex-col items-center justify-center text-[#8f4e00] dark:text-stone-400 p-2 hover:text-[#b6171e] transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-tighter">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#8f4e00] dark:text-stone-400 p-2 hover:text-[#b6171e] transition-colors" href="#">
+<span class="material-symbols-outlined">auto_awesome_motion</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-tighter">Catalog</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-gradient-to-br from-[#8f4e00] to-[#ff9933] text-white rounded-full w-14 h-14 -mt-6 shadow-lg scale-110 duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[8px] font-bold uppercase">Rituals</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#8f4e00] dark:text-stone-400 p-2 hover:text-[#b6171e] transition-colors" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-tighter">Calendar</span>
+</a>
+</nav>
+<!-- Drawer Overlay (Hidden by default) -->
+<div class="fixed inset-0 bg-on-surface/20 backdrop-blur-sm z-[60] hidden" id="drawer">
+<div class="flex flex-col w-80 h-full p-6 bg-[#fff8f3] dark:bg-stone-950 rounded-r-3xl shadow-2xl tonal-transition">
+<div class="flex items-center gap-4 mb-10">
+<div class="w-12 h-12 rounded-full bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Devotee Profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDq3L20wiDdHlpA6HVEM6QJJNrUS9nqe46gPXP6f67Z01jqJTEzLlUkaZ3qrPmSuNbjAogrYXJIlJ5NE8QogD0BfiaZQ0pE_cWPY3y5CDIs9msNIKKCgRxTHd7wLGJacuif1pqsU6s3Y_l6xsdsSclVKoDV-VZbmXaLV9TsW-NJ4Jg57uRoqvi1sZr-oXyeDIh15rAPezLtK2zEdpDit2Mo3FAsmbZeKDolceE8xXE5j80p6CdkwdgFIKbFPgqe5IuTDuIyNaPev1DB"/>
+</div>
+<div>
+<h4 class="font-['Noto_Serif'] font-bold text-[#8f4e00]">Aravind Sharma</h4>
+<p class="text-xs text-on-surface-variant">Gold Member</p>
+</div>
+</div>
+<nav class="space-y-2">
+<a class="flex items-center gap-4 p-3 font-['Noto_Serif'] text-lg text-[#8f4e00] hover:bg-[#eee1cf] transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">auto_stories</span> My Collections
+                </a>
+<a class="flex items-center gap-4 p-3 font-['Noto_Serif'] text-lg text-[#b6171e] font-bold bg-[#f9ecda] rounded-lg" href="#">
+<span class="material-symbols-outlined">local_library</span> Festive Deals
+                </a>
+<a class="flex items-center gap-4 p-3 font-['Noto_Serif'] text-lg text-[#8f4e00] hover:bg-[#eee1cf] transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">temple_hindu</span> Temple Finder
+                </a>
+<a class="flex items-center gap-4 p-3 font-['Noto_Serif'] text-lg text-[#8f4e00] hover:bg-[#eee1cf] transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">history_edu</span> Spiritual Guides
+                </a>
+<hr class="my-6 border-outline-variant/20"/>
+<a class="flex items-center gap-4 p-3 font-['Noto_Serif'] text-lg text-[#8f4e00] hover:bg-[#eee1cf] transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span> Settings
+                </a>
+</nav>
+</div>
+</div>
+</body></html>
+
+<!-- Ritual Guide -->
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-tertiary-container": "#584000",
+              "surface-tint": "#8f4e00",
+              "on-surface": "#211b10",
+              "surface-container-high": "#f3e6d4",
+              "on-tertiary": "#ffffff",
+              "surface-container-highest": "#eee1cf",
+              "on-surface-variant": "#554336",
+              "inverse-primary": "#ffb77a",
+              "error": "#ba1a1a",
+              "background": "#fff8f3",
+              "on-error-container": "#93000a",
+              "outline": "#887364",
+              "on-background": "#211b10",
+              "surface-bright": "#fff8f3",
+              "secondary-fixed-dim": "#ffb3ac",
+              "surface-dim": "#e5d8c7",
+              "surface-container-lowest": "#ffffff",
+              "secondary": "#b6171e",
+              "outline-variant": "#dbc2b0",
+              "tertiary-fixed-dim": "#fabd00",
+              "tertiary": "#785900",
+              "on-primary-fixed-variant": "#6d3a00",
+              "tertiary-container": "#e0a900",
+              "on-tertiary-fixed-variant": "#5b4300",
+              "on-primary-container": "#693800",
+              "on-secondary-container": "#fffbff",
+              "surface-container": "#f9ecda",
+              "surface": "#fff8f3",
+              "surface-container-low": "#fff2e0",
+              "on-secondary-fixed-variant": "#930010",
+              "on-secondary-fixed": "#410003",
+              "tertiary-fixed": "#ffdf9e",
+              "surface-variant": "#eee1cf",
+              "on-secondary": "#ffffff",
+              "on-primary-fixed": "#2e1500",
+              "error-container": "#ffdad6",
+              "primary": "#8f4e00",
+              "secondary-container": "#da3433",
+              "primary-fixed-dim": "#ffb77a",
+              "on-error": "#ffffff",
+              "primary-container": "#ff9933",
+              "on-tertiary-fixed": "#261a00",
+              "secondary-fixed": "#ffdad6",
+              "primary-fixed": "#ffdcc2",
+              "on-primary": "#ffffff",
+              "inverse-surface": "#362f23",
+              "inverse-on-surface": "#fcefdd"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .asymmetric-image { clip-path: polygon(0 0, 100% 5%, 95% 100%, 5% 95%); }
+        .ritual-noise { background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); opacity: 0.03; pointer-events: none; position: absolute; inset: 0; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full flex justify-between items-center px-6 h-16 bg-[#fff8f3]/80 backdrop-blur-xl z-50 shadow-[0_20px_40px_rgba(85,67,54,0.08)]">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#8f4e00] cursor-pointer hover:opacity-80 transition-opacity" data-icon="menu">menu</span>
+<span class="font-['Noto_Serif'] text-2xl tracking-[0.2em] font-bold text-[#8f4e00]">SATTVA</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex gap-8 font-['Noto_Serif'] tracking-widest uppercase text-xs font-bold">
+<a class="text-[#8f4e00] hover:opacity-80 transition-opacity" href="#">Home</a>
+<a class="text-[#8f4e00] hover:opacity-80 transition-opacity" href="#">Catalog</a>
+<a class="text-[#8f4e00] hover:opacity-80 transition-opacity" href="#">Calendar</a>
+<a class="text-[#b6171e] hover:opacity-80 transition-opacity" href="#">Rituals</a>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden border-2 border-primary-container">
+<img class="w-full h-full object-cover" data-alt="close-up portrait of a serene man with a gentle smile against a warm blurred sunset background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4s-PZpnuet6QmoelIHD1tWDc72ASYbNMpmOgKmKtcHSFkuFZFbQaxH-A9OBCnwlNyzpzQE9x9QV3mHCquUQiZE15rp6Y-Qdv6t6dvZqdJo1F_8FV8e9iGDjymnFzcFTTSutLspAorRU_lciIbI70dnx6JJNwwG7Qmms48Kf6FW8Hd5nLaP9QC0yfztFGLi47pd9AssiejEPReG9S3Q_rlTIl9tsUMG05x0ECW_evEi5gFqFTsTWetbxDaLU7z4O9Fnty9x4v22TYT"/>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-4 md:px-0 max-w-5xl mx-auto relative">
+<div class="ritual-noise"></div>
+<!-- Hero Section: Editorial Layout -->
+<section class="flex flex-col md:flex-row gap-12 mb-20 items-end">
+<div class="w-full md:w-1/2 order-2 md:order-1">
+<div class="flex gap-2 mb-4">
+<span class="px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-bold uppercase tracking-widest rounded-full">Daily Ritual</span>
+<span class="px-3 py-1 bg-surface-container-highest text-primary text-[10px] font-bold uppercase tracking-widest rounded-full">12 Min Read</span>
+</div>
+<h1 class="font-headline text-5xl md:text-7xl leading-tight text-on-background font-bold tracking-tight mb-6">
+                    The Sacred <span class="text-secondary">Ganesh</span> Vandana
+                </h1>
+<p class="text-lg text-on-surface-variant leading-relaxed max-w-md">
+                    Invoking the Lord of Obstacles to clear your path toward spiritual clarity and material prosperity. A guide for your daily morning practice.
+                </p>
+</div>
+<div class="w-full md:w-1/2 order-1 md:order-2">
+<div class="relative group">
+<div class="absolute -inset-4 bg-primary/5 rounded-3xl -rotate-2 group-hover:rotate-0 transition-transform duration-500"></div>
+<img class="w-full h-[500px] object-cover rounded-2xl relative z-10 asymmetric-image shadow-xl" data-alt="golden statue of Lord Ganesha surrounded by fresh marigold flowers and flickering brass diyas in a warm temple setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFN-2QJr8sQWVkIYuAsASJHC48a0aFcc5q6vY31MPeG4i3zYvYIMR5G0ci6U12kFVvZV8iDvBsjaJ97tZG4Eabe8dXj6BJuPgJzeXBGMBOqR-YyAPzzNHZqIIxEyNuIYApwY74XL51nGYVlTUv2IKvXqgHyXevtIyKv6ibpoQReZdYH_oBjZBIDdpmyFT5F3J4ZXUmRTY4gRBRDPMivszaPp2g8ASDXXFJ-l944epo-TrEmgSiCjd2iae61RBeUmB92JxPyJ_wPEoi"/>
+</div>
+</div>
+</section>
+<!-- Bento Content Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8 mb-20">
+<!-- Main Content Area -->
+<article class="md:col-span-8 space-y-12">
+<section class="bg-surface-container-low p-8 md:p-12 rounded-3xl relative overflow-hidden">
+<div class="absolute top-0 right-0 p-8 opacity-10">
+<span class="material-symbols-outlined text-8xl" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<h3 class="font-headline text-2xl font-bold mb-6 flex items-center gap-3">
+<span class="w-8 h-[2px] bg-primary"></span> Step 1: Purification
+                    </h3>
+<p class="text-on-surface-variant text-lg leading-relaxed mb-6">
+                        Before beginning, wash your hands and face. Sit in a comfortable cross-legged position facing East or North. Light a single <span class="text-primary font-bold">Pure Ghee Diya</span> to represent the inner light of consciousness.
+                    </p>
+<div class="bg-surface-container p-6 rounded-2xl border-l-4 border-primary">
+<p class="italic font-headline text-on-surface">"Om Gan Ganapataye Namo Namah. Shri Siddhivinayak Namo Namah..."</p>
+</div>
+</section>
+<section class="space-y-6">
+<h3 class="font-headline text-2xl font-bold flex items-center gap-3">
+<span class="w-8 h-[2px] bg-primary"></span> Step 2: The Offering
+                    </h3>
+<p class="text-on-surface-variant text-lg leading-relaxed">
+                        Hold a pinch of <span class="text-primary font-bold">Kumkum</span> and fresh flowers in your right hand. Close your eyes and visualize Ganesha's radiant form. Gently place the offering at the base of the idol or image.
+                    </p>
+<div class="grid grid-cols-2 gap-4">
+<img class="w-full h-48 object-cover rounded-2xl hover:scale-[1.02] transition-transform" data-alt="close-up of hands holding vermillion powder and orange jasmine flowers over a brass offering plate" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA38l9Es5pF1guh-UZ_YuJy-ZdUbtf-ojDwNBtFp2tt96HSFwjxNb9TDUpwUq07DSlJ0MNrSGbEXatbePOPQn0eSnBBDCd9QPZj8UnMiLOJLPufx0qLCPlIrdiPGNMOYEhPpoQx67ii5c5O-omNoPsGqJBN-Ns789tjGiKs8rpVYvbMwy-cQTQRjE9C-spr7tlyFpn-i5KflHJfeXgeCy4Uiamt1X58FXdD_RllMXK4taf8YvYAsAvGAHi7Ij_YuPtWdzeYS3x_3T-y"/>
+<img class="w-full h-48 object-cover rounded-2xl hover:scale-[1.02] transition-transform" data-alt="incense sticks burning in a traditional holder with wisps of smoke curling in a dark room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCm4dxnoB0KFwOHUsR6vjLXd-GFqyfIITvommCf7rLNyFZNR9bN0PD3mZAtO-AIzrL54VSyFTy4Hnm6Nm-ujOWO3nZpCAluobiXa8umAWMHbaTvs6nR00Nf53DK3rWBgNxC5Mw92-o2WbhB8omrisNfZBittVvBD93vsnrMsopIxUp_kxzWV7SUOSmKCjBwxy9kzKi9pArTRIUhSeud5rhCbtuUVSDExE3JHF0ODUD6VKHlgWftWWu-3B5GGrkYMTb_slFvlXBUhlrN"/>
+</div>
+</section>
+<section class="bg-surface-container p-8 md:p-12 rounded-3xl">
+<h3 class="font-headline text-2xl font-bold mb-6 flex items-center gap-3">
+<span class="w-8 h-[2px] bg-primary"></span> Step 3: Sankalpa
+                    </h3>
+<p class="text-on-surface-variant text-lg leading-relaxed">
+                        The Sankalpa is your sacred intention. State clearly in your mind the obstacles you wish to overcome and the wisdom you seek. End the ritual by ringing a small brass bell to announce your devotion to the universe.
+                    </p>
+</section>
+</article>
+<!-- Sidebar: Shop this Ritual -->
+<aside class="md:col-span-4 space-y-8">
+<div class="sticky top-24 bg-surface-container-high p-8 rounded-[2.5rem] shadow-sm">
+<h4 class="font-headline text-xl font-bold mb-2">Shop this Ritual</h4>
+<p class="text-xs text-on-surface-variant uppercase tracking-widest font-bold mb-8 opacity-60">Essential Items</p>
+<div class="space-y-6">
+<!-- Product Item 1 -->
+<div class="flex gap-4 group cursor-pointer">
+<div class="w-20 h-20 flex-shrink-0 bg-surface rounded-2xl overflow-hidden relative">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="brass idol of Ganesha with intricate detailing and shiny finish" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdc6ZmGOaJaN3aiGvuzoqKPAq5ks81YxESd4-E4jaXB-6Eja4C34M_peWesImeKxvUD_eQpdrGso3Dzj_wE8OJyDeKT4g4oKsu4od9q2R7vI9kSu6mpsYhYlY1EebP5fiy9Vf8dgsd_zMsBEWp3IfSoLVQ3AW-Ga2caqZzHwVUC0kaaSyOoI2LT5SuoTLJN7ii-ShoIXdCtTFxNqx8r8EN9dccYeJ6_pS4tAJzisrkT5aIYFraLzh92-VP4VinsfwNRa1NPcnuO-mz"/>
+<div class="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-2xl"></div>
+</div>
+<div class="flex flex-col justify-center">
+<h5 class="font-bold text-sm text-on-surface leading-tight">Brass Ganesha Idol</h5>
+<p class="text-secondary font-bold text-lg mt-1">$45.00</p>
+<span class="text-[10px] text-primary font-bold uppercase tracking-tighter hover:underline">Add to Cart</span>
+</div>
+</div>
+<!-- Product Item 2 -->
+<div class="flex gap-4 group cursor-pointer">
+<div class="w-20 h-20 flex-shrink-0 bg-surface rounded-2xl overflow-hidden relative">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="package of premium organic incense sticks with sandalwood scent" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnYHv26wzpfxygL4eDvYETxz_FxBCC9GIsR_06wgNK7Hdcx9ng0jnktLGv_mtWZeY2DAbTQfiNIeQ1Xt0iDEADX6fwWfuC2ZqgdVtEYdymJ6M4vhgQsAfrAwT58w0nvyqyVmd1zvip0U-Nm3pY1gFe09iOz6DcJaXUoyYnJBlDPc8AqROpY1INIcTMC7rnj8KfTO71tpzhbwUBA_vyEj_tczBltdj5mdr5OvrCDKurdw0PGJmhnZB1FLD_nL2O92Cqt1pm88mhTUSK"/>
+<div class="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-2xl"></div>
+</div>
+<div class="flex flex-col justify-center">
+<h5 class="font-bold text-sm text-on-surface leading-tight">Mysore Sandalwood Incense</h5>
+<p class="text-secondary font-bold text-lg mt-1">$12.00</p>
+<span class="text-[10px] text-primary font-bold uppercase tracking-tighter hover:underline">Add to Cart</span>
+</div>
+</div>
+<!-- Product Item 3 -->
+<div class="flex gap-4 group cursor-pointer">
+<div class="w-20 h-20 flex-shrink-0 bg-surface rounded-2xl overflow-hidden relative">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="small ceramic container filled with bright red kumkum powder" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAv9sdObYPWLk2f4xiLxuefJ1cv3MiD9TgRGQIHFTPXz4fcVyYQa-cADdKv_1hCcGyzn5m-vWGADCD8P26mMOLY5hawRrX8qwBVGmflPKxEsIJ3djC8rdZgfc6bCmneon7EfAJtkiAbeLJC0F_VybmK7qL1JDg4BiXZq5k51NCB9hUQv0vfK2Co2GLbQ46b8rPAB0_hXgzDQFqRVhysPgd6Yy5WR860WF9ZDSmnXvb4HXZcgXf1UKEa9JfoqQBRMDlv7rbYzZzsneae"/>
+<div class="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-2xl"></div>
+</div>
+<div class="flex flex-col justify-center">
+<h5 class="font-bold text-sm text-on-surface leading-tight">Natural Kumkum Powder</h5>
+<p class="text-secondary font-bold text-lg mt-1">$8.50</p>
+<span class="text-[10px] text-primary font-bold uppercase tracking-tighter hover:underline">Add to Cart</span>
+</div>
+</div>
+</div>
+<button class="w-full mt-10 py-4 bg-gradient-to-br from-[#8f4e00] to-[#ff9933] text-white font-bold rounded-xl shadow-lg hover:opacity-90 transition-opacity active:scale-[0.98]">
+                        Buy Entire Kit ($65.50)
+                    </button>
+<p class="mt-4 text-[10px] text-center text-on-surface-variant/60 italic leading-tight">
+                        * Affiliate link: We may earn a small commission on purchases made through these links.
+                    </p>
+</div>
+</aside>
+</div>
+<!-- Featured Pooja Kit Horizontal Scroll (Custom Component) -->
+<section class="mt-12 bg-surface-container-high rounded-[3rem] p-10 md:p-16 relative overflow-hidden">
+<div class="max-w-xl mb-12">
+<h2 class="font-headline text-4xl font-bold mb-4">Complete Your Shrine</h2>
+<p class="text-on-surface-variant">Curated collections for every phase of your journey. Each kit is hand-assembled by our spiritual practitioners.</p>
+</div>
+<div class="flex gap-8 overflow-x-auto no-scrollbar pb-8 -mx-4 px-4">
+<!-- Kit Card 1 -->
+<div class="flex-shrink-0 w-80 bg-surface-container-lowest p-6 rounded-3xl outline outline-2 outline-outline-variant/15 hover:shadow-xl transition-shadow group">
+<img class="w-full h-40 object-cover rounded-xl mb-6 group-hover:scale-105 transition-transform" data-alt="overhead view of a traditional puja thali set with copper bowl, spoon, and tiny bell" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVYuCXjQjYlMdxtxXDOcufca5HVus3__pmnnafwxWvIEwkZay9yNrIGMeUVMyAiuxrj_U9buKoyP3kmB6QyIzb4oGsMUlffDwhB4ny3gYuwazBPdhMiwOp7NzUxOS7Kfe3sEEJpYbh8eXLW6Y0f1omOINwLkfTs0YuFELZWt8-1T2z65UZJc_oXvL_zMXnlG0_E1UywDomLX-odQs0xKLztPYb3I2Ep6QV1R_dFWp9JurXW2uPvEEXAwEBv3rOdJayZU8dNOroCOAY"/>
+<span class="px-2 py-1 bg-tertiary-fixed text-on-tertiary-fixed text-[9px] font-bold uppercase rounded mb-3 inline-block">Bestseller</span>
+<h4 class="font-headline text-xl font-bold mb-2">Morning Aarti Kit</h4>
+<p class="text-sm text-on-surface-variant mb-6">Contains everything needed for your daily sunrise worship.</p>
+<div class="flex items-center justify-between">
+<span class="text-secondary font-bold">$89.00</span>
+<span class="material-symbols-outlined text-primary" data-icon="arrow_forward_ios">arrow_forward_ios</span>
+</div>
+</div>
+<!-- Kit Card 2 -->
+<div class="flex-shrink-0 w-80 bg-surface-container-lowest p-6 rounded-3xl outline outline-2 outline-outline-variant/15 hover:shadow-xl transition-shadow group">
+<img class="w-full h-40 object-cover rounded-xl mb-6 group-hover:scale-105 transition-transform" data-alt="selection of high-quality organic essential oils in small glass bottles" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvlm2HQBzekdSBPKJm_CFJ5h9olfrlxDP_gndskInYxxK_4jn4XgdF6eXUPf4lPlc3xbUbObWloccs6IScs7hS0VdddJ8T5r580hMvkkCDrYeSN93q6-v4rTh7x78KpbsrlthCzZb_VrLN3rPA7wS1d-phhjQ5sK9gi1BzxKJOrvEV6W2_2KLYCNvGfDTqQR4LCXZrGo1ker0K2ap-qU5krZ0c8DtK95pJ459TqSAHanuoJhIjiBUzVHtZMtQzMobr3XtRy3AGP4cp"/>
+<span class="px-2 py-1 bg-surface-container text-primary text-[9px] font-bold uppercase rounded mb-3 inline-block">New Arrival</span>
+<h4 class="font-headline text-xl font-bold mb-2">Festival Bundle</h4>
+<p class="text-sm text-on-surface-variant mb-6">A curated set of deepams and exotic floral essences.</p>
+<div class="flex items-center justify-between">
+<span class="text-secondary font-bold">$124.00</span>
+<span class="material-symbols-outlined text-primary" data-icon="arrow_forward_ios">arrow_forward_ios</span>
+</div>
+</div>
+<!-- Kit Card 3 -->
+<div class="flex-shrink-0 w-80 bg-surface-container-lowest p-6 rounded-3xl outline outline-2 outline-outline-variant/15 hover:shadow-xl transition-shadow group">
+<img class="w-full h-40 object-cover rounded-xl mb-6 group-hover:scale-105 transition-transform" data-alt="stack of ancient-looking leather bound journals and a peacock feather" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCosdHb8csXAmcSnii-9oEP5HwNwazVXq6vNaiTSiszh5ZTFsUDq1erqJ8dfBN6Q3JMsiwvPVagtyPr03Y9jQUxMsH-CqFxEEL5ws2JfKMY9NHaBM953C8Ibo7F8q5dCfvlvwJvxmcdvQQqH3a2el6n6_8moaHwycWmtTWnYASN1z7xvgps5AEC72ScvaML0ssoTdKXslpZJOV5_jN4Zg7Q-SuGOmJCVesJfhXqux0U9EIWEUcoIZ1zMzPvwFii1SUvohAM5vihMefv"/>
+<span class="px-2 py-1 bg-surface-container text-primary text-[9px] font-bold uppercase rounded mb-3 inline-block">Curated</span>
+<h4 class="font-headline text-xl font-bold mb-2">Student's Ritual</h4>
+<p class="text-sm text-on-surface-variant mb-6">Focus and memory enhancement tools for Vedic learning.</p>
+<div class="flex items-center justify-between">
+<span class="text-secondary font-bold">$42.00</span>
+<span class="material-symbols-outlined text-primary" data-icon="arrow_forward_ios">arrow_forward_ios</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 w-full flex justify-around items-center px-4 h-20 bg-[#fff8f3]/80 backdrop-blur-xl z-50 rounded-t-[2rem] shadow-[0_-10px_30px_rgba(85,67,54,0.05)]">
+<a class="flex flex-col items-center justify-center text-stone-400 p-2" href="#">
+<span class="material-symbols-outlined" data-icon="home_kaaba">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-tighter mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-400 p-2" href="#">
+<span class="material-symbols-outlined" data-icon="auto_awesome_motion">auto_awesome_motion</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-tighter mt-1">Catalog</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-400 p-2" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-tighter mt-1">Calendar</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-gradient-to-br from-[#8f4e00] to-[#ff9933] text-white rounded-full w-14 h-14 -mt-10 shadow-lg scale-110 duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[8px] font-bold uppercase tracking-tighter">Rituals</span>
+</a>
+</nav>
+<!-- Footer Meta -->
+<footer class="bg-surface-container py-12 px-6 text-center text-on-surface-variant/60">
+<span class="font-headline font-bold text-primary opacity-40 text-xl tracking-widest block mb-4">SATTVA</span>
+<p class="text-xs uppercase tracking-[0.2em] font-bold mb-2">Curated Spiritual Excellence</p>
+<p class="text-[10px] max-w-xs mx-auto leading-relaxed">Dedicated to preserving the sanctity of traditional Vedic practices for the modern seeker.</p>
+</footer>
+</body></html>
+
+<!-- The New Homepage (Problem-First) -->
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SATTVA - Spiritual Solutions</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-bright": "#fff8f3",
+              "on-surface": "#211b10",
+              "surface-container-high": "#f3e6d4",
+              "on-background": "#211b10",
+              "on-primary-container": "#693800",
+              "inverse-surface": "#362f23",
+              "secondary-fixed-dim": "#ffb3ac",
+              "on-secondary": "#ffffff",
+              "on-primary-fixed-variant": "#6d3a00",
+              "background": "#fff8f3",
+              "surface-container-highest": "#eee1cf",
+              "primary-fixed-dim": "#ffb77a",
+              "on-primary-fixed": "#2e1500",
+              "surface-tint": "#8f4e00",
+              "surface": "#fff8f3",
+              "surface-dim": "#e5d8c7",
+              "on-tertiary-fixed": "#261a00",
+              "on-tertiary-container": "#584000",
+              "on-error": "#ffffff",
+              "on-secondary-container": "#fffbff",
+              "surface-container-lowest": "#ffffff",
+              "secondary-container": "#da3433",
+              "on-surface-variant": "#554336",
+              "inverse-on-surface": "#fcefdd",
+              "primary-container": "#ff9933",
+              "secondary": "#b6171e",
+              "primary": "#8f4e00",
+              "inverse-primary": "#ffb77a",
+              "secondary-fixed": "#ffdad6",
+              "tertiary-fixed-dim": "#fabd00",
+              "surface-container-low": "#fff2e0",
+              "outline-variant": "#dbc2b0",
+              "surface-variant": "#eee1cf",
+              "on-secondary-fixed": "#410003",
+              "outline": "#887364",
+              "error": "#ba1a1a",
+              "on-tertiary-fixed-variant": "#5b4300",
+              "on-error-container": "#93000a",
+              "error-container": "#ffdad6",
+              "on-secondary-fixed-variant": "#930010",
+              "tertiary-fixed": "#ffdf9e",
+              "tertiary-container": "#e0a900",
+              "primary-fixed": "#ffdcc2",
+              "on-primary": "#ffffff",
+              "tertiary": "#785900",
+              "on-tertiary": "#ffffff",
+              "surface-container": "#f9ecda"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .grainy-bg {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+<div class="fixed inset-0 grainy-bg z-[100]"></div>
+<!-- TopAppBar -->
+<header class="bg-[#fff8f3]/80 dark:bg-[#211b10]/80 backdrop-blur-xl docked full-width top-0 z-50 flex justify-between items-center w-full px-6 py-4 max-w-full">
+<button class="hover:opacity-80 transition-opacity scale-95 active:duration-150">
+<span class="material-symbols-outlined text-[#8f4e00] dark:text-[#ff9933]">menu</span>
+</button>
+<h1 class="font-['Noto_Serif'] tracking-[0.2em] uppercase font-black text-2xl text-[#8f4e00] dark:text-[#ff9933]">SATTVA</h1>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest border border-outline-variant/15 overflow-hidden scale-95 active:duration-150">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="Close-up portrait of a serene woman with a soft warm lighting, editorial spiritual style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtq5j_ksYlszsNllbKtLG9BRudwo-hno9Cawzt1vA_ipQCOr1-XYV6qtfA40IsSSVMRRv78oQE2tmNG46knCJwcw3bse9Nw23EO731LXO-7X26zPgR_iP6TIXqgy84PYha8RHfN0UJnQeKdnaGfOqoY1jlFCrI_MWtnPIXBoErKKirkpwHBY1Fv5AlOL0i8N2ZstRzH0BG07s57P9YRuvzvG-pFmzbvjJ8Od6eLoUDM2noTUFd5wYHq7FoDDJiMzeIj395t1RFTyBQ"/>
+</div>
+</header>
+<main class="pb-32 pt-6">
+<!-- Hero Section -->
+<section class="px-6 mb-12">
+<div class="relative overflow-hidden rounded-[2.5rem] bg-surface-container-high aspect-[4/5] flex flex-col justify-end p-8">
+<div class="absolute inset-0">
+<img alt="Sacred Background" class="w-full h-full object-cover brightness-[0.85]" data-alt="Ancient stone temple pillars at sunrise with divine golden light rays and mystical fog" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6m6CVg0u7pbLG3B1wW4Dm7l9CWT56CWaYpE9aPMNMmGvKlLV_KktgdRX0d4-7xN8CSetlqNez5myg0jSFrCgXFcl0_yaVs_WNysNviVa_qxLtAx8pVR4543-d5hagasUL-4bo2BOtcsTV5HC5KjipbcfksiYi_CAPQWkEan2mrbr54j7LgjdNp6zUso1haxVjABbBv3t4YO6HfJm1yxVuF4mdT9twx5dZ0IRcn4DflGdRlTysm1D-f89bStlRfrMnSJOfBEha_Ajj"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-high via-transparent to-transparent"></div>
+</div>
+<div class="relative z-10 space-y-6">
+<h2 class="font-headline text-4xl font-bold tracking-tight text-on-surface leading-[1.1]">
+                        Find the reason behind your problems &amp; get the right spiritual solution
+                    </h2>
+<div class="flex flex-col gap-3">
+<button class="w-full py-4 bg-gradient-to-r from-primary to-primary-container text-white font-bold rounded-xl shadow-lg shadow-primary/20 active:scale-95 transition-transform">
+                            Check My Problem (Free)
+                        </button>
+<button class="w-full py-4 bg-white/90 backdrop-blur-md text-primary font-bold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform">
+                            Whisper to Nandi <span class="text-xl">🐂</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Quick Tools Bento Grid -->
+<section class="px-6 mb-16">
+<div class="flex items-baseline justify-between mb-6">
+<h3 class="font-headline text-2xl font-bold text-on-surface">Sacred Tools</h3>
+<span class="text-sm font-label uppercase tracking-widest text-primary font-bold">Explore All</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<!-- Large Card -->
+<div class="col-span-2 bg-surface-container-low rounded-3xl p-6 relative overflow-hidden group">
+<div class="relative z-10 flex flex-col h-full justify-between min-h-[160px]">
+<span class="material-symbols-outlined text-primary text-4xl mb-4" data-weight="fill">psychology_alt</span>
+<div>
+<h4 class="font-headline text-xl font-bold text-on-surface mb-1">Life Problem Analyzer</h4>
+<p class="text-sm text-on-surface-variant leading-relaxed">Divine mapping of your current life challenges.</p>
+</div>
+</div>
+<div class="absolute top-0 right-0 -translate-y-4 translate-x-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-[120px]">storm</span>
+</div>
+</div>
+<!-- Small Cards -->
+<div class="bg-surface-container-highest rounded-3xl p-5 aspect-square flex flex-col justify-between">
+<span class="material-symbols-outlined text-secondary text-3xl" data-weight="fill">auto_awesome</span>
+<h4 class="font-headline text-base font-bold text-on-surface">Planet / Dosha Calculator</h4>
+</div>
+<div class="bg-tertiary-fixed rounded-3xl p-5 aspect-square flex flex-col justify-between">
+<span class="material-symbols-outlined text-on-tertiary-fixed text-3xl" data-weight="fill">record_voice_over</span>
+<h4 class="font-headline text-base font-bold text-on-surface">Nandi Whisper</h4>
+</div>
+</div>
+</section>
+<!-- Daily Guidance (Editorial Style) -->
+<section class="mb-16">
+<div class="px-6 mb-6">
+<h3 class="font-headline text-2xl font-bold text-on-surface">Daily Guidance</h3>
+<p class="text-on-surface-variant font-label text-xs uppercase tracking-widest">Auspicious Insights for Today</p>
+</div>
+<div class="flex overflow-x-auto gap-6 px-6 no-scrollbar snap-x">
+<!-- Tip -->
+<div class="snap-center min-w-[85%] bg-surface-container rounded-2xl p-8 border border-outline-variant/10">
+<div class="flex items-center gap-3 mb-4">
+<span class="w-8 h-[1px] bg-primary"></span>
+<span class="text-xs font-bold uppercase tracking-widest text-primary">Today's Tip</span>
+</div>
+<p class="font-headline text-lg italic text-on-surface leading-relaxed">
+                        "Offer water to the rising sun today to strengthen your inner resolve and clear professional obstacles."
+                    </p>
+</div>
+<!-- Festival -->
+<div class="snap-center min-w-[85%] bg-secondary-fixed rounded-2xl p-8 border border-outline-variant/10">
+<div class="flex items-center gap-3 mb-4">
+<span class="w-8 h-[1px] bg-secondary"></span>
+<span class="text-xs font-bold uppercase tracking-widest text-secondary">Festival</span>
+</div>
+<h5 class="font-headline text-2xl font-bold mb-2">Pradosh Vrat</h5>
+<p class="text-sm text-on-secondary-fixed-variant leading-relaxed">
+                        A powerful time for seeking Lord Shiva's blessings to dissolve karmic debts.
+                    </p>
+</div>
+<!-- Remedy -->
+<div class="snap-center min-w-[85%] bg-surface-container-high rounded-2xl p-8 border border-outline-variant/10">
+<div class="flex items-center gap-3 mb-4">
+<span class="w-8 h-[1px] bg-on-tertiary-fixed-variant"></span>
+<span class="text-xs font-bold uppercase tracking-widest text-on-tertiary-fixed-variant">Simple Remedy</span>
+</div>
+<p class="text-on-surface leading-relaxed">
+                        Chant 'Om Namah Shivaya' 108 times at twilight for mental peace and clarity.
+                    </p>
+</div>
+</div>
+</section>
+<!-- Recommended Poojas -->
+<section class="px-6 mb-16">
+<div class="flex items-baseline justify-between mb-8">
+<h3 class="font-headline text-2xl font-bold text-on-surface">Recommended for you</h3>
+</div>
+<div class="space-y-10">
+<!-- Pooja Card 1 -->
+<div class="relative">
+<div class="aspect-[16/9] rounded-3xl overflow-hidden mb-4">
+<img alt="Maha Lakshmi Pooja" class="w-full h-full object-cover" data-alt="Traditional Hindu pooja ceremony with burning oil lamps, marigold flowers, and divine smoke" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDat1XnHmYaIoTuCHH0QDkjeSfeNPq5X-GCFUskPfoVu2tuTIyJie2CzNUW-Jmuzj3rG4XO79zDrjw_XhoKmgoV0j6skPoZT5dr40Qlu5tlLDDs7fKK4NAN4F-wAvCMvritqyv3iq7pplQXjUCD9-MrWA8OkdC5tHZHBxWiWnC-0iFcjIkawJZF7pp2OQdRSGxGcaX8oeFzbVADI9z7qnyJkQ5OUaHDfakuZsClIjg2brBFzBe-MVWglJzwysFh2-0e8cfty4Ue5eTh"/>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-headline text-xl font-bold text-on-surface mb-1">Maha Lakshmi Abhishekam</h4>
+<p class="text-sm text-on-surface-variant">For Financial Prosperity &amp; Harmony</p>
+</div>
+<span class="font-headline text-xl font-bold text-secondary">₹2,100</span>
+</div>
+<button class="mt-4 text-sm font-bold text-primary underline underline-offset-8 decoration-2 uppercase tracking-widest">Learn More</button>
+</div>
+<!-- Pooja Card 2 -->
+<div class="relative">
+<div class="aspect-[16/9] rounded-3xl overflow-hidden mb-4">
+<img alt="Shani Shanti Pooja" class="w-full h-full object-cover" data-alt="Beautifully arranged brass artifacts and incense in a spiritual setting with warm morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1KRMZ8L_VM31lChC11NMhZEvYsqtrjQCqYaKl3VIOcnxsWZT4sVvFoVCwAWd_h_rcz4L8brWplxEjcWNWeri0RIEFd5c8QkXFleztQ5n3_YuFkIzRdlRJa7s68oz2wgF4Z2dNJdaoJUR0srk6uRxbm1FFY05MrdS41TqMGOoBGvf0hC-eRN6BVbpiP0knGWonpMkm8057FwE2K8OwsC-JhKH1NFPEqd0r8d-GRLGym6TFmbhD-ptlQxXwWxk11-UcsmLRUIOJvSRF"/>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-headline text-xl font-bold text-on-surface mb-1">Shani Shanti Homa</h4>
+<p class="text-sm text-on-surface-variant">To mitigate Saturn's influence</p>
+</div>
+<span class="font-headline text-xl font-bold text-secondary">₹5,500</span>
+</div>
+<button class="mt-4 text-sm font-bold text-primary underline underline-offset-8 decoration-2 uppercase tracking-widest">Learn More</button>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-[#fff8f3]/80 dark:bg-[#211b10]/80 backdrop-blur-xl fixed bottom-0 w-full z-50 rounded-t-[2rem] border-t-[0.5px] border-[#dbc2b0]/15 shadow-[0_-10px_30px_rgba(85,67,54,0.05)] fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3">
+<!-- Home (Active) -->
+<a class="flex flex-col items-center justify-center bg-[#ff9933]/10 dark:bg-[#ff9933]/20 text-[#8f4e00] dark:text-[#ff9933] rounded-xl px-4 py-2 Active: scale-90 transition-transform duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home_max</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-tight">Home</span>
+</a>
+<!-- Tools -->
+<a class="flex flex-col items-center justify-center text-[#554336] dark:text-[#dbc2b0] px-4 py-2 hover:text-[#8f4e00] dark:hover:text-[#ff9933] Active: scale-90 transition-transform duration-300 ease-out" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-tight">Tools</span>
+</a>
+<!-- Market -->
+<a class="flex flex-col items-center justify-center text-[#554336] dark:text-[#dbc2b0] px-4 py-2 hover:text-[#8f4e00] dark:hover:text-[#ff9933] Active: scale-90 transition-transform duration-300 ease-out" href="#">
+<span class="material-symbols-outlined">temple_hindu</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-tight">Market</span>
+</a>
+<!-- Whisper -->
+<a class="flex flex-col items-center justify-center text-[#554336] dark:text-[#dbc2b0] px-4 py-2 hover:text-[#8f4e00] dark:hover:text-[#ff9933] Active: scale-90 transition-transform duration-300 ease-out" href="#">
+<span class="material-symbols-outlined">record_voice_over</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-tight">Whisper</span>
+</a>
+</nav>
+</body></html>
+
+<!-- Life Problem Analyzer Tool -->
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SATTVA | Life Problem Analyzer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-bright": "#fff8f3",
+              "on-surface": "#211b10",
+              "surface-container-high": "#f3e6d4",
+              "on-background": "#211b10",
+              "on-primary-container": "#693800",
+              "inverse-surface": "#362f23",
+              "secondary-fixed-dim": "#ffb3ac",
+              "on-secondary": "#ffffff",
+              "on-primary-fixed-variant": "#6d3a00",
+              "background": "#fff8f3",
+              "surface-container-highest": "#eee1cf",
+              "primary-fixed-dim": "#ffb77a",
+              "on-primary-fixed": "#2e1500",
+              "surface-tint": "#8f4e00",
+              "surface": "#fff8f3",
+              "surface-dim": "#e5d8c7",
+              "on-tertiary-fixed": "#261a00",
+              "on-tertiary-container": "#584000",
+              "on-error": "#ffffff",
+              "on-secondary-container": "#fffbff",
+              "surface-container-lowest": "#ffffff",
+              "secondary-container": "#da3433",
+              "on-surface-variant": "#554336",
+              "inverse-on-surface": "#fcefdd",
+              "primary-container": "#ff9933",
+              "secondary": "#b6171e",
+              "primary": "#8f4e00",
+              "inverse-primary": "#ffb77a",
+              "secondary-fixed": "#ffdad6",
+              "tertiary-fixed-dim": "#fabd00",
+              "surface-container-low": "#fff2e0",
+              "outline-variant": "#dbc2b0",
+              "surface-variant": "#eee1cf",
+              "on-secondary-fixed": "#410003",
+              "outline": "#887364",
+              "error": "#ba1a1a",
+              "on-tertiary-fixed-variant": "#5b4300",
+              "on-error-container": "#93000a",
+              "error-container": "#ffdad6",
+              "on-secondary-fixed-variant": "#930010",
+              "tertiary-fixed": "#ffdf9e",
+              "tertiary-container": "#e0a900",
+              "primary-fixed": "#ffdcc2",
+              "on-primary": "#ffffff",
+              "tertiary": "#785900",
+              "on-tertiary": "#ffffff",
+              "surface-container": "#f9ecda"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .ritual-noise {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<div class="ritual-noise fixed inset-0 z-50"></div>
+<!-- TopAppBar -->
+<header class="bg-[#fff8f3]/80 dark:bg-[#211b10]/80 backdrop-blur-xl docked full-width top-0 z-50 flex justify-between items-center w-full px-6 py-4 max-w-full sticky">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#8f4e00] dark:text-[#ff9933] hover:opacity-80 transition-opacity scale-95 active:duration-150 cursor-pointer">menu</span>
+<h1 class="font-['Noto_Serif'] tracking-widest uppercase font-bold text-2xl font-black text-[#8f4e00] dark:text-[#ff9933] tracking-[0.2em]">SATTVA</h1>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant/15 scale-95 active:duration-150 cursor-pointer">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="close-up portrait of a serene woman with natural lighting in a soft meditative environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaVXqh6roDaUDjo3JGwPZSRrWwwmhVAiHuvXyK54D4vSJU1Zm3Db3Cp9ZTviap2y-kJww-bEcfPXXoMMoHwlNYTDWO8TgASFIQ6kngf3xrVTNDuKr7XXYa9BiYUW1kDzQz5Ky6jVUfMPTrRLpwyW5bxnl70MLxEATbTEUW9huklinoyzL4FZc-RU6cL6_xfG4OYsfd8l0hmT67tjllQR9rlS3pRygyq0oa21Tk-CRrvAYAqCndB_91dD3NoOVMiDS8bagE4C28Ubki"/>
+</div>
+</header>
+<main class="min-h-screen pb-32">
+<!-- Hero Section -->
+<section class="px-6 pt-12 pb-8">
+<div class="mb-2">
+<span class="font-label text-xs tracking-[0.3em] uppercase text-primary font-bold">Diagnostic Ritual</span>
+</div>
+<h2 class="font-headline text-5xl font-black text-on-surface leading-tight tracking-tight mb-4">
+                Why is it<br/><span class="text-secondary italic">happening?</span>
+</h2>
+<p class="text-on-surface-variant font-body text-lg leading-relaxed max-w-[85%]">
+                Unveil the hidden spiritual knots tying your life's path. Let the ancient wisdom diagnose the disharmony.
+            </p>
+</section>
+<!-- Progress Indicator (Ritualistic) -->
+<section class="px-6 mb-12">
+<div class="flex items-center justify-between mb-3 px-1">
+<span class="font-label text-[10px] tracking-widest uppercase font-bold text-on-surface-variant/60">Soul Alignment: Step 2 of 4</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-bold text-primary">50% Complete</span>
+</div>
+<div class="h-[3px] w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-primary-container w-1/2 rounded-full"></div>
+</div>
+</section>
+<!-- Tool Canvas: The Diagnostic Questions -->
+<section class="px-6 space-y-10">
+<!-- Question Block -->
+<div class="space-y-6">
+<h3 class="font-headline text-2xl text-on-surface font-bold border-l-4 border-primary pl-4">Which area feels most <span class="text-primary italic">clouded</span> right now?</h3>
+<div class="grid grid-cols-1 gap-4">
+<!-- Option Card: Career -->
+<button class="group relative flex items-center p-5 bg-surface-container-low rounded-xl text-left transition-all active:scale-[0.98]">
+<div class="w-14 h-14 rounded-lg bg-surface-container-highest flex items-center justify-center mr-5 transition-colors group-hover:bg-primary/10">
+<span class="material-symbols-outlined text-3xl text-primary" style="font-variation-settings: 'FILL' 0;">work_history</span>
+</div>
+<div class="flex-1">
+<div class="font-headline text-lg text-on-surface font-bold">Career &amp; Purpose</div>
+<div class="font-body text-sm text-on-surface-variant">Feeling stagnant or misaligned with your calling</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant opacity-0 group-focus:opacity-100 transition-opacity">check_circle</span>
+</button>
+<!-- Option Card: Relationships -->
+<button class="group relative flex items-center p-5 bg-surface-container-highest rounded-xl text-left border-2 border-primary/40 ring-4 ring-primary/5 transition-all">
+<div class="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mr-5">
+<span class="material-symbols-outlined text-3xl text-primary" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</div>
+<div class="flex-1">
+<div class="font-headline text-lg text-on-surface font-bold">Connection</div>
+<div class="font-body text-sm text-on-surface-variant">Cyclical conflicts or deep emotional longing</div>
+</div>
+<span class="material-symbols-outlined text-primary opacity-100" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</button>
+<!-- Option Card: Health -->
+<button class="group relative flex items-center p-5 bg-surface-container-low rounded-xl text-left transition-all active:scale-[0.98]">
+<div class="w-14 h-14 rounded-lg bg-surface-container-highest flex items-center justify-center mr-5 transition-colors group-hover:bg-primary/10">
+<span class="material-symbols-outlined text-3xl text-primary" style="font-variation-settings: 'FILL' 0;">self_care</span>
+</div>
+<div class="flex-1">
+<div class="font-headline text-lg text-on-surface font-bold">Vitality</div>
+<div class="font-body text-sm text-on-surface-variant">Low energy or unexplained physical weight</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant opacity-0 group-focus:opacity-100 transition-opacity">check_circle</span>
+</button>
+</div>
+</div>
+<!-- Contextual Input -->
+<div class="space-y-4">
+<label class="font-label text-xs tracking-widest uppercase font-bold text-on-surface-variant px-1">Describe the feeling (Optional)</label>
+<div class="relative">
+<textarea class="w-full bg-transparent border-0 border-b-2 border-outline-variant/40 focus:border-primary focus:ring-0 font-body text-lg py-4 px-1 placeholder:text-on-surface-variant/30 transition-colors resize-none" placeholder="e.g., 'Like walking through thick mist'"></textarea>
+<div class="absolute bottom-4 right-0">
+<span class="material-symbols-outlined text-on-surface-variant/20">edit_note</span>
+</div>
+</div>
+</div>
+<!-- Featured Guidance Block -->
+<div class="bg-surface-container p-8 rounded-3xl relative overflow-hidden group">
+<div class="absolute -top-12 -right-12 w-40 h-40 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors"></div>
+<div class="relative z-10">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-tertiary-container text-sm">auto_awesome</span>
+<span class="font-label text-[10px] tracking-widest uppercase font-extrabold text-tertiary">Spiritual Insight</span>
+</div>
+<h4 class="font-headline text-xl text-on-surface font-bold mb-3">The Saturn Cycle</h4>
+<p class="font-body text-sm text-on-surface-variant leading-relaxed mb-6">
+                        Many seekers find that recurring relationship friction aligns with specific planetary transits. Your diagnostic helps pinpoint these karmic windows.
+                    </p>
+<button class="font-label text-xs font-bold text-primary border-b-2 border-primary/20 hover:border-primary transition-all pb-1">LEARN ABOUT TRANSITS</button>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="px-6 py-12">
+<button class="w-full py-5 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold rounded-xl shadow-[0_10px_30px_rgba(143,78,0,0.2)] active:scale-95 transition-all text-lg tracking-tight">
+                Get Your Spiritual Solution
+            </button>
+<p class="text-center mt-6 font-body text-xs text-on-surface-variant/60 italic">
+                A 12-page personalized diagnostic will be prepared for you.
+            </p>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-[#fff8f3]/80 dark:bg-[#211b10]/80 backdrop-blur-xl fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 z-50 rounded-t-[2rem] border-t-[0.5px] border-[#dbc2b0]/15 shadow-[0_-10px_30px_rgba(85,67,54,0.05)]">
+<a class="flex flex-col items-center justify-center text-[#554336] dark:text-[#dbc2b0] px-4 py-2 hover:text-[#8f4e00] dark:hover:text-[#ff9933] Active: scale-90 transition-transform duration-300 ease-out" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="home_max">home_max</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-tight">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#ff9933]/10 dark:bg-[#ff9933]/20 text-[#8f4e00] dark:text-[#ff9933] rounded-xl px-4 py-2 hover:text-[#8f4e00] dark:hover:text-[#ff9933] Active: scale-90 transition-transform duration-300 ease-out" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="auto_awesome" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-tight">Tools</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#554336] dark:text-[#dbc2b0] px-4 py-2 hover:text-[#8f4e00] dark:hover:text-[#ff9933] Active: scale-90 transition-transform duration-300 ease-out" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="temple_hindu">temple_hindu</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-tight">Market</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#554336] dark:text-[#dbc2b0] px-4 py-2 hover:text-[#8f4e00] dark:hover:text-[#ff9933] Active: scale-90 transition-transform duration-300 ease-out" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="Record_voice_over">record_voice_over</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-tight">Whisper</span>
+</a>
+</nav>
+</body></html>
+
+<!-- Nandi Whisper Ritual Page -->
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-bright": "#fff8f3",
+              "on-surface": "#211b10",
+              "surface-container-high": "#f3e6d4",
+              "on-background": "#211b10",
+              "on-primary-container": "#693800",
+              "inverse-surface": "#362f23",
+              "secondary-fixed-dim": "#ffb3ac",
+              "on-secondary": "#ffffff",
+              "on-primary-fixed-variant": "#6d3a00",
+              "background": "#fff8f3",
+              "surface-container-highest": "#eee1cf",
+              "primary-fixed-dim": "#ffb77a",
+              "on-primary-fixed": "#2e1500",
+              "surface-tint": "#8f4e00",
+              "surface": "#fff8f3",
+              "surface-dim": "#e5d8c7",
+              "on-tertiary-fixed": "#261a00",
+              "on-tertiary-container": "#584000",
+              "on-error": "#ffffff",
+              "on-secondary-container": "#fffbff",
+              "surface-container-lowest": "#ffffff",
+              "secondary-container": "#da3433",
+              "on-surface-variant": "#554336",
+              "inverse-on-surface": "#fcefdd",
+              "primary-container": "#ff9933",
+              "secondary": "#b6171e",
+              "primary": "#8f4e00",
+              "inverse-primary": "#ffb77a",
+              "secondary-fixed": "#ffdad6",
+              "tertiary-fixed-dim": "#fabd00",
+              "surface-container-low": "#fff2e0",
+              "outline-variant": "#dbc2b0",
+              "surface-variant": "#eee1cf",
+              "on-secondary-fixed": "#410003",
+              "outline": "#887364",
+              "error": "#ba1a1a",
+              "on-tertiary-fixed-variant": "#5b4300",
+              "on-error-container": "#93000a",
+              "error-container": "#ffdad6",
+              "on-secondary-fixed-variant": "#930010",
+              "tertiary-fixed": "#ffdf9e",
+              "tertiary-container": "#e0a900",
+              "primary-fixed": "#ffdcc2",
+              "on-primary": "#ffffff",
+              "tertiary": "#785900",
+              "on-tertiary": "#ffffff",
+              "surface-container": "#f9ecda"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .nandi-hero-gradient {
+            background: linear-gradient(to bottom, transparent 0%, #fff8f3 90%);
+        }
+        .glass-panel {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 248, 243, 0.8);
+        }
+        .noise-overlay {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface antialiased selection:bg-primary-container selection:text-on-primary-container">
+<div class="noise-overlay fixed inset-0 z-[100]"></div>
+<!-- Top AppBar -->
+<header class="bg-[#fff8f3]/80 dark:bg-[#211b10]/80 backdrop-blur-xl docked full-width top-0 z-50 fixed flex justify-between items-center w-full px-6 py-4 max-w-full">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#8f4e00] dark:text-[#ff9933] hover:opacity-80 transition-opacity scale-95 active:duration-150 cursor-pointer" data-icon="menu">menu</span>
+<h1 class="font-['Noto_Serif'] tracking-widest uppercase font-bold text-2xl font-black text-[#8f4e00] dark:text-[#ff9933] tracking-[0.2em]">SATTVA</h1>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/20 hover:opacity-80 transition-opacity scale-95 active:duration-150 cursor-pointer">
+<img alt="User" class="w-full h-full object-cover" data-alt="professional portrait of a person with warm lighting and soft background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzCDG9EpauELmUPiq-WZDuqALVHRRWvqwMJ8gD_VGDc_QvtHxd_HNIbtU7AaHpU-gyncSn_RmP11sEYzkLb3CjGG91UQReRX2KummPQpdDs0MjNT6-JdK18XVy1vH416FGvXj8QiMM3IMqB9Cpb_q-3qKSFQ0qjBBRP4RQWGF9SWbaSDxxSUkR4m9drQGm_48Nribw_8PhB6XrEPiDiFPF71upm8_C1pvPjVQGt6ALq6AVd5XfXTs8Fih6jFlnvSFgi2DNo0pDIg7K"/>
+</div>
+</header>
+<main class="pt-20 pb-32">
+<!-- Hero Section -->
+<section class="relative h-[530px] w-full overflow-hidden">
+<img alt="Sacred Nandi" class="absolute inset-0 w-full h-full object-cover object-center" data-alt="Close-up of an ancient stone Nandi bull statue adorned with vibrant orange and yellow marigold garlands in a serene temple setting with warm sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnR6FN-tLR55kZzBGt6Rh3hrntlALyMrZHeKhr8F3FCTMp-fiJzUwH37SqW6IFFk8401bmr7bzTmeqY_b2WUWeJXUUAdDdF-C2TJZfOZPOlz3ujJPPOZFQxhnX17LjK3aagm4FHJPHHF-8snJRDtP6wPnp2qGFqcjr_bq-GEvtafr-xeX6T9V8aI1XDlzudYL7a_ElELohKCIv7nUNulnOqyeLkJYdDCHyG28kzgqut47WT-P5gn8ARh1AnK-NilnD4I0E564y-yF0"/>
+<div class="absolute inset-0 nandi-hero-gradient"></div>
+<div class="absolute bottom-0 left-0 right-0 p-8 text-center">
+<span class="font-label text-sm uppercase tracking-[0.3em] text-primary font-bold mb-3 block">Sacred Connection</span>
+<h2 class="font-headline text-4xl md:text-5xl font-black text-on-background leading-tight mb-2">The Whispering Ritual</h2>
+<p class="font-headline text-lg italic text-on-surface-variant opacity-80">“Your wish will be offered at a temple”</p>
+</div>
+</section>
+<!-- Ritual Form -->
+<section class="px-6 -mt-4 relative z-10">
+<div class="space-y-12 max-w-lg mx-auto">
+<!-- Intent Section -->
+<div class="space-y-6">
+<div class="flex items-center gap-3">
+<div class="h-px flex-1 bg-outline-variant/30"></div>
+<span class="font-label text-[10px] tracking-widest uppercase text-outline">The Heart's Desire</span>
+<div class="h-px flex-1 bg-outline-variant/30"></div>
+</div>
+<div class="relative">
+<label class="block font-label text-xs font-bold uppercase tracking-wider text-primary mb-3 px-1">What do you wish to whisper?</label>
+<textarea class="w-full bg-surface-container-low border-b-2 border-outline-variant/40 focus:border-primary focus:ring-0 transition-colors py-4 px-4 rounded-t-xl font-body text-lg resize-none placeholder:text-outline-variant/60" placeholder="Type your prayer, wish, or problem here..." rows="4"></textarea>
+</div>
+</div>
+<!-- Personal Details Bento -->
+<div class="grid grid-cols-1 gap-6">
+<div class="flex items-center gap-3">
+<div class="h-px flex-1 bg-outline-variant/30"></div>
+<span class="font-label text-[10px] tracking-widest uppercase text-outline">The Petitioner</span>
+<div class="h-px flex-1 bg-outline-variant/30"></div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-6 space-y-8">
+<div class="relative">
+<label class="block font-label text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Full Name</label>
+<input class="w-full bg-transparent border-b border-outline-variant/40 focus:border-primary focus:ring-0 py-2 font-body text-base placeholder:text-outline-variant/40" placeholder="Enter your name" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-6">
+<div class="relative">
+<label class="block font-label text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Birth Date</label>
+<input class="w-full bg-transparent border-b border-outline-variant/40 focus:border-primary focus:ring-0 py-2 font-body text-base text-on-surface-variant" type="date"/>
+</div>
+<div class="relative">
+<label class="block font-label text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Birth Time</label>
+<input class="w-full bg-transparent border-b border-outline-variant/40 focus:border-primary focus:ring-0 py-2 font-body text-base text-on-surface-variant" type="time"/>
+</div>
+</div>
+<div class="relative">
+<label class="block font-label text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Birth Place</label>
+<input class="w-full bg-transparent border-b border-outline-variant/40 focus:border-primary focus:ring-0 py-2 font-body text-base placeholder:text-outline-variant/40" placeholder="City, Country" type="text"/>
+</div>
+</div>
+</div>
+<!-- Call to Action -->
+<div class="pt-4 text-center space-y-6">
+<button class="w-full py-5 px-8 rounded-xl bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold text-lg shadow-xl shadow-primary/20 active:scale-95 transition-transform flex items-center justify-center gap-3">
+<span>Whisper to Nandi</span>
+<span class="text-2xl">🐂</span>
+</button>
+<div class="flex flex-col items-center gap-2">
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-sm" data-weight="fill" style="font-variation-settings: 'FILL' 1;">verified</span>
+<p class="font-label text-[11px] font-bold uppercase tracking-tighter">Sacred Commitment</p>
+</div>
+<p class="text-on-surface-variant text-sm font-medium leading-relaxed italic max-w-[280px] mx-auto">
+                            “We submit wishes daily to temple. Each word is treated as a divine offering.”
+                        </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Aesthetic Footer Spacer -->
+<section class="mt-20 px-8 flex justify-center opacity-20">
+<div class="grid grid-cols-3 gap-8">
+<span class="material-symbols-outlined text-4xl" data-icon="filter_vintage">filter_vintage</span>
+<span class="material-symbols-outlined text-4xl" data-icon="temple_hindu">temple_hindu</span>
+<span class="material-symbols-outlined text-4xl" data-icon="filter_vintage">filter_vintage</span>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation -->
+<nav class="bg-[#fff8f3]/80 dark:bg-[#211b10]/80 backdrop-blur-xl fixed bottom-0 w-full z-50 rounded-t-[2rem] border-t-[0.5px] border-[#dbc2b0]/15 shadow-[0_-10px_30px_rgba(85,67,54,0.05)] fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3">
+<div class="flex flex-col items-center justify-center text-[#554336] dark:text-[#dbc2b0] px-4 py-2 hover:text-[#8f4e00] dark:hover:text-[#ff9933] Active: scale-90 transition-transform duration-300 ease-out cursor-pointer">
+<span class="material-symbols-outlined text-2xl" data-icon="home_max">home_max</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-tight">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#554336] dark:text-[#dbc2b0] px-4 py-2 hover:text-[#8f4e00] dark:hover:text-[#ff9933] Active: scale-90 transition-transform duration-300 ease-out cursor-pointer">
+<span class="material-symbols-outlined text-2xl" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-tight">Tools</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#554336] dark:text-[#dbc2b0] px-4 py-2 hover:text-[#8f4e00] dark:hover:text-[#ff9933] Active: scale-90 transition-transform duration-300 ease-out cursor-pointer">
+<span class="material-symbols-outlined text-2xl" data-icon="temple_hindu">temple_hindu</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-tight">Market</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#ff9933]/10 dark:bg-[#ff9933]/20 text-[#8f4e00] dark:text-[#ff9933] rounded-xl px-4 py-2 Active: scale-90 transition-transform duration-300 ease-out cursor-pointer">
+<span class="material-symbols-outlined text-2xl" data-icon="Record_voice_over" style="font-variation-settings: 'FILL' 1;">record_voice_over</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-tight">Whisper</span>
+</div>
+</nav>
+</body></html>
+
+<!-- Pooja Marketplace (Problem-Solving) -->
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SATTVA - Sacred Rituals Marketplace</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-bright": "#fff8f3",
+              "on-surface": "#211b10",
+              "surface-container-high": "#f3e6d4",
+              "on-background": "#211b10",
+              "on-primary-container": "#693800",
+              "inverse-surface": "#362f23",
+              "secondary-fixed-dim": "#ffb3ac",
+              "on-secondary": "#ffffff",
+              "on-primary-fixed-variant": "#6d3a00",
+              "background": "#fff8f3",
+              "surface-container-highest": "#eee1cf",
+              "primary-fixed-dim": "#ffb77a",
+              "on-primary-fixed": "#2e1500",
+              "surface-tint": "#8f4e00",
+              "surface": "#fff8f3",
+              "surface-dim": "#e5d8c7",
+              "on-tertiary-fixed": "#261a00",
+              "on-tertiary-container": "#584000",
+              "on-error": "#ffffff",
+              "on-secondary-container": "#fffbff",
+              "surface-container-lowest": "#ffffff",
+              "secondary-container": "#da3433",
+              "on-surface-variant": "#554336",
+              "inverse-on-surface": "#fcefdd",
+              "primary-container": "#ff9933",
+              "secondary": "#b6171e",
+              "primary": "#8f4e00",
+              "inverse-primary": "#ffb77a",
+              "secondary-fixed": "#ffdad6",
+              "tertiary-fixed-dim": "#fabd00",
+              "surface-container-low": "#fff2e0",
+              "outline-variant": "#dbc2b0",
+              "surface-variant": "#eee1cf",
+              "on-secondary-fixed": "#410003",
+              "outline": "#887364",
+              "error": "#ba1a1a",
+              "on-tertiary-fixed-variant": "#5b4300",
+              "on-error-container": "#93000a",
+              "error-container": "#ffdad6",
+              "on-secondary-fixed-variant": "#930010",
+              "tertiary-fixed": "#ffdf9e",
+              "tertiary-container": "#e0a900",
+              "primary-fixed": "#ffdcc2",
+              "on-primary": "#ffffff",
+              "tertiary": "#785900",
+              "on-tertiary": "#ffffff",
+              "surface-container": "#f9ecda"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24
+    }
+.grainy-overlay {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuB7Ao_auw5IjbEfu6tEj7ZaOR068OKOfg1eB0j8_SSbHWyC5lS5VhGnH_Ed-v-tHyGuD30NA0cmjsJEpFdJipPxFPyfLqETT-_kRjxs-0t4Y5yBH1UW_Bwfc2XLz4lgl7OPJJdX9NmjJPb-LXl6RKf2JTUocNvQZfnEMX4Dv1e6vGT8SFUzTeRu-SA9CyZXCOfvuTpAWJ1suV4pK7fz2s-j1ZwazKwYokol7YnxtbHP7suXz0Rl1mJfSmlkWnPvTDJniDmyoC7Fix9y);
+    opacity: 0.03;
+    pointer-events: none
+    }
+.hide-scrollbar::-webkit-scrollbar {
+    display: none
+    }
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none
+    }</style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<div class="grainy-overlay fixed inset-0 z-[100]"></div>
+<!-- TopAppBar -->
+<nav class="bg-[#fff8f3]/80 dark:bg-[#211b10]/80 backdrop-blur-xl docked full-width top-0 z-50 flex justify-between items-center w-full px-6 py-4 max-w-full sticky">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#8f4e00] dark:text-[#ff9933] cursor-pointer hover:opacity-80 transition-opacity scale-95 active:duration-150" data-icon="menu">menu</span>
+<span class="font-['Noto_Serif'] tracking-[0.2em] uppercase font-black text-2xl text-[#8f4e00] dark:text-[#ff9933]">SATTVA</span>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container/20">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Close-up portrait of a serene man with a soft smile in warm, natural morning sunlight, high-end editorial photography style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHK1XLrOHBzqeHBfLbBCTMyfewstaLX1VHs-zlGTaY3SItC6WNSqVBOxRZj-gR1cJQMzK1V0OGKGRp_G73sbYteFTAD6tGhaegmOeG9KjWdOnp1361CocC-twA5_hRUPntZDDtNPvS_c4otM53eG-HtN1VDSDoX2bhx9dB8UfItT_gaqnB3eWOW1py-mNivtvwSEpTCntB6bo21ZV0gE8Gib53goMMgUST00efCXuD9oZ925T53XhXHPoT-jhL6Wx-D6jt2eObFnqs"/>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="pb-32">
+<!-- Hero Search & Categories -->
+<section class="px-6 pt-8 pb-10 bg-surface-container-low">
+<h1 class="font-headline text-4xl font-bold tracking-tight text-on-surface leading-tight mb-4">
+                Heal Your Life <br/><span class="text-primary italic">Through Ritual</span>
+</h1>
+<p class="text-on-surface-variant font-medium mb-8">Select the area of life where you seek clarity and divine intervention.</p>
+<div class="flex gap-3 overflow-x-auto hide-scrollbar -mx-6 px-6">
+<span class="bg-tertiary-fixed text-on-tertiary-fixed px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap shadow-sm">All Rituals</span>
+<span class="bg-surface-container-highest text-on-surface-variant px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap hover:bg-tertiary-fixed transition-colors">Career</span>
+<span class="bg-surface-container-highest text-on-surface-variant px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap hover:bg-tertiary-fixed transition-colors">Health</span>
+<span class="bg-surface-container-highest text-on-surface-variant px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap hover:bg-tertiary-fixed transition-colors">Marriage</span>
+<span class="bg-surface-container-highest text-on-surface-variant px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap hover:bg-tertiary-fixed transition-colors">Wealth</span>
+</div>
+</section>
+<!-- Problem-Based Cards Grid -->
+<section class="px-6 py-10 space-y-12">
+<!-- Category: Money & Career -->
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<h2 class="font-headline text-2xl font-bold tracking-wide">Money &amp; Career</h2>
+<span class="text-secondary font-bold text-sm tracking-widest uppercase border-b-2 border-secondary/20">View All</span>
+</div>
+<!-- Bento-style Card 1 -->
+<div class="bg-surface-container rounded-xl overflow-hidden flex flex-col shadow-sm">
+<div class="h-56 relative overflow-hidden">
+<img alt="Goddess Lakshmi Ritual" class="w-full h-full object-cover" data-alt="An ornate gold statue of Goddess Lakshmi surrounded by pink lotus flowers and glowing oil lamps in a traditional Vedic temple setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAroCsvxE7H-KtR1uWpQvsZT4WNU5Y1fbGKj6-h4njMHzK_munD9vmCSgw50hIMx_7SzML8sGNdAxA8b3NUZCgOvqY4pDAs4DtmCfN72OEEZAismVgF7K30EIVD15qAb4sbIJP0lV9KpiQmyd0yMLNE4oak1nxTnCrkhAo7iATefi9n5_omKqV7WFuyQx4QX21UISQv1jjm52QyKux2OH9mIh6OkDaFRLbhx5aRjDckCiuN65zlVf4ceNBNPJmZnQK6JIuzSw1opAtb"/>
+<div class="absolute bottom-4 left-4">
+<span class="bg-primary/90 text-on-primary px-3 py-1 rounded-md text-xs font-bold uppercase tracking-widest">Most Booked</span>
+</div>
+</div>
+<div class="p-6 space-y-4">
+<h3 class="font-headline text-xl font-bold text-primary">Kanakadhara Mahayagya</h3>
+<div class="space-y-3">
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-secondary text-lg" data-icon="error_outline">error_outline</span>
+<div>
+<p class="text-[10px] font-bold text-secondary uppercase tracking-tighter">Problem it solves</p>
+<p class="text-sm text-on-surface-variant font-medium leading-snug">Chronic financial debt and stagnation in business growth.</p>
+</div>
+</div>
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-tertiary text-lg" data-icon="psychology">psychology</span>
+<div>
+<p class="text-[10px] font-bold text-tertiary uppercase tracking-tighter">Symptoms you might have</p>
+<p class="text-sm text-on-surface-variant font-medium leading-snug">Frequent sudden expenses, missing out on promotions, lack of savings.</p>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-lg flex justify-between items-center">
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Benefits</p>
+<p class="text-sm font-semibold text-on-surface">Prosperity &amp; Abundance</p>
+</div>
+<button class="bg-gradient-to-r from-primary to-primary-container text-on-primary px-6 py-2.5 rounded-lg text-sm font-bold shadow-md active:scale-95 transition-transform">Book Now</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Category: Dosha Nivaran (Horizontal Scroll) -->
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<h2 class="font-headline text-2xl font-bold tracking-wide">Dosha Nivaran</h2>
+</div>
+<div class="flex gap-6 overflow-x-auto hide-scrollbar -mx-6 px-6">
+<!-- Card 2 -->
+<div class="min-w-[280px] bg-surface-container-high rounded-xl overflow-hidden border border-outline-variant/15">
+<div class="h-40 relative">
+<img alt="Shani Dev Puja" class="w-full h-full object-cover" data-alt="A mystical evening ritual for Saturn (Shani) with blue smoke, oil lamps, and traditional copper vessels under moonlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxPphV9UGybofJvhPFwhUp4mWWtfMUaeMr9irhCAVLaOdneSGt4X4zxYqdT2KoFFZVHqwEgsBa2UQxlGcTFdFaIdZsHKgNZyhEpvRNy3dd0scI7Y-RtHSj7hIFHZNs4ELCVusMhKZ2lGah2WEMyXAbnYYVWer9VX1N2etllp6GV5UFFUYpeAP-o6Skc8JCQaRAnDADNUlRwI_0mVr08hJL4rhH0KfAXiW9i0AnSW9NFTFuMR2smN4tgjgbiHiuKarCRKGrrTbmzG8a"/>
+</div>
+<div class="p-5 space-y-3">
+<h3 class="font-headline text-lg font-bold text-on-surface">Shani Sade Sati Shanti</h3>
+<div class="space-y-2">
+<p class="text-[10px] font-bold text-secondary uppercase tracking-widest">Problem</p>
+<p class="text-xs text-on-surface-variant leading-relaxed">Unexpected hurdles and mental stress caused by Saturn's transit.</p>
+</div>
+<button class="w-full bg-surface-container-highest text-primary py-3 rounded-lg text-xs font-bold uppercase tracking-widest border border-primary/10">Book Now</button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="min-w-[280px] bg-surface-container-high rounded-xl overflow-hidden border border-outline-variant/15">
+<div class="h-40 relative">
+<img alt="Kalsarp Dosha Puja" class="w-full h-full object-cover" data-alt="Sacred Vedic fire ritual (Havan) with offerings of grains and ghee being poured into the flames, warm amber lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCV-w7vUSVjj_z8z-BLzbw9sKLZlsAklXdxjMwZVZWVXuJBwVKdrx2DIPPFOKSkibIvb4TRfB_ASk_hMXNOMrc5PNK9_7Z_MVuKu-n7LTmUvuDB3wj1SL9MNjleC5PdyQ0LZApe6H8Ln7-IFYoxKZep3v8NBy9pp0sbIl-ccfXvmzvEIJvPDUmrM4n25Nst3b0Wu2rv1An_y5QTBXHGRGHm47w0lXfVugn8rfxYaHpJ4MZ6oC1ZSkpMpSU9-f9QH6Y08chNf3hqrSXb"/>
+</div>
+<div class="p-5 space-y-3">
+<h3 class="font-headline text-lg font-bold text-on-surface">Kalsarp Dosha Nivaran</h3>
+<div class="space-y-2">
+<p class="text-[10px] font-bold text-secondary uppercase tracking-widest">Problem</p>
+<p class="text-xs text-on-surface-variant leading-relaxed">Delayed marriage and recurring nightmares or anxiety.</p>
+</div>
+<button class="w-full bg-surface-container-highest text-primary py-3 rounded-lg text-xs font-bold uppercase tracking-widest border border-primary/10">Book Now</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Featured "Health & Vitality" Section -->
+<div class="bg-inverse-surface text-inverse-on-surface p-8 rounded-3xl relative overflow-hidden">
+<div class="relative z-10 space-y-6">
+<h2 class="font-headline text-3xl font-bold leading-tight">Maha Mrityunjaya <br/>Healing Circle</h2>
+<p class="text-surface-variant text-sm leading-relaxed opacity-90">For those facing critical health issues or seeking longevity. A personalized Vedic chant session performed by 5 senior priests.</p>
+<ul class="space-y-3">
+<li class="flex items-center gap-3 text-sm">
+<span class="material-symbols-outlined text-primary-container" data-icon="check_circle">check_circle</span>
+                            Chronic Ailment Relief
+                        </li>
+<li class="flex items-center gap-3 text-sm">
+<span class="material-symbols-outlined text-primary-container" data-icon="check_circle">check_circle</span>
+                            Mental Clarity &amp; Focus
+                        </li>
+</ul>
+<button class="bg-primary-container text-on-primary-container w-full py-4 rounded-xl font-black uppercase tracking-widest text-sm shadow-lg">Start Healing Journey</button>
+</div>
+<!-- Decorative element -->
+<div class="absolute -right-10 -bottom-10 w-48 h-48 bg-primary/20 rounded-full blur-3xl"></div>
+</div>
+<!-- Category: Marriage & Love -->
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<h2 class="font-headline text-2xl font-bold tracking-wide">Marriage &amp; Love</h2>
+</div>
+<div class="grid grid-cols-1 gap-8">
+<div class="relative flex gap-6 items-start group">
+<div class="w-32 h-40 flex-shrink-0 rounded-2xl overflow-hidden shadow-md">
+<img alt="Gauri Shankar Puja" class="w-full h-full object-cover" data-alt="Intricate close-up of a traditional Indian wedding ritual, hands holding marigold petals over a sacred fire, soft warm glow" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUUrlz2sTqrEJKvQmUYkbIcrUQC_R0ARpOlLWqzD6w6yD6QVgFseWf_qil7i6VoZahyGXh6iJQOXK2VgM2wRHia7on-xPy0iQbPNOt9DYYdqXeDBd79DFqYWQRcGm70OLoen8XiIerLegm475-7BPsIviVHzikogc2HKJTMT3fthMNjlTk7otkWvtqXnpuKEUDd81XcVL1Her3jIO4j8htB4OPZeazrUPyTFE9KhQCxM_fwSSc9HWVFvlkz5bJNpee2xPAo_Kse3yL"/>
+</div>
+<div class="flex-grow space-y-2 pt-2">
+<h3 class="font-headline text-xl font-bold text-on-surface">Gauri Shankar Anushthan</h3>
+<p class="text-xs text-on-surface-variant leading-snug">Resolves constant arguments and restores harmony in married life.</p>
+<div class="flex items-center gap-2 pt-2">
+<span class="text-secondary font-bold text-lg">₹5,100</span>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase line-through opacity-50">₹7,500</span>
+</div>
+<button class="text-primary text-sm font-black uppercase tracking-[0.1em] border-b-2 border-primary/20 pb-1">Book Slot</button>
+</div>
+</div>
+<div class="relative flex gap-6 items-start group">
+<div class="w-32 h-40 flex-shrink-0 rounded-2xl overflow-hidden shadow-md">
+<img alt="Vivah Badha Puja" class="w-full h-full object-cover" data-alt="Sunlit morning puja tray with incense sticks, sandalwood paste, and fresh jasmine flowers on an ancient stone temple floor" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYUx7aAhcCUjhJZF6FPgKZwrzvU_nMsTkMVH2nFQRyvsIjcdiUKWdFY7c7HHgHmGZRADEM7MSKXEeVg5Xmdp5q190mu3yMwlxI_IWVXVoQFmDDl2GuTqcHODkt_RvVj-DQpjuqxGffIY0_mYtl6eY6wY3lYEyrMmqu3GVjoFPT__ySO6fw-cKjcHxRZAZ8NJQeke-kkdtxJzFdq90vz3ZXxGmRQ9glq65kD_MUZPut9OiT2rLiQT8VqRIxpZbS9Ys6WOUl3MbJ-A_c"/>
+</div>
+<div class="flex-grow space-y-2 pt-2">
+<h3 class="font-headline text-xl font-bold text-on-surface">Vivah Badha Nivaran</h3>
+<p class="text-xs text-on-surface-variant leading-snug">Removes karmic blocks preventing a suitable marriage match.</p>
+<div class="flex items-center gap-2 pt-2">
+<span class="text-secondary font-bold text-lg">₹3,500</span>
+</div>
+<button class="text-primary text-sm font-black uppercase tracking-[0.1em] border-b-2 border-primary/20 pb-1">Book Slot</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-[#fff8f3]/80 dark:bg-[#211b10]/80 backdrop-blur-xl z-50 rounded-t-[2rem] border-t-[0.5px] border-[#dbc2b0]/15 shadow-[0_-10px_30px_rgba(85,67,54,0.05)]">
+<a class="flex flex-col items-center justify-center text-[#554336] dark:text-[#dbc2b0] px-4 py-2 hover:text-[#8f4e00] dark:hover:text-[#ff9933] Active: scale-90 transition-transform duration-300 ease-out" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="home_max">home_max</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-tight">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#554336] dark:text-[#dbc2b0] px-4 py-2 hover:text-[#8f4e00] dark:hover:text-[#ff9933] Active: scale-90 transition-transform duration-300 ease-out" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-tight">Tools</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#ff9933]/10 dark:bg-[#ff9933]/20 text-[#8f4e00] dark:text-[#ff9933] rounded-xl px-4 py-2 Active: scale-90 transition-transform duration-300 ease-out" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="temple_hindu">temple_hindu</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-tight">Market</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#554336] dark:text-[#dbc2b0] px-4 py-2 hover:text-[#8f4e00] dark:hover:text-[#ff9933] Active: scale-90 transition-transform duration-300 ease-out" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="Record_voice_over">record_voice_over</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-tight">Whisper</span>
+</a>
+</nav>
+</body></html>

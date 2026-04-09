@@ -1,0 +1,30 @@
+{
+  "name": "sattva-qwik",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --mode ssr",
+    "build": "qwik build",
+    "build.client": "vite build",
+    "build.ssr": "vite build -c adapters/node/vite.config.ts",
+    "preview": "qwik build preview && vite preview --open",
+    "lint": "eslint .",
+    "fmt": "prettier --write ."
+  },
+  "dependencies": {
+    "@builder.io/qwik": "^1.11.0",
+    "@builder.io/qwik-city": "^1.11.0",
+    "marked": "^12.0.0",
+    "posthog-js": "^1.364.5",
+    "undici": "^6.0.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.27",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.0",
+    "vite-tsconfig-paths": "^5.1.4"
+  }
+}
