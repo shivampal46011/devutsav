@@ -11,8 +11,8 @@ const AdminPanel = () => {
     const fetchAdminData = async () => {
         try {
             const [blogsRes, schedulesRes] = await Promise.all([
-                fetch('http://localhost:5001/api/admin/blogs'),
-                fetch('http://localhost:5001/api/admin/schedules')
+                fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/admin/blogs`),
+                fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/admin/schedules`)
             ]);
             setBlogs(await blogsRes.json());
             setSchedules(await schedulesRes.json());
@@ -44,7 +44,7 @@ const AdminPanel = () => {
     const handleCreateSchedule = async (e) => {
         e.preventDefault();
         try {
-            await fetch('http://localhost:5001/api/admin/schedules', {
+            await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/admin/schedules`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ prompt_text: newPrompt })
@@ -61,7 +61,7 @@ const AdminPanel = () => {
     const handleGenerateManual = async (prompt) => {
         setLoading(true);
         try {
-            await fetch('http://localhost:5001/api/admin/blogs/generate', {
+            await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/admin/blogs/generate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ prompt })
