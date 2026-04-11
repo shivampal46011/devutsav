@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 
 const Home = () => {
     return (
-        <main className="px-4 md:px-0 max-w-5xl mx-auto relative pt-6">
+        <main className="px-2 md:px-0 max-w-5xl mx-auto relative pt-4">
             {/* Hero Section */}
-            <section className="px-6 mb-12">
+            <section className="px-3 mb-6">
                 <div className="relative overflow-hidden rounded-[2.5rem] bg-surface-container-high aspect-[4/5] flex flex-col justify-end">
                     <div className="absolute inset-0">
                         {/* Prakul to provide the new first Image */}
@@ -15,7 +15,7 @@ const Home = () => {
             </section>
 
             {/* Quick Tools Bento Grid */}
-            <section className="px-6 mb-16">
+            <section className="px-3 mb-8">
                 <div className="mb-6">
                     <h3 className="font-headline text-2xl font-bold text-on-surface">Sacred Tools</h3>
                 </div>
@@ -53,12 +53,12 @@ const Home = () => {
             </section>
 
             {/* Daily Guidance */}
-            <section className="mb-16">
-                <div className="px-6 mb-6">
+            <section className="mb-8">
+                <div className="px-3 mb-4">
                     <h3 className="font-headline text-2xl font-bold text-on-surface">Daily Guidance</h3>
                     <p className="text-on-surface-variant font-label text-xs uppercase tracking-widest">Auspicious Insights for Today</p>
                 </div>
-                <div className="flex overflow-x-auto gap-6 px-6 no-scrollbar snap-x">
+                <div className="flex overflow-x-auto gap-4 px-3 no-scrollbar snap-x">
                     <div className="snap-center min-w-[85%] bg-surface-container rounded-2xl p-8 border border-outline-variant/10">
                         <div className="flex items-center gap-3 mb-4">
                             <span className="w-8 h-[1px] bg-primary"></span>
