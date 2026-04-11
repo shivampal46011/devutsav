@@ -51,14 +51,12 @@ export const getPujas = async (countryCode = 'IN') => {
 /**
  * Fetch all available Chadhawas.
  */
-export const getChadhawas = async (countryCode = 'IN') => {
+export const getChadhawas = async (countryCode = 'in') => {
     const url = `${DEVPUNYA_PUBLIC_BASE}/chadawa/getProductListing?country_code=${countryCode}`;
     
     devpunyaLogger.info('[DEVPUNYA_API] Hit: /chadawa/getProductListing', { url, method: 'GET' });
     try {
-        const res = await fetch(url, {
-            headers: { 'partner_id': getPartnerId() }
-        });
+        const res = await fetch(url);
         const data = await res.json();
         devpunyaLogger.info('[DEVPUNYA_API] Response: /chadawa/getProductListing', { status: res.status, responsePayload: data });
         return data;

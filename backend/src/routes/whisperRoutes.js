@@ -14,32 +14,16 @@ router.post('/', async (req, res) => {
     
     let uId = user_id;
 
-    // Upsert User Profile logic to capture the petitioner details
-    if (user_session_id || petitioner_phone || petitioner_email) {
-      let user = await User.findOne({ 
+    // We skip robust User creation/mutation here entirely.
+    // Nandi Whispers shouldn't aggressively write user records since it triggers Duplicate Key (E11000) for mapped phones.
+    if (!uId && user_session_id) {
+       let user = await User.findOne({ 
         $or: [
-            { user_session_id: user_session_id || "null_bypass" },
-            { phone: petitioner_phone || "null_bypass" },
-            { email: petitioner_email || "null_bypass" }
+            { user_session_id: user_session_id },
+            { phone: petitioner_phone || "null_bypass" }
         ]
-      });
-
-      if (user) {
-        if (petitioner_name) user.name = petitioner_name;
-        if (petitioner_phone) user.phone = petitioner_phone;
-        if (petitioner_email) user.email = petitioner_email;
-        await user.save();
-        uId = user._id;
-      } else {
-        user = new User({
-            user_session_id,
-            name: petitioner_name,
-            phone: petitioner_phone,
-            email: petitioner_email
-        });
-        await user.save();
-        uId = user._id;
-      }
+       });
+       if (user) uId = user._id;
     }
 
     const newWhisper = new Whisper({

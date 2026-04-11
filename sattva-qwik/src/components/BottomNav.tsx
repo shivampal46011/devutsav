@@ -15,22 +15,26 @@ const BottomNav = component$(() => {
   };
 
   return (
-    <nav class="bg-[#fff8f3]/80 dark:bg-[#211b10]/80 backdrop-blur-xl fixed bottom-0 w-full z-50 rounded-t-[2rem] border-t-[0.5px] border-[#dbc2b0]/15 shadow-[0_-10px_30px_rgba(85,67,54,0.05)] left-0 flex justify-around items-center px-4 pb-6 pt-3 md:hidden">
+    <nav class="bg-[#fff8f3]/80 dark:bg-[#211b10]/80 backdrop-blur-xl fixed bottom-0 w-full z-50 rounded-t-[2rem] border-t-[0.5px] border-[#dbc2b0]/15 shadow-[0_-10px_30px_rgba(85,67,54,0.05)] left-0 flex justify-around items-center px-1 pb-6 pt-3 md:hidden">
       <Link href="/" class={linkClass('/')}>
-        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">home_max</span>
-        <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-tight">Home</span>
+        <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1">home_max</span>
+        <span class="font-['Plus_Jakarta_Sans'] text-[9px] font-semibold tracking-tight mt-1">Home</span>
       </Link>
       <Link href="/analyzer" class={linkClass('/analyzer')}>
-        <span class="material-symbols-outlined">psychology_alt</span>
-        <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-tight">Tools</span>
+        <span class="material-symbols-outlined text-[20px]">psychology_alt</span>
+        <span class="font-['Plus_Jakarta_Sans'] text-[9px] font-semibold tracking-tight mt-1">Tools</span>
       </Link>
-      <Link href="/market" class={linkClass('/market')}>
-        <span class="material-symbols-outlined">temple_hindu</span>
-        <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-tight">Market</span>
+      <Link href="/puja" class={linkClass('/puja')}>
+        <span class="material-symbols-outlined text-[20px]">temple_hindu</span>
+        <span class="font-['Plus_Jakarta_Sans'] text-[9px] font-semibold tracking-tight mt-1">Puja</span>
+      </Link>
+      <Link href="/chadhawa" class={linkClass('/chadhawa')}>
+        <span class="material-symbols-outlined text-[20px]">local_florist</span>
+        <span class="font-['Plus_Jakarta_Sans'] text-[9px] font-semibold tracking-tight mt-1">Chadhawa</span>
       </Link>
       <Link href="/whisper" class={linkClass('/whisper')}>
-        <span class="material-symbols-outlined">record_voice_over</span>
-        <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-tight">Whisper</span>
+        <span class="material-symbols-outlined text-[20px]">record_voice_over</span>
+        <span class="font-['Plus_Jakarta_Sans'] text-[9px] font-semibold tracking-tight mt-1">Whisper</span>
       </Link>
     </nav>
   );

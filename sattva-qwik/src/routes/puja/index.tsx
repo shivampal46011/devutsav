@@ -4,18 +4,13 @@ import { type DocumentHead } from '@builder.io/qwik-city';
 export default component$(() => {
   const pujas = useSignal<any[]>([]);
   const isLoading = useSignal(true);
-  const activeTab = useSignal('Pujas');
 
   // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(async () => {
     try {
       const apiBase = import.meta.env.PUBLIC_API_URL || 'http://localhost:5001';
-      const [pujaRes, chadhawaRes] = await Promise.all([
-        fetch(`${apiBase}/api/market/pujas`),
-        fetch(`${apiBase}/api/market/chadhawas`),
-      ]);
+      const pujaRes = await fetch(`${apiBase}/api/market/pujas`);
       const pujaData = await pujaRes.json();
-      const chadhawaData = await chadhawaRes.json();
       const pList = pujaData?.results?.data || pujaData?.results || pujaData || [];
       pujas.value = Array.isArray(pList) ? pList : [];
     } catch (err) {
@@ -28,24 +23,25 @@ export default component$(() => {
   return (
     <>
       <main class="px-4 md:px-0 max-w-5xl mx-auto relative pt-8 pb-32 min-h-screen bg-[#FDF9F5]">
-        <section class="px-4 md:px-6 mb-8 text-center bg-gradient-to-b from-primary/10 to-transparent pt-12 pb-8 rounded-3xl mx-2 shadow-inner border border-primary/10">
-          <h1 class="font-headline text-4xl md:text-5xl font-black tracking-tight text-on-surface leading-tight mb-4">
-            DevPunya <br /><span class="text-primary italic font-serif tracking-normal">Marketplace</span>
+        <section class="w-full px-6 mb-8 bg-gradient-to-b from-primary/10 to-transparent pt-12 pb-8 border-b border-primary/10">
+          <h1 class="font-headline text-4xl md:text-5xl font-black tracking-tight text-on-surface leading-tight mb-4 text-left">
+            Sacred <span class="text-primary italic font-serif tracking-normal">Pujas</span>
           </h1>
-          <p class="text-on-surface-variant font-medium max-w-lg mx-auto mb-8">
-            Discover verified Pujas and Chadhawa offerings performed by renowned Pandas across India's most prominent temples.
+          <p class="text-on-surface-variant text-lg font-medium max-w-lg mb-8 text-left border-l-4 border-primary/30 pl-4">
+            Book auspicious rituals across India's most prominent temples.
           </p>
-          <div class="flex justify-center">
-            <div class="bg-surface-container-highest p-1.5 rounded-full inline-flex shadow-inner">
-              {(['Pujas'] as const).map((tab) => (
-                <button
-                  key={tab}
-                  onClick$={() => (activeTab.value = tab)}
-                  class={`px-8 py-2.5 rounded-full text-sm font-bold tracking-wide transition-all duration-300 ${activeTab.value === tab ? 'bg-white text-primary shadow-sm' : 'text-on-surface-variant hover:text-on-surface'}`}
-                >
-                  {tab}
-                </button>
-              ))}
+          <div class="flex flex-col gap-4 text-base font-bold text-on-surface-variant max-w-md w-full">
+            <div class="flex items-center justify-start gap-3">
+              <span class="material-symbols-outlined text-primary text-2xl flex-shrink-0" style="font-variation-settings: 'FILL' 1">verified</span> 
+              <span class="text-left leading-tight">Puja Performed by Vedic Pandits</span>
+            </div>
+            <div class="flex items-center justify-start gap-3">
+              <span class="material-symbols-outlined text-primary text-2xl flex-shrink-0" style="font-variation-settings: 'FILL' 1">assignment_ind</span> 
+              <span class="text-left leading-tight">Puja Complete in Your Name-Gotra</span>
+            </div>
+            <div class="flex items-center justify-start gap-3">
+              <span class="material-symbols-outlined text-primary text-2xl flex-shrink-0" style="font-variation-settings: 'FILL' 1">featured_video</span> 
+              <span class="text-left leading-tight">Video Proof Shared & Prasad Delivery</span>
             </div>
           </div>
         </section>

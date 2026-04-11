@@ -58,28 +58,32 @@ app.use('/api/market', marketRoutes);
 app.use('/api/location', locationRoutes);
 
 // Cron Job for Auto Content Bot
-cron.schedule('0 0 * * *', async () => {
-  console.log('Running scheduled daily blog generation...');
+cron.schedule('* * * * *', async () => {
+  console.log(`[CRON] ${new Date().toISOString()} - Running Auto Content Bot (Every Minute Mode)...`);
   try {
     const activeSchedules = await PromptSchedule.find({ is_active: true });
+    console.log(`[CRON] Found ${activeSchedules.length} active schedules matching is_active:true.`);
+    
     for (const schedule of activeSchedules) {
-      console.log(`Generating content for schedule: ${schedule._id}`);
+      console.log(`[CRON] Generating content via AI for schedule id: ${schedule._id}...`);
       const content = await generateBlogContent(schedule.prompt_text);
       
       const titleMatch = content.match(/^#\s+(.*)/m);
       const title = titleMatch ? titleMatch[1] : 'Daily Spiritual Insight';
+      console.log(`[CRON] Title parsed: "${title}". Saving to DB...`);
 
       const newBlog = new Blog({
         title,
         content_md: content,
-        status: 'PUBLISHED', // Auto-publish scheduled blogs
+        status: 'PUBLISHED',
         schedule_id: schedule._id
       });
       await newBlog.save();
+      console.log(`[CRON] Blog "${title}" successfully saved to Database!`);
     }
-    console.log('Daily generation complete.');
+    console.log(`[CRON] Generation queue complete.`);
   } catch (err) {
-    console.error('Cron job error:', err);
+    console.error('[CRON] Error during generation execution:', err);
   }
 });
 
@@ -105,6 +109,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const distPath = path.join(__dirname, '../../sattva/dist');
+// Serve static assets from src/public
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 app.use(express.static(distPath));
 

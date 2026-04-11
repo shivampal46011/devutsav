@@ -35,4 +35,17 @@ router.get('/daily', (req, res) => getHoroscope(req, res, 'daily'));
 router.get('/weekly', (req, res) => getHoroscope(req, res, 'weekly'));
 router.get('/monthly', (req, res) => getHoroscope(req, res, 'monthly'));
 
+// Fallback dynamic handler for ?zodiac=Aries&timeframe=daily query structure
+router.get('/', (req, res) => {
+    const sign = req.query.zodiac || req.query.sign;
+    const timeframe = req.query.timeframe?.toLowerCase() || 'daily';
+    
+    if (!['daily', 'weekly', 'monthly'].includes(timeframe)) {
+        return res.status(400).json({ error: 'Invalid timeframe. Must be daily, weekly, or monthly.' });
+    }
+    
+    req.query.sign = sign; // Normalize back to the internal `sign` variable
+    return getHoroscope(req, res, timeframe);
+});
+
 export default router;

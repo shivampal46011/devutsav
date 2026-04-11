@@ -11,11 +11,11 @@ const ZODIAC_SIGNS = [
 export default component$(() => {
   const activeSign = useSignal('Aries');
   const timeframe = useSignal('daily');
-  const readings = useSignal<any[]>([]);
+  const horoscopeContent = useSignal<string>('');
   const isLoading = useSignal(false);
   const showModal = useSignal(false);
   const validationError = useSignal('');
-  const form = useStore({ name: '', phone: '', dob: '' });
+  const form = useStore({ name: '', phone: '', dob_y: '', dob_m: '', dob_d: '' });
 
   const fetchHoroscope = $(async (sign: string, time: string) => {
     isLoading.value = true;
@@ -23,7 +23,12 @@ export default component$(() => {
       const apiBase = import.meta.env.PUBLIC_API_URL || 'http://localhost:5001';
       const res = await fetch(`${apiBase}/api/horoscope?zodiac=${sign}&timeframe=${time}`);
       const data = await res.json();
-      if (data.readings) readings.value = data.readings;
+      
+      if (typeof data.content === 'string') {
+        horoscopeContent.value = data.content.trim();
+      } else {
+        horoscopeContent.value = '';
+      }
     } catch (e) { console.error(e); } finally { isLoading.value = false; }
   });
 
@@ -92,21 +97,13 @@ export default component$(() => {
             <p class="text-on-surface-variant font-medium animate-pulse">Reading the cosmic alignments...</p>
           </div>
         ) : (
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {readings.value.map((r: any, idx: number) => (
-              <div key={idx} class="bg-white rounded-3xl p-6 shadow-xl shadow-primary/5 border border-primary/10 relative overflow-hidden group">
-                <div class="absolute -right-6 -top-6 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors" />
-                <div class="flex items-center gap-3 mb-4">
-                  <div class="w-10 h-10 rounded-xl bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center">
-                    <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1">{getCategoryIcon(r.category)}</span>
-                  </div>
-                  <h3 class="font-headline text-xl font-bold text-on-surface">{r.category}</h3>
-                </div>
-                <p class="font-body text-base text-on-surface-variant leading-relaxed">{r.prediction}</p>
+          <div class="mt-2">
+            {!horoscopeContent.value ? (
+              <div class="text-center py-10 text-on-surface-variant text-lg font-medium">No predictions available at this moment.</div>
+            ) : (
+              <div class="text-on-surface-variant leading-relaxed text-lg md:text-xl whitespace-pre-wrap">
+                {horoscopeContent.value}
               </div>
-            ))}
-            {readings.value.length === 0 && (
-              <div class="col-span-full text-center py-10 text-on-surface-variant">No predictions available at this moment.</div>
             )}
           </div>
         )}
@@ -129,16 +126,22 @@ export default component$(() => {
                 <input type="tel" value={form.phone} onInput$={(e) => (form.phone = (e.target as HTMLInputElement).value)} class="w-full bg-surface-container-low border border-outline-variant/30 focus:border-primary rounded-xl px-4 py-2.5 outline-none text-sm" placeholder="10 Digits" />
               </div>
               <div>
-                <label class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Date of Birth</label>
-                <input type="date" value={form.dob} onInput$={(e) => (form.dob = (e.target as HTMLInputElement).value)} class="w-full bg-surface-container-low border border-outline-variant/30 focus:border-primary rounded-xl px-4 py-2.5 outline-none text-sm text-on-surface-variant" />
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Date of Birth (Year, Month, Date)</label>
+                <div class="flex gap-2">
+                  <input type="number" placeholder="YYYY" value={form.dob_y} onInput$={(e) => (form.dob_y = (e.target as HTMLInputElement).value)} class="w-1/3 bg-surface-container-low border border-outline-variant/30 focus:border-primary rounded-xl px-4 py-2.5 outline-none text-sm text-center" />
+                  <input type="number" placeholder="MM" value={form.dob_m} onInput$={(e) => (form.dob_m = (e.target as HTMLInputElement).value)} class="w-1/3 bg-surface-container-low border border-outline-variant/30 focus:border-primary rounded-xl px-4 py-2.5 outline-none text-sm text-center" />
+                  <input type="number" placeholder="DD" value={form.dob_d} onInput$={(e) => (form.dob_d = (e.target as HTMLInputElement).value)} class="w-1/3 bg-surface-container-low border border-outline-variant/30 focus:border-primary rounded-xl px-4 py-2.5 outline-none text-sm text-center" />
+                </div>
               </div>
               <div class="pt-4 flex flex-col gap-3">
                 <button
                   onClick$={async () => {
-                    if (!form.name || !form.phone || !form.dob) { validationError.value = 'All fields are required.'; return; }
-                    // Inline zodiac calculation
-                    const dob = new Date(form.dob);
-                    const m = dob.getMonth() + 1; const d = dob.getDate();
+                    if (!form.name || !form.phone || !form.dob_y || !form.dob_m || !form.dob_d) { validationError.value = 'All fields are required.'; return; }
+                    const y = parseInt(form.dob_y, 10);
+                    const m = parseInt(form.dob_m, 10);
+                    const d = parseInt(form.dob_d, 10);
+                    if (y < 1900 || y > 2100 || m < 1 || m > 12 || d < 1 || d > 31) { validationError.value = 'Please enter a valid date.'; return; }
+                    
                     const entries = [
                       [1,20,'Aquarius'],[2,19,'Pisces'],[3,21,'Aries'],[4,20,'Taurus'],
                       [5,21,'Gemini'],[6,21,'Cancer'],[7,23,'Leo'],[8,23,'Virgo'],
@@ -153,14 +156,6 @@ export default component$(() => {
                   }}
                   class="w-full py-4 bg-gradient-to-r from-primary to-primary-container text-white font-bold rounded-xl active:scale-95 transition-transform text-sm shadow-lg shadow-primary/20"
                 >Reveal My Horoscope</button>
-                <button
-                  onClick$={async () => {
-                    localStorage.setItem('horo_profile_done', 'true');
-                    showModal.value = false;
-                    await fetchHoroscope('Aries', timeframe.value);
-                  }}
-                  class="w-full py-3 text-on-surface-variant font-bold text-sm hover:text-primary transition-colors"
-                >Skip for Now</button>
               </div>
             </div>
           </div>
