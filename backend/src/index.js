@@ -58,8 +58,8 @@ app.use('/api/market', marketRoutes);
 app.use('/api/location', locationRoutes);
 
 // Cron Job for Auto Content Bot
-cron.schedule('* * * * *', async () => {
-  console.log(`[CRON] ${new Date().toISOString()} - Running Auto Content Bot (Every Minute Mode)...`);
+cron.schedule('0 0 * * *', async () => {
+  console.log(`[CRON] ${new Date().toISOString()} - Running Auto Content Bot (Daily Mode)...`);
   try {
     const activeSchedules = await PromptSchedule.find({ is_active: true });
     console.log(`[CRON] Found ${activeSchedules.length} active schedules matching is_active:true.`);
