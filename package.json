@@ -5,11 +5,9 @@
   "description": "DevUtsav — Sacred spiritual tools, Kundali Dosha analysis, daily horoscope, and divine marketplace",
   "scripts": {
     "dev": "npx -y concurrently -n backend,frontend -c blue,magenta \"cd backend && bun run dev\" \"cd sattva-qwik && npm run dev\"",
-    "dev:react": "npx -y concurrently -n backend,frontend -c blue,magenta \"cd backend && bun run dev\" \"cd sattva && npm run dev\"",
-    "install:all": "cd backend && npm install && cd ../sattva-qwik && npm install && cd ../sattva && npm install",
+    "install:all": "cd backend && npm install && cd ../sattva-qwik && npm install",
     "backend": "cd backend && bun run dev",
-    "frontend": "cd sattva-qwik && npm run dev",
-    "frontend:react": "cd sattva && npm run dev"
+    "frontend": "cd sattva-qwik && npm run dev"
   },
   "repository": {
     "type": "git",

@@ -6,10 +6,9 @@ Sacred spiritual tools, Kundali Dosha analysis, daily horoscope, Nandi Whisper, 
 
 ```
 devutsav/
-├── backend/          # Express + MongoDB + AWS Bedrock API
-├── sattva-qwik/      # Qwik City frontend (SSR, primary)
-├── sattva/           # React + Vite frontend (SPA, legacy)
-└── package.json      # Root scripts for unified dev workflow
+├── backend/      # Express + MongoDB + AWS Bedrock API
+├── sattva-qwik/  # Qwik City frontend (SSR)
+└── package.json
 ```
 
 ## Quick Start
@@ -18,47 +17,46 @@ devutsav/
 
 - **Node.js** 18+
 - **Bun** (for backend dev server)
-- **MongoDB** connection (Atlas or local)
-- **AWS credentials** (for Bedrock AI models)
+- **MongoDB** (Atlas or local)
+- **AWS credentials** (for Bedrock), if you use AI features
 
 ### Setup
 
 ```bash
-# 1. Clone the repo
 git clone https://github.com/shivampal46011/devutsav.git
 cd devutsav
-
-# 2. Install all dependencies
 npm run install:all
 
-# 3. Configure environment variables
 cp backend/.env.example backend/.env
 cp sattva-qwik/.env.example sattva-qwik/.env
-# Edit the .env files with your actual keys
 
-# 4. Start both backend + frontend with ONE command
 npm run dev
 ```
 
-### Available Scripts
+### Scripts
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Run backend + Qwik frontend together |
-| `npm run dev:react` | Run backend + React SPA frontend together |
-| `npm run backend` | Run only the backend |
-| `npm run frontend` | Run only the Qwik frontend |
-| `npm run install:all` | Install deps for all subprojects |
+| `npm run dev` | Backend + Qwik (Vite SSR dev server) |
+| `npm run backend` | API only |
+| `npm run frontend` | Qwik only |
+| `npm run install:all` | Install backend + Qwik deps |
 
 ### Ports
 
-- **Backend API**: `http://localhost:5001`
-- **Qwik Frontend**: `http://localhost:5173`
-- **React Frontend**: `http://localhost:5173` (when using `dev:react`)
+- **API**: `http://localhost:5001` (or `PORT` in `backend/.env`)
+- **Qwik**: URL printed by Vite (often `http://localhost:5173`)
+
+Set **`PUBLIC_API_URL`** in `sattva-qwik/.env` if the API is not on `http://localhost:5001`.
+
+### Production
+
+- **Backend** serves **JSON APIs** and `/public` assets only (no bundled UI).
+- Deploy **Qwik** with a **Node/static adapter** (or a host like Vercel/Netlify) and point it at your API via `PUBLIC_API_URL`.
+
+**Admin** (categories, Markdown upload, publish) is at **`/admin`** in the Qwik app.
 
 ## Tech Stack
 
-- **Backend**: Express, MongoDB/Mongoose, AWS Bedrock (Claude), LangChain
-- **Frontend (Primary)**: Qwik City, Tailwind CSS, SSR
-- **Frontend (Legacy)**: React 19, Vite, Tailwind CSS
-- **Analytics**: PostHog
+- **Backend**: Express, MongoDB/Mongoose, AWS Bedrock, LangChain
+- **Frontend**: Qwik City, Tailwind CSS, SSR

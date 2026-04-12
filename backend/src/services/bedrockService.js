@@ -1,16 +1,61 @@
 import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedrock-runtime";
 
 // Lazy factory: creates client at call time so env vars are loaded from dotenv
-const getBedrockClient = () => new BedrockRuntimeClient({
-  region: process.env.AWS_REGION || "ap-south-1",
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  }
-});
+const getBedrockClient = () =>
+  new BedrockRuntimeClient({
+    region: process.env.AWS_REGION || "ap-south-1",
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID || process.env.AWS_SQS_USER,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || process.env.AWS_SQS_SECRET,
+    },
+  });
 
 // Using Claude 3 Haiku (fast + available in ap-south-1)
 const MODEL_ID = "anthropic.claude-3-haiku-20240307-v1:0";
+
+/** True when static IAM keys are present (same sources as other Bedrock call sites). */
+export function hasBedrockCredentials() {
+  const k = process.env.AWS_ACCESS_KEY_ID || process.env.AWS_SQS_USER;
+  const s = process.env.AWS_SECRET_ACCESS_KEY || process.env.AWS_SQS_SECRET;
+  return Boolean(k && s);
+}
+
+/**
+ * Claude on Bedrock via InvokeModel (Anthropic Messages shape).
+ * Prefer this over ConverseCommand for anthropic.* models — matches working Kundali/horoscope paths.
+ */
+export async function invokeClaudeText(userText, options = {}) {
+  // Haiku output cap is below 4096; requesting 4096 can be rejected on Bedrock.
+  const { maxTokens = 4095, temperature = 0.2, system } = options;
+  const modelId = process.env.BEDROCK_MODEL_ID || process.env.BEDROCK_GENERAL_MODEL || MODEL_ID;
+
+  const body = {
+    anthropic_version: "bedrock-2023-05-31",
+    max_tokens: maxTokens,
+    messages: [{ role: "user", content: [{ type: "text", text: userText }] }],
+  };
+  if (system != null && String(system).trim()) body.system = system;
+  if (temperature != null) body.temperature = temperature;
+
+  const command = new InvokeModelCommand({
+    modelId,
+    contentType: "application/json",
+    accept: "application/json",
+    body: JSON.stringify(body),
+  });
+
+  const response = await getBedrockClient().send(command);
+  const parsed = JSON.parse(new TextDecoder().decode(response.body));
+  const blocks = parsed.content || [];
+  const text = blocks
+    .filter((c) => c && c.type === "text" && typeof c.text === "string")
+    .map((c) => c.text)
+    .join("");
+  if (!text.trim()) {
+    throw new Error("Empty Claude response body");
+  }
+  return text.trim();
+}
 
 /**
  * Analyzes a Kundali using LLM1 and returns Dosha information.

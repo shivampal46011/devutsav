@@ -15,7 +15,7 @@ const BottomNav = component$(() => {
   };
 
   return (
-    <nav class="bg-[#fff8f3]/80 dark:bg-[#211b10]/80 backdrop-blur-xl fixed bottom-0 w-full z-50 rounded-t-[2rem] border-t-[0.5px] border-[#dbc2b0]/15 shadow-[0_-10px_30px_rgba(85,67,54,0.05)] left-0 flex justify-around items-center px-1 pb-6 pt-3 md:hidden">
+    <nav class="bg-[#fff8f3]/80 dark:bg-[#211b10]/80 backdrop-blur-xl fixed bottom-0 w-full z-50 rounded-t-[2rem] border-t-[0.5px] border-[#dbc2b0]/15 shadow-[0_-10px_30px_rgba(85,67,54,0.05)] left-0 flex justify-around items-center px-0.5 pb-6 pt-3 md:hidden gap-0">
       <Link href="/" class={linkClass('/')}>
         <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1">home_max</span>
         <span class="font-['Plus_Jakarta_Sans'] text-[9px] font-semibold tracking-tight mt-1">Home</span>
@@ -35,6 +35,10 @@ const BottomNav = component$(() => {
       <Link href="/whisper" class={linkClass('/whisper')}>
         <span class="material-symbols-outlined text-[20px]">record_voice_over</span>
         <span class="font-['Plus_Jakarta_Sans'] text-[9px] font-semibold tracking-tight mt-1">Whisper</span>
+      </Link>
+      <Link href="/admin" class={linkClass('/admin')}>
+        <span class="material-symbols-outlined text-[20px]">edit_note</span>
+        <span class="font-['Plus_Jakarta_Sans'] text-[8px] font-semibold tracking-tight mt-1">Admin</span>
       </Link>
     </nav>
   );
