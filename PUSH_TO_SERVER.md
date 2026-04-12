@@ -2,7 +2,17 @@
 
 Follow these steps to deploy the Qwik City migration and backend updates to your server.
 
+## 0. SSH connection
+
+Use your hosting provider’s IP/hostname and a **deploy user**. Prefer **SSH keys** (`~/.ssh/config`); do **not** store passwords in this repo.
+
+```bash
+# Example (set host/user in your own notes or SSH config)
+ssh deploy@your-server-host
+```
+
 ## 1. Local: Commit and Push Changes
+
 Run these commands in the root directory (`/Users/shivampal/Desktop/devutsav`):
 
 ```bash
