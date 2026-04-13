@@ -1,0 +1,7 @@
+.git
+**/node_modules
+sattva-qwik/dist
+sattva-qwik/server
+*.md
+.env
+backend/.env

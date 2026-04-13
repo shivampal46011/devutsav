@@ -1,0 +1,17 @@
+FROM node:20-alpine AS builder
+WORKDIR /app/sattva-qwik
+COPY sattva-qwik/package.json ./
+RUN npm install
+COPY sattva-qwik/ ./
+RUN npm run build.prod && npm prune --omit=dev
+
+FROM node:20-alpine
+WORKDIR /app/sattva-qwik
+ENV NODE_ENV=production
+COPY --from=builder /app/sattva-qwik/dist ./dist
+COPY --from=builder /app/sattva-qwik/server ./server
+COPY --from=builder /app/sattva-qwik/node_modules ./node_modules
+COPY --from=builder /app/sattva-qwik/package.json ./
+EXPOSE 3000
+ENV PORT=3000
+CMD ["node", "server/entry.express.js"]

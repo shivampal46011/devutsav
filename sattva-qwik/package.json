@@ -6,9 +6,12 @@
   "scripts": {
     "dev": "vite --mode ssr",
     "build": "vite build",
+    "build.server": "vite build -c adapters/express/vite.config.ts",
+    "build.prod": "vite build && vite build -c adapters/express/vite.config.ts",
     "build:qwik": "qwik build",
     "build.client": "vite build",
-    "build.ssr": "vite build -c adapters/node/vite.config.ts",
+    "build.ssr": "vite build -c adapters/express/vite.config.ts",
+    "serve": "node server/entry.express.js",
     "preview": "qwik build preview && vite preview --open",
     "lint": "eslint .",
     "fmt": "prettier --write ."
@@ -16,10 +19,13 @@
   "dependencies": {
     "@builder.io/qwik": "^1.11.0",
     "@builder.io/qwik-city": "^1.11.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "marked": "^12.0.0",
     "undici": "^6.0.0"
   },
   "devDependencies": {
+    "@types/express": "^4.17.21",
     "@tailwindcss/typography": "^0.5.19",
     "autoprefixer": "^10.4.27",
     "ignore": "^7.0.5",
