@@ -8,6 +8,7 @@
     "build": "vite build",
     "build.server": "vite build -c adapters/express/vite.config.ts",
     "build.prod": "vite build && vite build -c adapters/express/vite.config.ts",
+    "build.static": "vite build -c adapters/static/vite.config.ts",
     "build:qwik": "qwik build",
     "build.client": "vite build",
     "build.ssr": "vite build -c adapters/express/vite.config.ts",

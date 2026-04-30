@@ -1,17 +1,18 @@
 FROM node:20-alpine AS builder
 WORKDIR /app/sattva-qwik
-COPY sattva-qwik/package.json ./
+COPY sattva-qwik/package.json sattva-qwik/package-lock.json* ./
 RUN npm install
 COPY sattva-qwik/ ./
-RUN npm run build.prod && npm prune --omit=dev
+RUN npm run build.prod
 
 FROM node:20-alpine
 WORKDIR /app/sattva-qwik
 ENV NODE_ENV=production
-COPY --from=builder /app/sattva-qwik/dist ./dist
-COPY --from=builder /app/sattva-qwik/server ./server
-COPY --from=builder /app/sattva-qwik/node_modules ./node_modules
-COPY --from=builder /app/sattva-qwik/package.json ./
+# Full source + dev deps retained so the entrypoint can run SSG (build.static)
+# at container startup, when the `api` service is reachable on the docker network.
+COPY --from=builder /app/sattva-qwik/ ./
 EXPOSE 3000
 ENV PORT=3000
-CMD ["node", "server/entry.express.js"]
+COPY sattva-qwik/scripts/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+CMD ["/entrypoint.sh"]
