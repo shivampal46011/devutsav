@@ -1,99 +1,69 @@
-import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { type DocumentHead } from '@builder.io/qwik-city';
+import { component$, useContext } from '@builder.io/qwik';
+import { fmtTime, PulseCtx, sparkPath } from './shared';
 
 export default component$(() => {
-  const timeLeft = useSignal('00:00:00');
+  const store = useContext(PulseCtx);
+  const p = store.pulse;
 
-  // eslint-disable-next-line qwik/no-use-visible-task
-  useVisibleTask$(() => {
-    const tick = () => {
-      const now = new Date();
-      const next = new Date(now);
-      next.setHours(24, 0, 0, 0);
-      const diff = next.getTime() - now.getTime();
-      const h = Math.floor(diff / 3600000);
-      const m = Math.floor((diff % 3600000) / 60000);
-      const s = Math.floor((diff % 60000) / 1000);
-      timeLeft.value = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-    };
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  });
-
-  const cards = [
-    {
-      href: '/admin/categories',
-      title: 'Categories',
-      desc: 'Create or remove blog series (e.g. Baglamukhi) shown on the hub.',
-      icon: 'folder_special',
-    },
-    {
-      href: '/admin/new-post',
-      title: 'New post',
-      desc: 'Upload or paste Markdown, preview HTML, publish drafts.',
-      icon: 'post_add',
-    },
-    {
-      href: '/admin/blogs',
-      title: 'All blogs',
-      desc: 'Publish, unpublish, or delete posts.',
-      icon: 'library_books',
-    },
-    {
-      href: '/admin/schedules',
-      title: 'AI schedules',
-      desc: 'Daily prompts and one-click generation.',
-      icon: 'smart_toy',
-    },
-  ] as const;
+  if (!p) {
+    return (
+      <div class="p-8">
+        <div class="term-amber mb-2">Waiting for metrics …</div>
+        {store.errorMsg && <div class="term-red mb-2">Error: {store.errorMsg}</div>}
+        <div class="term-dim text-[11px] leading-relaxed">
+          · backend not running — <span class="term-cyan">cd backend &amp;&amp; npm run dev</span><br />
+          · token mismatch — LOGOUT and re-enter the value from <span class="term-cyan">backend/.env ADMIN_API_TOKEN</span><br />
+          · check the browser network tab if the request is failing
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <main class="px-4 md:px-8 max-w-5xl mx-auto pt-6 pb-28 md:pb-16">
-      <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6 mb-10">
-        <div>
-          <h1 class="font-headline text-2xl md:text-4xl font-bold tracking-tight text-primary">Overview</h1>
-          <p class="text-sm text-on-surface-variant mt-2 max-w-xl">
-            Pick a section below. Each area has its own page so the console stays easy to scan.
-          </p>
-        </div>
-        <div class="bg-surface-container-high rounded-2xl px-5 py-3 border border-outline-variant/20 shadow-sm flex items-center gap-3 w-fit shrink-0">
-          <span class="material-symbols-outlined text-secondary animate-pulse" style="font-variation-settings: 'FILL' 1">
-            schedule
-          </span>
-          <div>
-            <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Next calendar day</p>
-            <p class="font-headline font-bold text-secondary text-lg leading-none">{timeLeft.value}</p>
-          </div>
+    <>
+      {/* Ticker tape */}
+      <div class="overflow-hidden border-b border-[#1f2937] bg-black">
+        <div class="whitespace-nowrap py-1 term-marquee inline-block">
+          {[...p.recent_events, ...p.recent_events].slice(0, 80).map((e, i) => (
+            <span key={i} class="inline-block px-4 border-r border-[#1f2937]">
+              <span class="term-amber">{fmtTime(e.ts)}</span>
+              {' '}<span class="term-cyan">{e.type}</span>
+              {' '}<span class="term-dim">{e.path || e.blog_slug || e.section_id || ''}</span>
+              {e.scroll_pct != null && <span class="term-green"> · {e.scroll_pct}%</span>}
+            </span>
+          ))}
         </div>
       </div>
 
-      <ul class="grid sm:grid-cols-2 gap-4">
-        {cards.map((c) => (
-          <li key={c.href}>
-            <a
-              href={c.href}
-              class="flex gap-4 p-5 rounded-3xl bg-surface-container border border-outline-variant/10 shadow-sm hover:border-primary/30 hover:shadow-md transition-all h-full no-underline text-inherit"
-            >
-              <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary-container text-on-primary-container">
-                <span class="material-symbols-outlined text-2xl">{c.icon}</span>
-              </span>
-              <div>
-                <h2 class="font-headline font-bold text-on-surface text-lg">{c.title}</h2>
-                <p class="text-sm text-on-surface-variant mt-1 leading-relaxed">{c.desc}</p>
-                <span class="inline-flex items-center gap-1 text-primary text-xs font-bold mt-3">
-                  Open
-                  <span class="material-symbols-outlined text-sm">arrow_forward</span>
-                </span>
-              </div>
-            </a>
-          </li>
+      {/* KPI strip */}
+      <div class="grid grid-cols-2 md:grid-cols-7 term-grid">
+        {[
+          ['LIVE 5M', p.realtime.live_5m, 'term-green'],
+          ['PV 1H', p.realtime.pv_1h, 'term-amber'],
+          ['PV 24H', p.realtime.pv_24h, 'term-amber'],
+          ['PV 7D', p.realtime.pv_7d, 'term-amber'],
+          ['UNIQ 24H', p.realtime.unique_24h, 'term-cyan'],
+          ['UNIQ 7D', p.realtime.unique_7d, 'term-cyan'],
+          ['SESSIONS', p.realtime.sessions_total, 'term-cyan'],
+        ].map(([label, val, color]) => (
+          <div key={label as string} class="term-cell">
+            <div class="term-dim text-[10px] uppercase tracking-widest">{label}</div>
+            <div class={`${color} text-2xl font-bold tabular-nums`}>{val}</div>
+          </div>
         ))}
-      </ul>
-    </main>
+      </div>
+
+      {/* Sparkline */}
+      <div class="term-cell border-b border-[#1f2937] flex items-center gap-4">
+        <span class="term-dim text-[10px] uppercase tracking-widest">PV · 24H</span>
+        <svg width="100%" height="36" viewBox="0 0 240 40" preserveAspectRatio="none" class="flex-1">
+          <path d={sparkPath(p.sparkline_24h)} stroke="#ffb000" stroke-width="1.2" fill="none" vector-effect="non-scaling-stroke" />
+        </svg>
+      </div>
+
+      <div class="p-3 term-dim text-[11px]">
+        Drill into <span class="term-cyan">PAGES</span>, <span class="term-cyan">BLOGS</span>, <span class="term-cyan">SCHEDULER</span>, or <span class="term-cyan">EVENTS</span> via the nav above.
+      </div>
+    </>
   );
 });
-
-export const head: DocumentHead = {
-  title: 'Admin overview — DevUtsav',
-};

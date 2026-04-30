@@ -60,3 +60,4 @@ pm2 restart devutsav-frontend
 
 > [!IMPORTANT]
 > **Environment Variables**: Ensure you have updated the `.env` file in the `sattva-qwik` directory on the server with any new production keys, just as you did for the backend.
+    

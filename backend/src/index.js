@@ -16,12 +16,15 @@ import kundaliRoutes from './routes/kundaliRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
 import marketRoutes from './routes/marketRoutes.js';
 import locationRoutes from './routes/locationRoutes.js';
+import guidanceRoutes from './routes/guidanceRoutes.js';
 import cron from 'node-cron';
 import PromptSchedule from './models/PromptSchedule.js';
 import Blog from './models/Blog.js';
 import generateBlogContent from './services/blogGenerator.js';
 import { generateAndStoreHoroscopes } from './services/horoscopeGenerator.js';
+import { generateTodaysTip } from './services/dailyTipGenerator.js';
 import { logger } from './utils/logger.js';
+import { runWithSchedule } from './utils/runWithSchedule.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -63,6 +66,7 @@ app.use('/api/kundali', kundaliRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/market', marketRoutes);
 app.use('/api/location', locationRoutes);
+app.use('/api/guidance', guidanceRoutes);
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
@@ -71,51 +75,68 @@ app.get('/api/health', (req, res) => {
 });
 
 // Cron Job for Auto Content Bot
-cron.schedule('0 0 * * *', async () => {
+const blogBotExpr = '0 0 * * *';
+cron.schedule(blogBotExpr, runWithSchedule('blog_bot_daily', blogBotExpr, async () => {
   console.log(`[CRON] ${new Date().toISOString()} - Running Auto Content Bot (Daily Mode)...`);
-  try {
-    const activeSchedules = await PromptSchedule.find({ is_active: true });
-    console.log(`[CRON] Found ${activeSchedules.length} active schedules matching is_active:true.`);
-    
-    for (const schedule of activeSchedules) {
+  let count = 0;
+  const activeSchedules = await PromptSchedule.find({ is_active: true });
+  console.log(`[CRON] Found ${activeSchedules.length} active schedules matching is_active:true.`);
+
+  for (const schedule of activeSchedules) {
+    const t0 = Date.now();
+    try {
       console.log(`[CRON] Generating content via AI for schedule id: ${schedule._id}...`);
       const content = await generateBlogContent(schedule.prompt_text);
-      
       const titleMatch = content.match(/^#\s+(.*)/m);
       const title = titleMatch ? titleMatch[1] : 'Daily Spiritual Insight';
-      console.log(`[CRON] Title parsed: "${title}". Saving to DB...`);
-
       const newBlog = new Blog({
-        title,
-        content_md: content,
-        status: 'PUBLISHED',
-        excerpt: title,
-        schedule_id: schedule._id,
+        title, content_md: content, status: 'PUBLISHED', excerpt: title, schedule_id: schedule._id,
       });
       await newBlog.save();
-      console.log(`[CRON] Blog "${title}" successfully saved to Database!`);
+      schedule.last_run_at = new Date();
+      schedule.last_status = 'success';
+      schedule.last_error = '';
+      schedule.last_duration_ms = Date.now() - t0;
+      await schedule.save();
+      count++;
+      console.log(`[CRON] Blog "${title}" successfully saved.`);
+    } catch (err) {
+      schedule.last_run_at = new Date();
+      schedule.last_status = 'error';
+      schedule.last_error = String(err?.message || err);
+      schedule.last_duration_ms = Date.now() - t0;
+      await schedule.save();
+      console.error(`[CRON] Schedule ${schedule._id} failed:`, err);
     }
-    console.log(`[CRON] Generation queue complete.`);
-  } catch (err) {
-    console.error('[CRON] Error during generation execution:', err);
   }
-});
+  return count;
+}));
 
 // Horoscope Automation Backend Cron Jobs
-cron.schedule('5 0 * * *', async () => {
-    console.log('Running daily horoscopes generation at 12:05 AM...');
-    await generateAndStoreHoroscopes('daily');
-});
+const dailyExpr = '5 0 * * *';
+cron.schedule(dailyExpr, runWithSchedule('horoscope_daily', dailyExpr, async () => {
+  console.log('Running daily horoscopes generation at 12:05 AM...');
+  await generateAndStoreHoroscopes('daily');
+}));
+const weeklyExpr = '15 0 * * 1';
+cron.schedule(weeklyExpr, runWithSchedule('horoscope_weekly', weeklyExpr, async () => {
+  console.log('Running weekly horoscopes generation at 12:15 AM...');
+  await generateAndStoreHoroscopes('weekly');
+}));
+const monthlyExpr = '30 0 1 * *';
+cron.schedule(monthlyExpr, runWithSchedule('horoscope_monthly', monthlyExpr, async () => {
+  console.log('Running monthly horoscopes generation at 12:30 AM...');
+  await generateAndStoreHoroscopes('monthly');
+}));
 
-cron.schedule('15 0 * * 1', async () => {
-    console.log('Running weekly horoscopes generation at 12:15 AM...');
-    await generateAndStoreHoroscopes('weekly');
-});
-
-cron.schedule('30 0 1 * *', async () => {
-    console.log('Running monthly horoscopes generation at 12:30 AM...');
-    await generateAndStoreHoroscopes('monthly');
-});
+// Daily Guidance tip — runs at 12:10 AM. Idempotent so safe to re-run.
+const tipExpr = '10 0 * * *';
+cron.schedule(tipExpr, runWithSchedule('daily_guidance_tip', tipExpr, async () => {
+  console.log('Generating daily guidance tip...');
+  const tip = await generateTodaysTip({ force: true });
+  console.log(`[CRON] Daily tip: "${tip.title}" (${tip.status})`);
+  return 1;
+}));
 
 app.listen(PORT, async () => {
   await connectDB();

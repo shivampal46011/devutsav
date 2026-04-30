@@ -40,3 +40,7 @@ Thumbs.db
 *.local
 .cache/
 tmp/
+
+# Local-only deploy + secret docs (contain plaintext credentials)
+SERVER.md
+deploy.sh

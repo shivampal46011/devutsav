@@ -36,10 +36,6 @@ const BottomNav = component$(() => {
         <span class="material-symbols-outlined text-[20px]">record_voice_over</span>
         <span class="font-['Plus_Jakarta_Sans'] text-[9px] font-semibold tracking-tight mt-1">Whisper</span>
       </Link>
-      <Link href="/admin" class={linkClass('/admin')}>
-        <span class="material-symbols-outlined text-[20px]">edit_note</span>
-        <span class="font-['Plus_Jakarta_Sans'] text-[8px] font-semibold tracking-tight mt-1">Admin</span>
-      </Link>
     </nav>
   );
 });

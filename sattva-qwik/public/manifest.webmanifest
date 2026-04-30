@@ -1,0 +1,14 @@
+{
+  "name": "Devutsav",
+  "short_name": "Devutsav",
+  "description": "Sacred tools, daily horoscopes, AI Kundali Dosha analysis, Nandi Whisper, and verified pujas.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fff8f3",
+  "theme_color": "#fff8f3",
+  "lang": "en-IN",
+  "icons": [
+    { "src": "/favicon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any" },
+    { "src": "/favicon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "maskable" }
+  ]
+}

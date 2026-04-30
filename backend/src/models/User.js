@@ -9,6 +9,12 @@ const userSchema = new mongoose.Schema({
   dob: { type: Date },
   tob: { type: String }, // Format 24 Hours IST "HH:mm"
   pob: { type: String },
+  pob_lat: { type: Number },
+  pob_lon: { type: Number },
+  pob_city: { type: String },
+  pob_state: { type: String },
+  pob_country: { type: String },
+  pob_place_id: { type: String },
   kundali_link: { type: String },
   sun_sign: { type: String },
   moon_sign: { type: String },

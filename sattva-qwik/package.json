@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --mode ssr",
+    "dev": "vite --mode ssr --host",
     "build": "vite build",
     "build.server": "vite build -c adapters/express/vite.config.ts",
     "build.prod": "vite build && vite build -c adapters/express/vite.config.ts",
