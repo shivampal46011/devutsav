@@ -155,9 +155,27 @@ router.get('/post/:slug', async (req, res) => {
       });
     }
 
+    // Sibling navigation: prefer same series, ordered by createdAt asc.
+    // Falls back to global ordering if the post has no series.
+    const navFilter = p.series_id?._id
+      ? { status: 'PUBLISHED', series_id: p.series_id._id }
+      : { status: 'PUBLISHED', series_id: null };
+    const projection = { slug: 1, title: 1, createdAt: 1 };
+
+    const [prev, next] = await Promise.all([
+      Blog.findOne({ ...navFilter, createdAt: { $lt: p.createdAt } }, projection)
+        .sort({ createdAt: -1 }).lean(),
+      Blog.findOne({ ...navFilter, createdAt: { $gt: p.createdAt } }, projection)
+        .sort({ createdAt: 1 }).lean(),
+    ]);
+
+    const trim = (x) => (x ? { slug: x.slug, title: x.title } : null);
+
     return res.json({
       ...base,
       content_html: p.content_html || '',
+      prev: trim(prev),
+      next: trim(next),
     });
   } catch (err) {
     res.status(500).json({ error: err.message });

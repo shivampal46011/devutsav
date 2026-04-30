@@ -238,7 +238,7 @@ export default component$(() => {
                   const interval = setInterval(() => { loadingMsgIdx.value = (loadingMsgIdx.value + 1) % LOADING_MSGS.length; }, 800);
                   try {
                     const api = import.meta.env.PUBLIC_API_URL || 'http://localhost:5001';
-                    const userRes = await fetch(`${api}/api/users`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ user_session_id: sessionId.value, ...form }) });
+                    const userRes = await fetch(`${api}/api/users`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ user_session_id: sessionId.value, source: 'DOSHA_ANALYZER', ...form }) });
                     const userData = await userRes.json();
                     const uId = userData?.user?._id;
                     const [kundaliRes] = await Promise.all([

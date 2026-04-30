@@ -1,24 +1,23 @@
-import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { type DocumentHead } from '@builder.io/qwik-city';
+import { component$ } from '@builder.io/qwik';
+import { routeLoader$, type DocumentHead } from '@builder.io/qwik-city';
+import { getApiBase } from '~/lib/apiBase';
+
+export const usePujas = routeLoader$(async () => {
+  try {
+    const res = await fetch(`${getApiBase()}/api/market/pujas`);
+    const data = await res.json();
+    const list = data?.results?.data || data?.results || data || [];
+    return Array.isArray(list) ? list : [];
+  } catch (err) {
+    console.error('Failed to load pujas:', err);
+    return [] as any[];
+  }
+});
 
 export default component$(() => {
-  const pujas = useSignal<any[]>([]);
-  const isLoading = useSignal(true);
-
-  // eslint-disable-next-line qwik/no-use-visible-task
-  useVisibleTask$(async () => {
-    try {
-      const apiBase = import.meta.env.PUBLIC_API_URL || 'http://localhost:5001';
-      const pujaRes = await fetch(`${apiBase}/api/market/pujas`);
-      const pujaData = await pujaRes.json();
-      const pList = pujaData?.results?.data || pujaData?.results || pujaData || [];
-      pujas.value = Array.isArray(pList) ? pList : [];
-    } catch (err) {
-      console.error('Failed to load market data:', err);
-    } finally {
-      isLoading.value = false;
-    }
-  });
+  const pujasSig = usePujas();
+  const pujas = { value: pujasSig.value };
+  const isLoading = { value: false };
 
   return (
     <>

@@ -40,6 +40,10 @@ Thumbs.db
 *.local
 .cache/
 tmp/
+*.tsbuildinfo
+
+# User-uploaded media (served from disk volume in prod)
+backend/src/public/uploads/
 
 # Local-only deploy + secret docs (contain plaintext credentials)
 SERVER.md

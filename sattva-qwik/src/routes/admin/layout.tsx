@@ -1,7 +1,7 @@
 import { $, component$, Slot, useContextProvider, useSignal, useStore, useVisibleTask$ } from '@builder.io/qwik';
 import { useLocation, type DocumentHead } from '@builder.io/qwik-city';
 import { getApiBase } from '~/lib/apiBase';
-import { fmtDate, PulseCtx, type PulseStore, type Pulse, TOKEN_KEY } from './shared';
+import { fmtDate, PulseCtx, type PulseStore, type Pulse, TOKEN_KEY, BulkJobCtx, type BulkJobStore } from './shared';
 
 const NAV = [
   { href: '/admin', label: 'OVERVIEW' },
@@ -9,6 +9,8 @@ const NAV = [
   { href: '/admin/blogs', label: 'BLOGS' },
   { href: '/admin/scheduler', label: 'SCHEDULER' },
   { href: '/admin/events', label: 'EVENTS' },
+  { href: '/admin/users', label: 'USERS' },
+  { href: '/admin/images', label: 'IMAGES' },
 ];
 
 function navActive(pathname: string, href: string) {
@@ -21,7 +23,10 @@ function navActive(pathname: string, href: string) {
 export default component$(() => {
   const tokenSig = useSignal<string>('');
   const promptOpen = useSignal(false);
+  const progressOpen = useSignal(true);
   const loc = useLocation();
+  const BULK_KEY = 'du_admin_bulkjob';
+  const PROG_OPEN_KEY = 'du_admin_progress_open';
 
   const store = useStore<PulseStore>({
     pulse: null,
@@ -30,6 +35,12 @@ export default component$(() => {
     lastFetch: '',
   });
   useContextProvider(PulseCtx, store);
+
+  const bulk = useStore<BulkJobStore>({
+    active: false, current: '', queueNames: [], doneCount: 0, totalCount: 0,
+    results: [], startedAt: '', label: '', collapsed: false,
+  });
+  useContextProvider(BulkJobCtx, bulk);
 
   const fetchPulse = $(async () => {
     if (!tokenSig.value) return;
@@ -57,7 +68,7 @@ export default component$(() => {
   });
 
   // eslint-disable-next-line qwik/no-use-visible-task
-  useVisibleTask$(({ cleanup }) => {
+  useVisibleTask$(({ cleanup, track }) => {
     let saved = '';
     try { saved = localStorage.getItem(TOKEN_KEY) || ''; } catch {}
     if (!saved) {
@@ -66,6 +77,41 @@ export default component$(() => {
       tokenSig.value = saved;
       fetchPulse();
     }
+
+    // Restore bulk job + toggle state across SPA navigation / reload
+    try {
+      const raw = localStorage.getItem(BULK_KEY);
+      if (raw) {
+        const j = JSON.parse(raw) as Partial<BulkJobStore>;
+        if (j && typeof j === 'object') {
+          // Only restore if it has meaningful state.
+          if (j.totalCount || (j.results && j.results.length) || j.active) {
+            Object.assign(bulk, j);
+            // If page was killed mid-flight, the request is gone — mark as not active.
+            bulk.active = false;
+            bulk.current = '';
+          }
+        }
+      }
+      const p = localStorage.getItem(PROG_OPEN_KEY);
+      if (p != null) progressOpen.value = p === '1';
+    } catch {}
+
+    // Persist bulk on every change.
+    const persist = () => {
+      track(() => bulk.active);
+      track(() => bulk.doneCount);
+      track(() => bulk.totalCount);
+      track(() => bulk.current);
+      track(() => bulk.results.length);
+      track(() => bulk.label);
+      track(() => bulk.collapsed);
+      try { localStorage.setItem(BULK_KEY, JSON.stringify(bulk)); } catch {}
+    };
+    persist();
+    track(() => progressOpen.value);
+    try { localStorage.setItem(PROG_OPEN_KEY, progressOpen.value ? '1' : '0'); } catch {}
+
     const id = setInterval(() => {
       if (tokenSig.value) fetchPulse();
     }, 10000);
@@ -127,6 +173,13 @@ export default component$(() => {
         </div>
         <div class="flex items-center gap-3">
           <span class="term-dim">last sync {store.lastFetch || '—'}</span>
+          <button
+            onClick$={() => (progressOpen.value = !progressOpen.value)}
+            class={`border border-[#1f2937] px-2 py-0.5 ${progressOpen.value ? 'term-amber' : 'term-dim hover:term-amber'}`}
+            title="Toggle bulk progress card"
+          >
+            {bulk.active ? '◐' : '○'} PROGRESS{bulk.totalCount ? ` ${bulk.doneCount}/${bulk.totalCount}` : ''}
+          </button>
           <button onClick$={() => fetchPulse()} class="term-cyan hover:term-amber border border-[#1f2937] px-2 py-0.5">REFRESH</button>
           <button onClick$={() => { try { localStorage.removeItem(TOKEN_KEY); } catch {}; tokenSig.value = ''; promptOpen.value = true; }} class="term-dim hover:term-red border border-[#1f2937] px-2 py-0.5">LOGOUT</button>
         </div>
@@ -149,6 +202,78 @@ export default component$(() => {
       </div>
 
       <Slot />
+
+      {progressOpen.value && (bulk.active || bulk.results.length > 0) && (() => {
+        const errs = bulk.results.filter((r) => !r.ok);
+        const hasErr = errs.length > 0;
+        const lastErr = errs[errs.length - 1];
+        const stateColor = bulk.active ? 'term-amber' : hasErr ? 'term-red' : 'term-green';
+        const borderColor = bulk.active ? '#ffb000' : hasErr ? '#ff4d4d' : '#00ff7f';
+        return (
+        <div
+          class={`fixed bottom-3 right-3 z-40 term-panel max-w-md w-[min(92vw,28rem)] shadow-2xl ${bulk.active ? 'blink' : ''}`}
+          style={`border-color: ${borderColor};`}
+        >
+          <div class="flex items-center justify-between px-3 py-1.5 border-b" style={`border-color: ${borderColor};`}>
+            <div class="flex items-center gap-2">
+              <span class={`${stateColor} ${bulk.active ? 'blink' : hasErr && !bulk.active ? 'blink' : ''}`}>●</span>
+              <span class={`${stateColor} font-bold tracking-widest text-[11px]`}>
+                {bulk.active ? 'PROCESSING' : hasErr ? 'COMPLETED WITH ERRORS' : 'DONE'} · {bulk.label || 'BULK MD'}
+              </span>
+              <span class="term-dim tabular-nums">{bulk.doneCount}/{bulk.totalCount}</span>
+              {hasErr && <span class="term-red tabular-nums text-[10px]">· {errs.length} ERR</span>}
+            </div>
+            <div class="flex gap-2">
+              <button
+                onClick$={() => (bulk.collapsed = !bulk.collapsed)}
+                class="term-cyan hover:term-amber border border-[#1f2937] px-2 py-0.5 text-[10px]"
+              >{bulk.collapsed ? 'OPEN' : 'HIDE'}</button>
+              {!bulk.active && (
+                <button
+                  onClick$={() => { bulk.results = []; bulk.totalCount = 0; bulk.doneCount = 0; bulk.label = ''; }}
+                  class="term-dim hover:term-red border border-[#1f2937] px-2 py-0.5 text-[10px]"
+                >CLEAR</button>
+              )}
+            </div>
+          </div>
+          {!bulk.collapsed && (
+            <div class="p-3 space-y-2 max-h-72 overflow-y-auto">
+              <div class="h-1.5 bg-[#1f2937]">
+                <div
+                  class="h-full bg-[#ffb000] transition-all"
+                  style={`width: ${bulk.totalCount ? Math.round((bulk.doneCount / bulk.totalCount) * 100) : 0}%`}
+                />
+              </div>
+              {bulk.active && (
+                <div class="text-[11px]">
+                  <span class="term-dim">now: </span>
+                  <span class="term-cyan">{bulk.current || '…'}</span>
+                </div>
+              )}
+              {bulk.results.length > 0 && (
+                <ul class="text-[11px] space-y-0.5">
+                  {bulk.results.slice(-8).reverse().map((r, i) => (
+                    <li key={i} class="flex gap-2">
+                      <span class={r.ok ? 'term-green' : 'term-red'}>{r.ok ? '✓' : '✗'}</span>
+                      <span class="truncate flex-1" title={r.file}>{r.file}</span>
+                      <span class="term-dim truncate max-w-[8rem]">{r.ok ? r.slug : r.error}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {hasErr && lastErr && (
+                <div class="border border-[#ff4d4d] bg-[#1a0000] p-2 text-[11px]">
+                  <div class="term-red font-bold">LAST ERROR</div>
+                  <div class="term-dim">file: <span class="term-amber">{lastErr.file}</span></div>
+                  <div class="term-red break-words">{lastErr.error}</div>
+                </div>
+              )}
+              <a href="/admin/blogs/bulk" class="term-cyan hover:term-amber text-[10px] no-underline">→ open bulk page</a>
+            </div>
+          )}
+        </div>
+        );
+      })()}
     </div>
   );
 });

@@ -1,17 +1,64 @@
 import express from 'express';
+import multer from 'multer';
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import Blog from '../models/Blog.js';
 import BlogSeries from '../models/BlogSeries.js';
 import PromptSchedule from '../models/PromptSchedule.js';
 import AnalyticsEvent from '../models/AnalyticsEvent.js';
 import ScheduleRun from '../models/ScheduleRun.js';
 import UserSession from '../models/UserSession.js';
+import User from '../models/User.js';
 import generateBlogContent from '../services/blogGenerator.js';
+import { sanitizeBlogMarkdown } from '../services/blogSanitizer.js';
+import { generateBlogSeoMeta } from '../services/blogSeoMeta.js';
 import { renderBlogMarkdownToHtml } from '../services/mdToBlogHtml.js';
-import { parseMarkdownFrontmatter } from '../utils/mdFrontmatter.js';
+import { parseMarkdownFrontmatter, applyFrontmatterToBlog } from '../utils/mdFrontmatter.js';
 import { nextCronRun } from '../utils/cronNext.js';
 import slugify from '../utils/slugify.js';
 
 const router = express.Router();
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const UPLOAD_ROOT = path.resolve(__dirname, '..', 'public', 'uploads');
+const IMG_DIR = path.join(UPLOAD_ROOT, 'blogs');
+
+const safeName = (s) =>
+  String(s || 'file')
+    .normalize('NFKD')
+    .replace(/[^\w.\-]+/g, '-')
+    .replace(/-+/g, '-')
+    .toLowerCase();
+
+const imageStorage = multer.diskStorage({
+  destination: async (_req, _file, cb) => {
+    try { await fs.mkdir(IMG_DIR, { recursive: true }); cb(null, IMG_DIR); }
+    catch (e) { cb(e); }
+  },
+  filename: (_req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase() || '.bin';
+    const base = safeName(path.basename(file.originalname, ext)).slice(0, 60) || 'img';
+    cb(null, `${Date.now()}-${base}${ext}`);
+  },
+});
+const uploadImages = multer({
+  storage: imageStorage,
+  limits: { fileSize: 8 * 1024 * 1024, files: 20 },
+  fileFilter: (_req, file, cb) => {
+    if (!/^image\//.test(file.mimetype)) return cb(new Error('Only image files allowed'));
+    cb(null, true);
+  },
+});
+
+const uploadMd = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 2 * 1024 * 1024, files: 50 },
+  fileFilter: (_req, file, cb) => {
+    if (!/\.md$|\.markdown$/i.test(file.originalname)) return cb(new Error('Only .md files allowed'));
+    cb(null, true);
+  },
+});
 
 // Bearer auth gate for /metrics/* — token from .env. If unset, route is open
 // in dev to avoid lockout (warn loudly).
@@ -117,6 +164,36 @@ router.post('/blogs/process-md', async (req, res) => {
     const content_html = await renderBlogMarkdownToHtml(content_md);
     res.json({ content_html });
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/** AI SEO meta generator: derive title/slug/excerpt/seo_* from Markdown. */
+router.post('/blogs/seo-meta', requireAdminToken, async (req, res) => {
+  try {
+    const { content_md } = req.body;
+    if (!content_md || typeof content_md !== 'string') {
+      return res.status(400).json({ error: 'content_md (string) is required' });
+    }
+    const meta = await generateBlogSeoMeta(content_md);
+    res.json(meta);
+  } catch (err) {
+    console.error('blogs/seo-meta error', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/** Plagiarism-prevention sanitizer: rewrite source Markdown in DevUtsav's voice. */
+router.post('/blogs/sanitize', requireAdminToken, async (req, res) => {
+  try {
+    const { content_md } = req.body;
+    if (!content_md || typeof content_md !== 'string') {
+      return res.status(400).json({ error: 'content_md (string) is required' });
+    }
+    const rewritten = await sanitizeBlogMarkdown(content_md);
+    res.json({ content_md: rewritten });
+  } catch (err) {
+    console.error('blogs/sanitize error', err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -445,6 +522,138 @@ router.get('/metrics/recent', requireAdminToken, async (req, res) => {
     const since = req.query.since ? new Date(Number(req.query.since)) : new Date(Date.now() - 60_000);
     const events = await AnalyticsEvent.find({ ts: { $gt: since } }).sort({ ts: -1 }).limit(200).lean();
     res.json({ events, now: new Date() });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- Image library (under /public/uploads/blogs) ---
+
+router.get('/images', requireAdminToken, async (_req, res) => {
+  try {
+    await fs.mkdir(IMG_DIR, { recursive: true });
+    const files = await fs.readdir(IMG_DIR);
+    const stats = await Promise.all(
+      files.map(async (f) => {
+        const st = await fs.stat(path.join(IMG_DIR, f));
+        return { name: f, size: st.size, mtime: st.mtime, url: `/public/uploads/blogs/${f}` };
+      })
+    );
+    stats.sort((a, b) => b.mtime - a.mtime);
+    res.json({ total: stats.length, images: stats });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post('/images', requireAdminToken, (req, res) => {
+  uploadImages.array('files', 20)(req, res, (err) => {
+    if (err) return res.status(400).json({ error: err.message });
+    const files = (req.files || []).map((f) => ({
+      name: f.filename,
+      size: f.size,
+      url: `/public/uploads/blogs/${f.filename}`,
+    }));
+    res.status(201).json({ uploaded: files });
+  });
+});
+
+router.delete('/images/:name', requireAdminToken, async (req, res) => {
+  try {
+    const name = path.basename(req.params.name);
+    if (!name || name.startsWith('.')) return res.status(400).json({ error: 'invalid name' });
+    await fs.unlink(path.join(IMG_DIR, name));
+    res.json({ ok: true });
+  } catch (err) {
+    if (err.code === 'ENOENT') return res.status(404).json({ error: 'not found' });
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- Bulk markdown ingest (multiple .md → blogs in a chosen series) ---
+
+router.post('/blogs/bulk', requireAdminToken, (req, res) => {
+  uploadMd.array('files', 50)(req, res, async (err) => {
+    if (err) return res.status(400).json({ error: err.message });
+    const files = req.files || [];
+    if (!files.length) return res.status(400).json({ error: 'no files' });
+
+    const seriesId = (req.body.series_id || '').trim() || null;
+    const sanitize = String(req.body.sanitize || 'false') === 'true';
+    const aiSeo = String(req.body.ai_seo || 'true') === 'true';
+    const status = req.body.status === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT';
+
+    const results = [];
+    for (const file of files) {
+      const filename = file.originalname;
+      try {
+        let md = file.buffer.toString('utf8');
+        if (sanitize) {
+          md = await sanitizeBlogMarkdown(md);
+        }
+        const { meta } = parseMarkdownFrontmatter(md);
+        const fallbackTitle =
+          (meta.title && String(meta.title).trim()) ||
+          path.basename(filename).replace(/\.(md|markdown)$/i, '').replace(/[-_]+/g, ' ');
+
+        const blog = new Blog({
+          title: fallbackTitle,
+          content_md: md,
+          series_id: seriesId,
+          status,
+        });
+        applyFrontmatterToBlog(blog, meta);
+
+        if (aiSeo) {
+          try {
+            const seo = await generateBlogSeoMeta(md);
+            if (seo.title) blog.title = seo.title;
+            if (seo.slug) blog.slug = seo.slug;
+            if (seo.excerpt) blog.excerpt = seo.excerpt;
+            if (seo.seo_title) blog.seo_title = seo.seo_title;
+            if (seo.seo_description) blog.seo_description = seo.seo_description;
+            if (seo.seo_keywords) blog.seo_keywords = seo.seo_keywords;
+          } catch (seoErr) {
+            console.warn('SEO meta failed for', filename, seoErr.message);
+          }
+        }
+        if (!blog.slug) blog.slug = slugify(blog.title);
+        await blog.save();
+        results.push({ file: filename, ok: true, _id: blog._id, slug: blog.slug, title: blog.title });
+      } catch (e) {
+        results.push({ file: filename, ok: false, error: e.code === 11000 ? 'slug already exists' : e.message });
+      }
+    }
+    res.status(201).json({ processed: results.length, results });
+  });
+});
+
+router.get('/users', requireAdminToken, async (_req, res) => {
+  try {
+    const users = await User.find({ deletedAt: null }).sort({ createdAt: -1 }).lean();
+    const sessionIds = users.map((u) => u.user_session_id).filter(Boolean);
+    const sessions = await UserSession.find({ user_session_id: { $in: sessionIds } }).lean();
+    const sMap = new Map(sessions.map((s) => [s.user_session_id, s]));
+    const rows = users.map((u) => {
+      const s = sMap.get(u.user_session_id) || {};
+      const loc = s.location || {};
+      return {
+        _id: u._id,
+        name: u.name || '',
+        phone: u.phone ? `${u.isd_code || ''}${u.phone}` : '',
+        email: u.email || '',
+        source: u.source || (s.first_landing_url ? `URL:${s.first_landing_url}` : 'UNKNOWN'),
+        dob: u.dob || null,
+        pob_city: u.pob_city || '',
+        first_landing_url: s.first_landing_url || '',
+        device_details: s.device_details || '',
+        browser_details: s.browser_details || '',
+        location: [loc.city, loc.region, loc.country].filter(Boolean).join(', '),
+        sessions: s.count_of_sessions ?? null,
+        createdAt: u.createdAt,
+      };
+    });
+    res.json({ total: rows.length, users: rows });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

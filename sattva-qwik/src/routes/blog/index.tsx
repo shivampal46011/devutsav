@@ -33,15 +33,15 @@ export default component$(() => {
   const landing = useBlogLanding();
 
   return (
-    <main class="px-4 md:px-0 max-w-5xl mx-auto relative pt-6 min-h-screen pb-24">
-      <section class="px-6 mb-12">
-        <div class="relative overflow-hidden rounded-[2.5rem] bg-surface-container-high aspect-[4/1] min-h-[200px] flex flex-col justify-center p-8">
+    <main class="px-4 sm:px-6 max-w-5xl mx-auto relative pt-6">
+      <section class="mb-8 md:mb-12">
+        <div class="relative overflow-hidden rounded-3xl md:rounded-[2.5rem] bg-surface-container-high md:aspect-[4/1] md:min-h-[200px] flex flex-col justify-center p-6 md:p-8">
           <div class="absolute inset-0">
             <div class="absolute inset-0 bg-gradient-to-r from-primary to-primary-container opacity-90" />
           </div>
-          <div class="relative z-10 space-y-4">
-            <h1 class="font-headline text-4xl font-bold tracking-tight text-white leading-[1.1]">DevUtsav Knowledge Hub</h1>
-            <p class="text-white/80 max-w-2xl font-body text-lg">
+          <div class="relative z-10 space-y-3 md:space-y-4">
+            <h1 class="font-headline text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white leading-[1.15] break-words">DevUtsav Knowledge Hub</h1>
+            <p class="text-white/80 max-w-2xl font-body text-sm sm:text-base md:text-lg">
               Browse topics by category or see every article in one place—with pagination for easy scanning.
             </p>
           </div>
@@ -49,15 +49,15 @@ export default component$(() => {
       </section>
 
       {!landing.value.apiOk && (
-        <p class="px-6 text-sm text-on-surface-variant mb-8">
+        <p class="text-sm text-on-surface-variant mb-8">
           Could not reach the article API. Start the backend and set{' '}
           <code class="text-xs bg-surface-container-high px-1 rounded">PUBLIC_API_URL</code> for live categories and lists.
         </p>
       )}
 
-      <section class="px-6 mb-14">
+      <section class="mb-12 md:mb-14">
         <h2 class="font-headline text-xl font-bold text-on-surface mb-4">Explore</h2>
-        <div class="grid sm:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Link
             href="/blog/categories"
             class="flex gap-4 p-6 rounded-3xl bg-surface-container border border-outline-variant/20 hover:border-primary/40 hover:shadow-md transition-all no-underline text-inherit"
@@ -94,7 +94,7 @@ export default component$(() => {
       </section>
 
       {landing.value.featuredLegacy.length > 0 && (
-        <section class="px-6 mb-16">
+        <section>
           <h2 class="font-headline text-2xl md:text-3xl font-bold text-on-surface mb-6">Featured guides</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {landing.value.featuredLegacy.map((post) => (

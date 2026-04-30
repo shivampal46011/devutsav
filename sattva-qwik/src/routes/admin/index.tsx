@@ -1,5 +1,5 @@
 import { component$, useContext } from '@builder.io/qwik';
-import { fmtTime, PulseCtx, sparkPath } from './shared';
+import { dur, fmtTime, pct, PulseCtx, sparkPath } from './shared';
 
 export default component$(() => {
   const store = useContext(PulseCtx);
@@ -59,6 +59,35 @@ export default component$(() => {
         <svg width="100%" height="36" viewBox="0 0 240 40" preserveAspectRatio="none" class="flex-1">
           <path d={sparkPath(p.sparkline_24h)} stroke="#ffb000" stroke-width="1.2" fill="none" vector-effect="non-scaling-stroke" />
         </svg>
+      </div>
+
+      <div class="p-3">
+        <div class="term-amber font-bold tracking-widest mb-2">TOP BLOGS // 7D</div>
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="term-dim text-[10px] uppercase">
+                <th class="text-left py-1">SLUG</th>
+                <th class="text-right">VIEWS</th>
+                <th class="text-right">UNIQUE</th>
+                <th class="text-right">AVG SCROLL</th>
+                <th class="text-right">AVG TIME</th>
+              </tr>
+            </thead>
+            <tbody>
+              {p.blogs.length === 0 && <tr><td colSpan={5} class="term-dim py-4">no blog views yet</td></tr>}
+              {p.blogs.map((row) => (
+                <tr key={row.slug} class="term-row border-t border-[#111827]">
+                  <td class="py-2 term-cyan">{row.slug}</td>
+                  <td class="text-right tabular-nums term-amber">{row.views}</td>
+                  <td class="text-right tabular-nums">{row.sessions}</td>
+                  <td class="text-right tabular-nums">{pct(row.avg_scroll)}</td>
+                  <td class="text-right tabular-nums">{dur(row.avg_time)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div class="p-3 term-dim text-[11px]">

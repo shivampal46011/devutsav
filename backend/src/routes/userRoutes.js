@@ -17,16 +17,18 @@ router.get('/profile/:id', async (req, res) => {
 // Create or update user
 router.post('/', async (req, res) => {
   try {
-    const { user_session_id, email, phone, name, dob, tob, pob, isd_code } = req.body;
-    
-    // Upsert logic based on email/phone or session_id
+    const { user_session_id, email, phone } = req.body;
+
     let user;
     if (email) user = await User.findOne({ email });
     else if (phone) user = await User.findOne({ phone });
     else if (user_session_id) user = await User.findOne({ user_session_id });
 
     if (user) {
-      Object.assign(user, req.body);
+      const incoming = { ...req.body };
+      // Don't overwrite an existing source — first form wins
+      if (user.source && incoming.source) delete incoming.source;
+      Object.assign(user, incoming);
       await user.save();
     } else {
       user = new User(req.body);

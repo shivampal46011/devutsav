@@ -18,6 +18,8 @@ export type ResolvedBlogPost = {
   og_image?: string;
   ctaText?: string;
   ctaLink?: string;
+  prev?: { slug: string; title: string } | null;
+  next?: { slug: string; title: string } | null;
 };
 
 export const usePost = routeLoader$(async ({ params, redirect }) => {
@@ -52,6 +54,8 @@ export const usePost = routeLoader$(async ({ params, redirect }) => {
         seo_keywords?: string;
         og_image?: string;
         series_id?: { name?: string } | null;
+        prev?: { slug: string; title: string } | null;
+        next?: { slug: string; title: string } | null;
       };
       if (d?.slug && d?.title) {
         fromApi = {
@@ -67,6 +71,8 @@ export const usePost = routeLoader$(async ({ params, redirect }) => {
           seo_description: d.seo_description,
           seo_keywords: d.seo_keywords,
           og_image: d.og_image,
+          prev: d.prev || null,
+          next: d.next || null,
         };
       }
     }
@@ -92,8 +98,11 @@ export const usePost = routeLoader$(async ({ params, redirect }) => {
       seo_title: legacy.title,
       seo_description: legacy.excerpt,
       og_image: legacy.image,
+      seo_keywords: undefined,
       ctaText: legacy.ctaText,
       ctaLink: legacy.ctaLink,
+      prev: null,
+      next: null,
     } satisfies ResolvedBlogPost;
   }
 
@@ -176,6 +185,39 @@ export default component$(() => {
               </Link>
             )}
           </div>
+        ) : null}
+
+        {(p.prev || p.next) ? (
+          <nav class="mt-16 grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-outline-variant/30 pt-8">
+            {p.prev ? (
+              <Link
+                href={`/blog/${p.prev.slug}`}
+                class="group flex flex-col gap-1 rounded-2xl border border-outline-variant/30 bg-surface-container-lowest hover:bg-primary/5 transition-colors p-5 no-underline"
+              >
+                <span class="flex items-center text-primary text-xs font-bold uppercase tracking-widest">
+                  <span class="material-symbols-outlined text-base mr-1">arrow_back</span>
+                  Previous
+                </span>
+                <span class="font-headline font-bold text-on-surface text-lg leading-snug group-hover:text-primary">
+                  {p.prev.title}
+                </span>
+              </Link>
+            ) : <div class="hidden md:block" />}
+            {p.next ? (
+              <Link
+                href={`/blog/${p.next.slug}`}
+                class="group flex flex-col gap-1 rounded-2xl border border-outline-variant/30 bg-surface-container-lowest hover:bg-primary/5 transition-colors p-5 md:text-right no-underline"
+              >
+                <span class="flex items-center md:justify-end text-primary text-xs font-bold uppercase tracking-widest">
+                  Next
+                  <span class="material-symbols-outlined text-base ml-1">arrow_forward</span>
+                </span>
+                <span class="font-headline font-bold text-on-surface text-lg leading-snug group-hover:text-primary">
+                  {p.next.title}
+                </span>
+              </Link>
+            ) : null}
+          </nav>
         ) : null}
       </div>
     </article>

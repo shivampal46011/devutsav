@@ -34,6 +34,22 @@ export interface PulseStore {
 
 export const PulseCtx = createContextId<PulseStore>('du.admin.pulse');
 
+export interface BulkResult {
+  file: string; ok: boolean; _id?: string; slug?: string; title?: string; error?: string;
+}
+export interface BulkJobStore {
+  active: boolean;
+  current: string;
+  queueNames: string[];
+  doneCount: number;
+  totalCount: number;
+  results: BulkResult[];
+  startedAt: string;
+  label: string;
+  collapsed: boolean;
+}
+export const BulkJobCtx = createContextId<BulkJobStore>('du.admin.bulkJob');
+
 export const TOKEN_KEY = 'du_admin_token';
 
 export const fmtTime = (s: string | null | Date) => {

@@ -26,6 +26,9 @@ const userSchema = new mongoose.Schema({
   spiritual_insight: { type: String },
   recommended_rituals: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ritual' }],
   
+  // Codename of the form/page that captured this user (e.g. DOSHA_ANALYZER)
+  source: { type: String, index: true },
+
   // DevPunya Auth
   devpunya_token: { type: String },
   devpunya_user_id: { type: String },

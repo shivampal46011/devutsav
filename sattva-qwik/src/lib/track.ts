@@ -9,6 +9,7 @@
  */
 
 import { getApiBase } from './apiBase';
+import { logFirebaseEvent, setFirebaseUserId } from './firebase';
 
 type EvtType =
   | 'page_view' | 'page_leave' | 'section_view' | 'section_engaged' | 'section_click'
@@ -84,6 +85,21 @@ function forwardToVendors(type: EvtType, evt: TrackEvent): void {
       });
     }
   }
+  // Firebase Analytics (GA4) — sanitize undefined values
+  const fbParams: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries({
+    page_path: evt.path,
+    page_location: typeof location !== 'undefined' ? location.href : undefined,
+    section_id: evt.section_id,
+    blog_slug: evt.blog_slug,
+    scroll_pct: evt.scroll_pct,
+    duration_ms: evt.duration_ms,
+    value: evt.value,
+  })) {
+    if (v !== undefined && v !== null) fbParams[k] = v;
+  }
+  logFirebaseEvent(type === 'page_view' ? 'page_view' : type, fbParams);
+
   if (typeof w.fbq === 'function') {
     if (type === 'page_view') w.fbq('track', 'PageView');
     else w.fbq('trackCustom', type, {
@@ -95,8 +111,14 @@ function forwardToVendors(type: EvtType, evt: TrackEvent): void {
   }
 }
 
+function isAdminPath(p?: string): boolean {
+  const path = p ?? (typeof location !== 'undefined' ? location.pathname : '');
+  return path.startsWith('/admin');
+}
+
 export function track(type: EvtType, props: Partial<TrackEvent> = {}): void {
   if (typeof window === 'undefined') return;
+  if (isAdminPath(props.path)) return;
   const evt: TrackEvent = {
     type,
     path: props.path ?? location.pathname,
@@ -129,6 +151,10 @@ function emitPageLeave(): void {
 export function trackPageView(path: string, extra: Partial<TrackEvent> = {}): void {
   if (typeof window === 'undefined') return;
   if (lastPath && lastPath !== path) emitPageLeave();
+  if (isAdminPath(path)) {
+    lastPath = null;
+    return;
+  }
   lastPath = path;
   pageEnteredAt = Date.now();
   maxScrollPct = 0;
@@ -145,6 +171,9 @@ export function trackPageView(path: string, extra: Partial<TrackEvent> = {}): vo
 export function initTracker(): void {
   if (initialised || typeof window === 'undefined') return;
   initialised = true;
+
+  // Tie our session to Firebase so user-scoped reports line up.
+  setFirebaseUserId(getSessionId());
 
   // First view (also on full reload).
   trackPageView(location.pathname);

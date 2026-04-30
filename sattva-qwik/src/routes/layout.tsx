@@ -12,7 +12,6 @@ export default component$(() => {
     return (
       <div class="bg-black text-[#e6e6e6] min-h-screen">
         <Slot />
-        <TrackerInit />
       </div>
     );
   }
