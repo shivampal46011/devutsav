@@ -19,8 +19,8 @@ interface Blog {
 export default component$(() => {
   const tokenSig = useSignal('');
   const filter = useStore({ q: '', status: 'ALL' as 'ALL' | 'DRAFT' | 'PUBLISHED', series: '' });
-  const store = useStore<{ blogs: Blog[]; loading: boolean; err: string; msg: string }>({
-    blogs: [], loading: false, err: '', msg: '',
+  const store = useStore<{ blogs: Blog[]; loading: boolean; err: string; msg: string; selected: Record<string, boolean> }>({
+    blogs: [], loading: false, err: '', msg: '', selected: {},
   });
 
   const fetchBlogs = $(async () => {
@@ -54,6 +54,26 @@ export default component$(() => {
       store.msg = `Deleted ${title}`;
       await fetchBlogs();
     } catch (e: any) { store.err = String(e?.message || e); }
+  });
+
+  const bulkDelete = $(async () => {
+    const ids = Object.keys(store.selected).filter((k) => store.selected[k]);
+    if (ids.length === 0) return;
+    if (!confirm(`Delete ${ids.length} selected blog(s)? This cannot be undone.`)) return;
+    let ok = 0, fail = 0;
+    for (const id of ids) {
+      try {
+        const res = await fetch(`${getApiBase()}/api/admin/blogs/${id}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${tokenSig.value}` },
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        ok++;
+      } catch { fail++; }
+    }
+    store.selected = {};
+    store.msg = `Deleted ${ok} blog(s)${fail ? `, ${fail} failed` : ''}`;
+    await fetchBlogs();
   });
 
   const togglePublish = $(async (b: Blog) => {
@@ -92,6 +112,11 @@ export default component$(() => {
       <div class="flex items-center justify-between">
         <div class="term-amber font-bold tracking-widest">BLOGS // ALL</div>
         <div class="flex gap-2">
+          {Object.values(store.selected).some(Boolean) && (
+            <button onClick$={bulkDelete} class="term-red border border-[#ff4d4d] px-2 py-0.5 hover:bg-[#1a0000]">
+              DEL SELECTED ({Object.values(store.selected).filter(Boolean).length})
+            </button>
+          )}
           <a href="/admin/blogs/bulk" class="term-cyan hover:term-amber border border-[#1f2937] px-2 py-0.5 no-underline">⇪ BULK MD</a>
           <a href="/admin/blogs/new" class="term-cyan hover:term-amber border border-[#1f2937] px-2 py-0.5 no-underline">+ NEW BLOG</a>
           <button onClick$={fetchBlogs} class="term-cyan hover:term-amber border border-[#1f2937] px-2 py-0.5">REFRESH</button>
@@ -133,6 +158,25 @@ export default component$(() => {
         <table class="w-full">
           <thead>
             <tr class="term-dim text-[10px] uppercase">
+              <th class="text-left py-1 w-6">
+                <input
+                  type="checkbox"
+                  aria-label="Select all"
+                  checked={filtered().length > 0 && filtered().every((b) => store.selected[b._id])}
+                  onChange$={(_, el) => {
+                    const list = filtered();
+                    if (el.checked) {
+                      const next = { ...store.selected };
+                      for (const b of list) next[b._id] = true;
+                      store.selected = next;
+                    } else {
+                      const next = { ...store.selected };
+                      for (const b of list) delete next[b._id];
+                      store.selected = next;
+                    }
+                  }}
+                />
+              </th>
               <th class="text-left py-1">TITLE</th>
               <th class="text-left">SLUG</th>
               <th class="text-left">CATEGORY</th>
@@ -143,10 +187,22 @@ export default component$(() => {
           </thead>
           <tbody>
             {!store.loading && filtered().length === 0 && (
-              <tr><td colSpan={6} class="term-dim py-4">no blogs match</td></tr>
+              <tr><td colSpan={7} class="term-dim py-4">no blogs match</td></tr>
             )}
             {filtered().map((b) => (
               <tr key={b._id} class="term-row border-t border-[#111827]">
+                <td class="py-1.5">
+                  <input
+                    type="checkbox"
+                    aria-label={`Select ${b.title}`}
+                    checked={!!store.selected[b._id]}
+                    onChange$={(_, el) => {
+                      const next = { ...store.selected };
+                      if (el.checked) next[b._id] = true; else delete next[b._id];
+                      store.selected = next;
+                    }}
+                  />
+                </td>
                 <td class="py-1.5 term-amber">{b.title}</td>
                 <td class="term-cyan">{b.slug}</td>
                 <td class="term-dim">{b.series_id?.name || '—'}</td>

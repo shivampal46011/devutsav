@@ -18,12 +18,12 @@ Rewriting rules:
 
 Image URL rewriting (IMPORTANT):
 - For every image in the Markdown — both \`![alt](url)\` and \`<img src="url">\` and frontmatter \`image:\`/\`og_image:\` fields — REPLACE the URL with:
-    https://devutsav.com/public/uploads/blogs/<filename>
-  where <filename> is the bare filename of the original URL (the last path segment, including the extension; lowercase it; replace spaces with "-").
+    /public/uploads/blogs/<filename>
+  where <filename> is the bare filename of the original URL (the last path segment, including the extension; lowercase it; replace spaces with "-"). Output the path EXACTLY as a site-relative path starting with "/public/uploads/blogs/" — do NOT prepend any protocol or domain.
 - Examples:
-    "/wp-content/uploads/2024/Rudraksha-Mala.jpg"     → "https://devutsav.com/public/uploads/blogs/rudraksha-mala.jpg"
-    "https://other-site.com/images/Panch%20Mala.png"  → "https://devutsav.com/public/uploads/blogs/panch-mala.png"
-    "img/hero.webp"                                   → "https://devutsav.com/public/uploads/blogs/hero.webp"
+    "/wp-content/uploads/2024/Rudraksha-Mala.jpg"     → "/public/uploads/blogs/rudraksha-mala.jpg"
+    "https://other-site.com/images/Panch%20Mala.png"  → "/public/uploads/blogs/panch-mala.png"
+    "img/hero.webp"                                   → "/public/uploads/blogs/hero.webp"
 - Do NOT change the alt text. Do NOT remove images. Keep the same number and order of images.`;
 
 export async function sanitizeBlogMarkdown(sourceMd) {
