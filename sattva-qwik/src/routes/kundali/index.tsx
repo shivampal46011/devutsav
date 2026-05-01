@@ -2,6 +2,15 @@ import { $, component$, useSignal, useStore, useVisibleTask$ } from '@builder.io
 import { type DocumentHead } from '@builder.io/qwik-city';
 import { getApiBase } from '~/lib/apiBase';
 
+const LOADING_MSGS = [
+  'Aligning the cosmic coordinates…',
+  'Charting planetary positions at your birth…',
+  'Mapping the twelve houses of your kundali…',
+  'Calculating dasha periods and yogas…',
+  'Inscribing your birth chart onto the page…',
+  'Sealing your Kundali PDF…',
+];
+
 interface StoredUser {
   id: string; name?: string; email?: string; phone?: string; isd_code?: string;
   dob?: string; tob?: string;
@@ -11,6 +20,7 @@ interface StoredUser {
 export default component$(() => {
   const loading = useSignal(true);
   const submitting = useSignal(false);
+  const loadingMsgIdx = useSignal(0);
   const error = useSignal('');
   const pdfUrl = useSignal<string | null>(null);
   const userId = useSignal<string | null>(null);
@@ -93,6 +103,10 @@ export default component$(() => {
       return digits ? `+${digits.slice(0, 4)}` : '+91';
     })();
     submitting.value = true;
+    loadingMsgIdx.value = 0;
+    const interval = setInterval(() => {
+      loadingMsgIdx.value = (loadingMsgIdx.value + 1) % LOADING_MSGS.length;
+    }, 1400);
     try {
       let session_id = '';
       try { session_id = localStorage.getItem('du_session_id') || localStorage.getItem('user_session_id') || ''; } catch {}
@@ -151,6 +165,7 @@ export default component$(() => {
     } catch (e: any) {
       error.value = e?.message || 'Could not generate your Kundali. Please try again.';
     } finally {
+      clearInterval(interval);
       submitting.value = false;
     }
   });
@@ -172,7 +187,34 @@ export default component$(() => {
         </div>
       )}
 
-      {!loading.value && pdfUrl.value && (
+      {!loading.value && submitting.value && (
+        <section class="px-2 md:px-6 flex flex-col items-center justify-center min-h-[55vh] text-center">
+          <div class="relative w-36 h-36 mb-8">
+            <div class="absolute inset-0 rounded-full border-4 border-primary/15" />
+            <div class="absolute inset-[3px] rounded-full border-b-4 border-l-4 border-primary animate-[spin_2.4s_linear_infinite]" />
+            <div class="absolute inset-[10px] rounded-full border-t-4 border-r-4 border-secondary animate-[spin_3.6s_linear_infinite_reverse]" />
+            <div class="absolute inset-[18px] rounded-full border-b-2 border-tertiary/70 animate-[spin_5s_linear_infinite]" />
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="material-symbols-outlined text-primary text-5xl animate-pulse" style="font-variation-settings: 'FILL' 1">stars</span>
+            </div>
+          </div>
+          <p class="text-[10px] font-bold uppercase tracking-[0.25em] text-primary mb-2">Generating your Kundali</p>
+          <h3 class="font-headline text-2xl font-bold text-on-surface mb-4 min-h-[64px] max-w-md leading-snug">
+            {LOADING_MSGS[loadingMsgIdx.value]}
+          </h3>
+          <div class="w-56 bg-surface-variant rounded-full h-1.5 overflow-hidden mb-3">
+            <div
+              class="h-full bg-gradient-to-r from-primary via-secondary to-tertiary transition-[width] duration-700 ease-out"
+              style={`width: ${((loadingMsgIdx.value + 1) / LOADING_MSGS.length) * 100}%`}
+            />
+          </div>
+          <p class="text-xs text-on-surface-variant/70 max-w-xs">
+            This usually takes 10–20 seconds. Please don't close this tab.
+          </p>
+        </section>
+      )}
+
+      {!loading.value && !submitting.value && pdfUrl.value && (
         <section class="bg-surface-container rounded-3xl p-8 text-center border border-primary/20 shadow-xl">
           <span class="material-symbols-outlined text-primary text-5xl mb-3" style="font-variation-settings: 'FILL' 1">task_alt</span>
           <h2 class="font-headline text-2xl font-bold mb-2">Your Kundali is ready</h2>
@@ -189,7 +231,7 @@ export default component$(() => {
         </section>
       )}
 
-      {!loading.value && !pdfUrl.value && (
+      {!loading.value && !submitting.value && !pdfUrl.value && (
         <section class="bg-surface-container rounded-3xl p-6 md:p-8 border border-outline-variant/10">
           {hasProfile.value && (
             <p class="text-xs font-bold uppercase tracking-widest text-primary mb-4">
