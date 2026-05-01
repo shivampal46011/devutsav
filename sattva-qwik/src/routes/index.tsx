@@ -66,6 +66,18 @@ export default component$(() => {
             <span class="material-symbols-outlined text-on-tertiary-fixed text-3xl" style="font-variation-settings: 'FILL' 1">record_voice_over</span>
             <h3 class="font-headline text-base font-bold text-on-surface">Nandi Whisper</h3>
           </Link>
+          <Link href="/kundali" class="col-span-2 bg-secondary-container/60 rounded-2xl md:rounded-3xl p-5 md:p-6 relative overflow-hidden group">
+            <div class="relative z-10 flex flex-col h-full justify-between min-h-[120px]">
+              <span class="material-symbols-outlined text-on-secondary-container text-4xl mb-3" style="font-variation-settings: 'FILL' 1">picture_as_pdf</span>
+              <div>
+                <h3 class="font-headline text-xl font-bold text-on-secondary-container mb-1">Generate My Kundali</h3>
+                <p class="text-sm text-on-surface-variant leading-relaxed">Personalised birth chart PDF, delivered instantly.</p>
+              </div>
+            </div>
+            <div class="absolute top-0 right-0 -translate-y-2 translate-x-2 opacity-15 group-hover:opacity-25 transition-opacity">
+              <span class="material-symbols-outlined text-[110px]">menu_book</span>
+            </div>
+          </Link>
           <Link href="/blog" class="col-span-2 bg-primary/5 border border-primary/20 rounded-2xl md:rounded-3xl p-5 md:p-6 relative overflow-hidden group mt-1">
             <div class="relative z-10 flex items-center justify-between">
               <div>
