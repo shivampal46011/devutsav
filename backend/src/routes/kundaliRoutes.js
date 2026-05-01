@@ -184,8 +184,8 @@ router.post('/basic-report', async (req, res) => {
       company_info: 'Devutsav',
       domain_url: 'https://devutsav.com',
       company_email: 'hello@devutsav.com',
-      company_landline: '',
-      company_mobile: '',
+      company_landline: '+91 00000 00000',
+      company_mobile: '+91 00000 00000',
     };
 
     const upstream = process.env.ASTRONEXT_BASIC_REPORT_URL
