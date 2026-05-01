@@ -6,6 +6,8 @@ export default extendConfig(baseConfig, () => {
   return {
     build: {
       ssr: true,
+      outDir: 'server-ssg',
+      emptyOutDir: false,
       rollupOptions: {
         input: ['@qwik-city-plan'],
       },
@@ -19,6 +21,7 @@ export default extendConfig(baseConfig, () => {
         exclude: [
           '/admin/*',
           '/horoscope/*',
+          '/puja/',
           '/sitemap.xml',
         ],
       }),

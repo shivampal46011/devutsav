@@ -1,5 +1,6 @@
 import { component$, useSignal, useStore, useVisibleTask$ } from '@builder.io/qwik';
 import { type DocumentHead } from '@builder.io/qwik-city';
+import { getApiBase } from '~/lib/apiBase';
 
 export default component$(() => {
   const step = useSignal(1);
@@ -147,8 +148,7 @@ export default component$(() => {
                   if (!form.wish_text.trim() && !audioDataUrl.value) { validationError.value = 'Please write or record your wish.'; setTimeout(() => validationError.value = '', 4000); return; }
                   step.value = 2;
                   try {
-                    const api = import.meta.env.PUBLIC_API_URL || 'http://localhost:5001';
-                    const res = await fetch(`${api}/api/whispers`, {
+                    const res = await fetch(`${getApiBase()}/api/whispers`, {
                       method: 'POST', headers: { 'Content-Type': 'application/json' },
                       body: JSON.stringify({ user_session_id: sessionId.value, petitioner_name: form.name, petitioner_phone: form.phone, wish_text: form.wish_text, wish_audio: audioDataUrl.value }),
                     });
