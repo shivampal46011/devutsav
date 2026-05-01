@@ -17,7 +17,9 @@ export default component$(() => {
   const hasProfile = useSignal(false);
 
   const form = useStore({
-    name: '', dob: '', tob: '', tob_unknown: false,
+    name: '',
+    isd_code: '+91', phone: '', email: '',
+    dob: '', tob: '', tob_unknown: false,
     pob: '', pob_lat: null as number | null, pob_lon: null as number | null,
     gender: 'male' as 'male' | 'female',
   });
@@ -58,6 +60,9 @@ export default component$(() => {
       if (res.ok) {
         const u: StoredUser & { dob?: string } = await res.json();
         if (u.name) form.name = u.name;
+        if (u.phone) form.phone = u.phone;
+        if (u.isd_code) form.isd_code = u.isd_code;
+        if (u.email) form.email = u.email;
         if (u.dob) form.dob = String(u.dob).slice(0, 10);
         if (u.tob && u.tob !== 'Unknown') form.tob = u.tob;
         else if (u.tob === 'Unknown') form.tob_unknown = true;
@@ -73,18 +78,63 @@ export default component$(() => {
   const submit = $(async () => {
     error.value = '';
     if (!form.name.trim()) { error.value = 'Name is required.'; return; }
+    const phoneClean = form.phone.replace(/\D/g, '');
+    if (phoneClean.length < 6) { error.value = 'A valid phone number is required.'; return; }
+    if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      error.value = 'Please enter a valid email or leave it blank.'; return;
+    }
     if (!form.dob) { error.value = 'Date of birth is required.'; return; }
     if (!form.pob.trim() || form.pob_lat == null || form.pob_lon == null) {
       error.value = 'Please pick your place of birth from the suggestions.';
       return;
     }
+    const isdClean = (() => {
+      const digits = form.isd_code.replace(/\D/g, '');
+      return digits ? `+${digits.slice(0, 4)}` : '+91';
+    })();
     submitting.value = true;
     try {
+      let session_id = '';
+      try { session_id = localStorage.getItem('du_session_id') || localStorage.getItem('user_session_id') || ''; } catch {}
+
+      let uid = userId.value || '';
+      try {
+        const userRes = await fetch(`${getApiBase()}/api/users`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_session_id: session_id || undefined,
+            source: 'KUNDALI_GENERATOR',
+            name: form.name.trim(),
+            isd_code: isdClean,
+            phone: phoneClean,
+            email: form.email.trim() || undefined,
+            dob: form.dob,
+            tob: form.tob_unknown ? 'Unknown' : (form.tob || undefined),
+            pob: form.pob.trim(),
+            pob_lat: form.pob_lat,
+            pob_lon: form.pob_lon,
+          }),
+        });
+        const userData = await userRes.json();
+        if (userData?.user?._id) {
+          uid = userData.user._id;
+          userId.value = uid;
+          try {
+            localStorage.setItem('du_user_id', uid);
+            localStorage.setItem('du_user', JSON.stringify({
+              id: uid, name: form.name.trim(), email: form.email.trim() || undefined,
+              phone: phoneClean, isd_code: isdClean,
+            }));
+          } catch {}
+        }
+      } catch {}
+
       const res = await fetch(`${getApiBase()}/api/kundali/basic-report`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          user_id: userId.value || undefined,
+          user_id: uid || undefined,
           name: form.name.trim(),
           dob: form.dob,
           tob: form.tob_unknown ? undefined : (form.tob || undefined),
@@ -155,6 +205,42 @@ export default component$(() => {
             <div>
               <label class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Name *</label>
               <input value={form.name} onInput$={(e) => (form.name = (e.target as HTMLInputElement).value)} class="w-full bg-surface-container-low border border-outline-variant/30 focus:border-primary rounded-xl px-4 py-3 outline-none text-sm" placeholder="Your full name" />
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Phone *</label>
+              <div class="flex gap-2">
+                <input
+                  type="tel"
+                  value={form.isd_code}
+                  onInput$={(e) => {
+                    let v = (e.target as HTMLInputElement).value.replace(/[^\d+]/g, '');
+                    if (!v.startsWith('+')) v = '+' + v.replace(/\+/g, '');
+                    form.isd_code = v.slice(0, 5);
+                  }}
+                  class="w-20 bg-surface-container-low border border-outline-variant/30 focus:border-primary rounded-xl px-3 py-3 outline-none text-sm text-center font-bold"
+                  placeholder="+91"
+                  aria-label="Country code"
+                />
+                <input
+                  type="tel"
+                  value={form.phone}
+                  onInput$={(e) => (form.phone = (e.target as HTMLInputElement).value)}
+                  class="flex-1 bg-surface-container-low border border-outline-variant/30 focus:border-primary rounded-xl px-4 py-3 outline-none text-sm"
+                  placeholder="10-digit phone"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Email <span class="text-on-surface-variant/60 normal-case font-normal">(optional)</span></label>
+              <input
+                type="email"
+                value={form.email}
+                onInput$={(e) => (form.email = (e.target as HTMLInputElement).value)}
+                class="w-full bg-surface-container-low border border-outline-variant/30 focus:border-primary rounded-xl px-4 py-3 outline-none text-sm"
+                placeholder="you@example.com"
+              />
             </div>
 
             <div class="grid grid-cols-2 gap-3">
