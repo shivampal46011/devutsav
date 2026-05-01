@@ -46,6 +46,18 @@ export default component$(() => {
           <h2 class="font-headline text-2xl font-bold text-on-surface">Sacred Tools</h2>
         </div>
         <div class="grid grid-cols-2 gap-3 md:gap-4">
+          <Link href="/kundali" class="col-span-2 bg-secondary-container/60 rounded-2xl md:rounded-3xl p-5 md:p-6 relative overflow-hidden group">
+            <div class="relative z-10 flex flex-col h-full justify-between min-h-[140px] md:min-h-[160px]">
+              <span class="material-symbols-outlined text-on-secondary-container text-4xl mb-4" style="font-variation-settings: 'FILL' 1">picture_as_pdf</span>
+              <div>
+                <h3 class="font-headline text-xl font-bold text-on-secondary-container mb-1">Generate My Kundali</h3>
+                <p class="text-sm text-on-surface-variant leading-relaxed">Personalised birth chart PDF, delivered instantly.</p>
+              </div>
+            </div>
+            <div class="absolute top-0 right-0 -translate-y-4 translate-x-4 opacity-10 group-hover:opacity-20 transition-opacity">
+              <span class="material-symbols-outlined text-[120px]">menu_book</span>
+            </div>
+          </Link>
           <Link href="/analyzer" class="col-span-2 bg-surface-container-low rounded-2xl md:rounded-3xl p-5 md:p-6 relative overflow-hidden group">
             <div class="relative z-10 flex flex-col h-full justify-between min-h-[140px] md:min-h-[160px]">
               <span class="material-symbols-outlined text-primary text-4xl mb-4" style="font-variation-settings: 'FILL' 1">psychology_alt</span>
@@ -65,18 +77,6 @@ export default component$(() => {
           <Link href="/whisper" class="bg-tertiary-fixed rounded-2xl md:rounded-3xl p-4 md:p-5 aspect-square flex flex-col justify-between">
             <span class="material-symbols-outlined text-on-tertiary-fixed text-3xl" style="font-variation-settings: 'FILL' 1">record_voice_over</span>
             <h3 class="font-headline text-base font-bold text-on-surface">Nandi Whisper</h3>
-          </Link>
-          <Link href="/kundali" class="col-span-2 bg-secondary-container/60 rounded-2xl md:rounded-3xl p-5 md:p-6 relative overflow-hidden group">
-            <div class="relative z-10 flex flex-col h-full justify-between min-h-[120px]">
-              <span class="material-symbols-outlined text-on-secondary-container text-4xl mb-3" style="font-variation-settings: 'FILL' 1">picture_as_pdf</span>
-              <div>
-                <h3 class="font-headline text-xl font-bold text-on-secondary-container mb-1">Generate My Kundali</h3>
-                <p class="text-sm text-on-surface-variant leading-relaxed">Personalised birth chart PDF, delivered instantly.</p>
-              </div>
-            </div>
-            <div class="absolute top-0 right-0 -translate-y-2 translate-x-2 opacity-15 group-hover:opacity-25 transition-opacity">
-              <span class="material-symbols-outlined text-[110px]">menu_book</span>
-            </div>
           </Link>
           <Link href="/blog" class="col-span-2 bg-primary/5 border border-primary/20 rounded-2xl md:rounded-3xl p-5 md:p-6 relative overflow-hidden group mt-1">
             <div class="relative z-10 flex items-center justify-between">
