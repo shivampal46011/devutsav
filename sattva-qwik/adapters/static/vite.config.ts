@@ -16,14 +16,9 @@ export default extendConfig(baseConfig, () => {
     plugins: [
       staticAdapter({
         origin: process.env.PUBLIC_ORIGIN || 'https://devutsav.com',
-        // Skip routes that need live data or auth.
-        // The express server will SSR these on demand.
-        exclude: [
-          '/admin/*',
-          '/horoscope/*',
-          '/puja/',
-          '/sitemap.xml',
-        ],
+        // Sitemap is emitted as a Qwik server endpoint — handled by a build-time
+        // generator that writes a static sitemap.xml into dist/.
+        exclude: ['/sitemap.xml'],
       }),
     ],
   };

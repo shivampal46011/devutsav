@@ -1,7 +1,30 @@
 import { component$ } from '@builder.io/qwik';
-import { Link, type DocumentHead, routeLoader$ } from '@builder.io/qwik-city';
+import { Link, type DocumentHead, routeLoader$, type StaticGenerateHandler } from '@builder.io/qwik-city';
 import { getApiBase } from '~/lib/apiBase';
 import { blogPosts } from '~/data/blogPosts';
+
+export const onStaticGenerate: StaticGenerateHandler = async () => {
+  const base = getApiBase();
+  const slugs = new Set<string>();
+  for (const p of blogPosts) slugs.add(p.slug);
+  try {
+    const res = await fetch(`${base}/api/blogs/posts`, { headers: { Accept: 'application/json' } });
+    if (res.ok) {
+      const data = await res.json();
+      const list: Array<{ slug?: string; status?: string }> = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.posts)
+          ? data.posts
+          : [];
+      for (const b of list) {
+        if (b?.slug && (b.status === 'PUBLISHED' || !b.status)) slugs.add(b.slug);
+      }
+    }
+  } catch {
+    /* fall back to legacy slugs only */
+  }
+  return { params: [...slugs].map((slug) => ({ slug })) };
+};
 
 export type ResolvedBlogPost = {
   source: 'api' | 'legacy';
