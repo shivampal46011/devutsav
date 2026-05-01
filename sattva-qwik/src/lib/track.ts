@@ -9,7 +9,6 @@
  */
 
 import { getApiBase } from './apiBase';
-import { logFirebaseEvent, setFirebaseUserId } from './firebase';
 
 type EvtType =
   | 'page_view' | 'page_leave' | 'section_view' | 'section_engaged' | 'section_click'
@@ -70,45 +69,26 @@ function scheduleFlush(): void {
   flushTimer = setTimeout(() => { flushTimer = null; flushSync(); }, 2000);
 }
 
-function forwardToVendors(type: EvtType, evt: TrackEvent): void {
+function pushToDataLayer(type: EvtType, evt: TrackEvent): void {
   const w = window as any;
-  if (typeof w.gtag === 'function') {
-    if (type === 'page_view') {
-      w.gtag('event', 'page_view', { page_path: evt.path, page_location: location.href });
-    } else {
-      w.gtag('event', type, {
-        page_path: evt.path,
-        section_id: evt.section_id,
-        blog_slug: evt.blog_slug,
-        scroll_pct: evt.scroll_pct,
-        duration_ms: evt.duration_ms,
-      });
-    }
-  }
-  // Firebase Analytics (GA4) — sanitize undefined values
-  const fbParams: Record<string, unknown> = {};
-  for (const [k, v] of Object.entries({
+  w.dataLayer = w.dataLayer || [];
+  const payload: Record<string, unknown> = {
+    event: type,
     page_path: evt.path,
     page_location: typeof location !== 'undefined' ? location.href : undefined,
+    page_title: typeof document !== 'undefined' ? document.title : undefined,
     section_id: evt.section_id,
     blog_slug: evt.blog_slug,
     scroll_pct: evt.scroll_pct,
     duration_ms: evt.duration_ms,
     value: evt.value,
-  })) {
-    if (v !== undefined && v !== null) fbParams[k] = v;
+    meta: evt.meta,
+    session_id: getSessionId(),
+  };
+  for (const k of Object.keys(payload)) {
+    if (payload[k] === undefined || payload[k] === null) delete payload[k];
   }
-  logFirebaseEvent(type === 'page_view' ? 'page_view' : type, fbParams);
-
-  if (typeof w.fbq === 'function') {
-    if (type === 'page_view') w.fbq('track', 'PageView');
-    else w.fbq('trackCustom', type, {
-      path: evt.path,
-      section_id: evt.section_id,
-      blog_slug: evt.blog_slug,
-      scroll_pct: evt.scroll_pct,
-    });
-  }
+  w.dataLayer.push(payload);
 }
 
 function isAdminPath(p?: string): boolean {
@@ -128,7 +108,7 @@ export function track(type: EvtType, props: Partial<TrackEvent> = {}): void {
   // attach session id to each event so backend can dedupe/group
   (evt as TrackEvent & { session_id: string }).session_id = getSessionId();
   QUEUE.push(evt);
-  forwardToVendors(type, evt);
+  pushToDataLayer(type, evt);
   if (QUEUE.length >= 20) flushSync();
   else scheduleFlush();
 }
@@ -172,8 +152,10 @@ export function initTracker(): void {
   if (initialised || typeof window === 'undefined') return;
   initialised = true;
 
-  // Tie our session to Firebase so user-scoped reports line up.
-  setFirebaseUserId(getSessionId());
+  // Seed dataLayer with the session id so GTM tags can scope by user.
+  const w = window as any;
+  w.dataLayer = w.dataLayer || [];
+  w.dataLayer.push({ session_id: getSessionId() });
 
   // First view (also on full reload).
   trackPageView(location.pathname);
