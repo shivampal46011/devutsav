@@ -36,8 +36,24 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());
+// CORS — allowlist driven by CORS_ALLOWED_ORIGINS (comma-separated).
+// Empty / unset ⇒ allow all (dev convenience). Always allow same-origin / curl (no Origin header).
+const corsAllowList = (process.env.CORS_ALLOWED_ORIGINS || '')
+  .split(',')
+  .map(s => s.trim())
+  .filter(Boolean);
+
+app.use(
+  cors({
+    origin(origin, cb) {
+      if (!origin) return cb(null, true);
+      if (corsAllowList.length === 0) return cb(null, true);
+      if (corsAllowList.includes(origin)) return cb(null, true);
+      return cb(new Error(`CORS: origin ${origin} not allowed`));
+    },
+    credentials: true,
+  })
+);
 app.use(express.json({ limit: '2mb' }));
 app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
 

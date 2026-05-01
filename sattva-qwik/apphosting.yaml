@@ -1,0 +1,42 @@
+# Firebase App Hosting config for the Qwik SSR site.
+# Docs: https://firebase.google.com/docs/app-hosting/configure
+runConfig:
+  cpu: 1
+  memoryMiB: 512
+  minInstances: 0
+  maxInstances: 2
+  concurrency: 80
+
+scripts:
+  buildCommand: npm run build.prod
+  runCommand: node server/entry.express.js
+
+env:
+  - variable: NODE_ENV
+    value: production
+    availability:
+      - RUNTIME
+
+  # Public URL of the API backend. Update both after the API App Hosting
+  # backend is provisioned (e.g. https://api--<backend>-<hash>.<region>.run.app
+  # or your custom domain like https://api.devutsav.com).
+  # PUBLIC_API_URL is read by the browser bundle (must be BUILD-time).
+  # INTERNAL_API_URL is used during SSR.
+  - variable: PUBLIC_API_URL
+    value: https://REPLACE_WITH_API_BACKEND_URL
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: INTERNAL_API_URL
+    value: https://REPLACE_WITH_API_BACKEND_URL
+    availability:
+      - BUILD
+      - RUNTIME
+
+  # Secrets — create in Secret Manager first:
+  #   firebase apphosting:secrets:set GOOGLE_MAPS_API_KEY
+  - variable: GOOGLE_MAPS_API_KEY
+    secret: GOOGLE_MAPS_API_KEY
+    availability:
+      - BUILD
+      - RUNTIME
