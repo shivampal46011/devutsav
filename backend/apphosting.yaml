@@ -1,5 +1,4 @@
 # Firebase App Hosting config for the Express API backend.
-# Docs: https://firebase.google.com/docs/app-hosting/configure
 runConfig:
   cpu: 1
   memoryMiB: 1024
@@ -14,71 +13,43 @@ scripts:
 env:
   - variable: NODE_ENV
     value: production
-    availability:
-      - RUNTIME
+    availability: [RUNTIME]
 
-  # CORS allowlist — comma separated. Update with the Qwik web backend URL
-  # (and any custom domains) once the web App Hosting backend is provisioned.
   - variable: CORS_ALLOWED_ORIGINS
-    value: https://REPLACE_WITH_WEB_BACKEND_URL,https://devutsav.com,https://www.devutsav.com
-    availability:
-      - RUNTIME
+    value: https://web--devutsav-4e90c.us-central1.hosted.app,https://devutsav.com,https://www.devutsav.com
+    availability: [RUNTIME]
 
-  # Secrets — create each in Secret Manager before deploy:
-  #   firebase apphosting:secrets:set MONGO_URI
+  - variable: AWS_REGION
+    value: ap-south-1
+    availability: [RUNTIME]
+  - variable: BLOG_HTML_ENGINE
+    value: MARKDOWN
+    availability: [RUNTIME]
+  - variable: BEDROCK_MODEL_ID
+    value: anthropic.claude-3-haiku-20240307-v1:0
+    availability: [RUNTIME]
+  - variable: BEDROCK_GENERAL_MODEL
+    value: anthropic.claude-3-haiku-20240307-v1:0
+    availability: [RUNTIME]
+  - variable: BEDROCK_HOROSCOPE_MODEL
+    value: anthropic.claude-3-haiku-20240307-v1:0
+    availability: [RUNTIME]
+  - variable: BEDROCK_KUNDALI_MODEL
+    value: anthropic.claude-3-haiku-20240307-v1:0
+    availability: [RUNTIME]
+
   - variable: MONGO_URI
     secret: MONGO_URI
-    availability:
-      - RUNTIME
+    availability: [RUNTIME]
   - variable: ADMIN_API_TOKEN
     secret: ADMIN_API_TOKEN
-    availability:
-      - RUNTIME
+    availability: [RUNTIME]
   - variable: AWS_ACCESS_KEY_ID
     secret: AWS_ACCESS_KEY_ID
-    availability:
-      - RUNTIME
+    availability: [RUNTIME]
   - variable: AWS_SECRET_ACCESS_KEY
     secret: AWS_SECRET_ACCESS_KEY
-    availability:
-      - RUNTIME
-  - variable: AWS_REGION
-    value: us-east-1
-    availability:
-      - RUNTIME
-  - variable: AWS_SQS_USER
-    secret: AWS_SQS_USER
-    availability:
-      - RUNTIME
-  - variable: AWS_SQS_SECRET
-    secret: AWS_SQS_SECRET
-    availability:
-      - RUNTIME
-  - variable: BEDROCK_MODEL_ID
-    value: anthropic.claude-3-5-sonnet-20240620-v1:0
-    availability:
-      - RUNTIME
-  - variable: BEDROCK_GENERAL_MODEL
-    value: anthropic.claude-3-5-sonnet-20240620-v1:0
-    availability:
-      - RUNTIME
-  - variable: BEDROCK_HOROSCOPE_MODEL
-    value: anthropic.claude-3-5-sonnet-20240620-v1:0
-    availability:
-      - RUNTIME
-  - variable: BEDROCK_KUNDALI_MODEL
-    value: anthropic.claude-3-5-sonnet-20240620-v1:0
-    availability:
-      - RUNTIME
-  - variable: ASTRONEXT_BASIC_REPORT_URL
-    secret: ASTRONEXT_BASIC_REPORT_URL
-    availability:
-      - RUNTIME
+    availability: [RUNTIME]
   - variable: DEVPUNYA_PARTNER_ID
     secret: DEVPUNYA_PARTNER_ID
-    availability:
-      - RUNTIME
-  - variable: GOOGLE_MAPS_API_KEY
-    secret: GOOGLE_MAPS_API_KEY
-    availability:
-      - RUNTIME
+    availability: [RUNTIME]
