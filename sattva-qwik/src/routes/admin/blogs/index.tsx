@@ -1,4 +1,4 @@
-import { component$, useSignal, useStore, useVisibleTask$, $ } from '@builder.io/qwik';
+import { component$, useSignal, useStore, useVisibleTask$, useComputed$, $ } from '@builder.io/qwik';
 import { getApiBase } from '~/lib/apiBase';
 import { fmtDate, TOKEN_KEY } from '../shared';
 
@@ -97,7 +97,7 @@ export default component$(() => {
     return [...map.entries()];
   });
 
-  const filtered = (() => {
+  const filtered = useComputed$(() => {
     const q = filter.q.trim().toLowerCase();
     return store.blogs.filter((b) => {
       if (filter.status !== 'ALL' && b.status !== filter.status) return false;
@@ -162,9 +162,9 @@ export default component$(() => {
                 <input
                   type="checkbox"
                   aria-label="Select all"
-                  checked={filtered().length > 0 && filtered().every((b) => store.selected[b._id])}
+                  checked={filtered.value.length > 0 && filtered.value.every((b) => store.selected[b._id])}
                   onChange$={(_, el) => {
-                    const list = filtered();
+                    const list = filtered.value;
                     if (el.checked) {
                       const next = { ...store.selected };
                       for (const b of list) next[b._id] = true;
@@ -186,10 +186,10 @@ export default component$(() => {
             </tr>
           </thead>
           <tbody>
-            {!store.loading && filtered().length === 0 && (
+            {!store.loading && filtered.value.length === 0 && (
               <tr><td colSpan={7} class="term-dim py-4">no blogs match</td></tr>
             )}
-            {filtered().map((b) => (
+            {filtered.value.map((b) => (
               <tr key={b._id} class="term-row border-t border-[#111827]">
                 <td class="py-1.5">
                   <input
@@ -223,7 +223,7 @@ export default component$(() => {
         </table>
       </div>
       <p class="term-dim text-[10px]">
-        Showing {filtered().length} of {store.blogs.length} blogs. Top-performing blogs (7d analytics) live on the OVERVIEW tab.
+        Showing {filtered.value.length} of {store.blogs.length} blogs. Top-performing blogs (7d analytics) live on the OVERVIEW tab.
       </p>
     </div>
   );

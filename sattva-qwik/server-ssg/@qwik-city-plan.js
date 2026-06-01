@@ -1,7 +1,7 @@
 import { c as createContextId, a as componentQrl, i as inlinedQrl, u as useSignal, b as useLocation, d as useStore, e as useContextProvider, f as useVisibleTaskQrl, _ as _jsxQ, g as _noopQrl, h as _fnSignal, j as _wrapSignal, k as _jsxC, S as Slot, l as useLexicalScope, m as _IMMUTABLE, L as Link, n as _jsxBranch, F as Fragment, o as useContext, r as routeLoaderQrl, p as _wrapProp } from "./q-BlvUYfxD.js";
 function getApiBase() {
   var _a;
-  const pub = "https://devutsav.com" == null ? void 0 : "https://devutsav.com".replace(/\/$/, "");
+  const pub = "http://localhost:5001" == null ? void 0 : "http://localhost:5001".replace(/\/$/, "");
   if (pub) return pub;
   if (typeof window !== "undefined") return "";
   const internal = typeof process !== "undefined" ? (_a = process.env.INTERNAL_API_URL) == null ? void 0 : _a.replace(/\/$/, "") : void 0;
@@ -4286,7 +4286,7 @@ const s_lNRXnwkvMts = async (val) => {
   }
   isSearchingPob.value = true;
   try {
-    const api = "https://devutsav.com";
+    const api = "http://localhost:5001";
     const res = await fetch(`${api}/api/location/autocomplete?input=${encodeURIComponent(val)}`);
     pobSuggestions.value = await res.json();
   } catch {
@@ -4302,7 +4302,7 @@ const s_06cpT4mvFQI = async (description, placeId) => {
   pobSuggestions.value = [];
   isSearchingPob.value = true;
   try {
-    const api = "https://devutsav.com";
+    const api = "http://localhost:5001";
     const res = await fetch(`${api}/api/location/details?place_id=${placeId}`);
     const d = await res.json();
     if (d == null ? void 0 : d.lat) {
@@ -5256,7 +5256,7 @@ const s_du0B2ITJCjQ = async (sign, time) => {
   const [horoscopeContent, isLoading] = useLexicalScope();
   isLoading.value = true;
   try {
-    const apiBase = "https://devutsav.com";
+    const apiBase = "http://localhost:5001";
     const res = await fetch(`${apiBase}/api/horoscope?zodiac=${sign}&timeframe=${time}`);
     const data = await res.json();
     if (typeof data.content === "string") horoscopeContent.value = data.content.trim();
@@ -6677,7 +6677,7 @@ const s_8TxvwfMKjh4 = () => {
         /* @__PURE__ */ _jsxQ("div", null, {
           class: "w-full max-w-5xl h-[300px] md:h-[450px] mx-auto mb-12 rounded-[2.5rem] overflow-hidden shadow-2xl shadow-primary/10 border border-outline-variant/30 relative bg-surface-container-highest"
         }, /* @__PURE__ */ _jsxQ("video", null, {
-          src: `${"https://devutsav.com"}/public/Video_Caption_Removal_Service_Final.mp4`,
+          src: `${"http://localhost:5001"}/public/Video_Caption_Removal_Service_Final.mp4`,
           autoPlay: true,
           loop: true,
           muted: true,

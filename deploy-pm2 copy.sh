@@ -7,18 +7,26 @@ set REMOTE_DIR "/root/devutsav"
 # ─── PHASE 1: RSYNC ──────────────────────────────────────────────────────────
 puts "\n📦 Syncing source to server (excluding node_modules / dist / build artefacts)…\n"
 spawn rsync -avz \
-    --exclude="node_modules/" \
-    --exclude=".git/" \
-    --exclude="dist/" \
-    --exclude="server/" \
-    --exclude="server-ssg/" \
-    --exclude=".cache/" \
-    --exclude="*.log" \
-    --filter=":- .gitignore" \
+    --exclude=node_modules/ \
+    --exclude=.git/ \
+    --exclude=dist/ \
+    --exclude=server/ \
+    --exclude=server-ssg/ \
+    --exclude=.cache/ \
+    --exclude=*.log \
     /Users/shivampal/Desktop/devutsav/ ${SERVER}:${REMOTE_DIR}/
 expect {
     "password:" { send "${PASS}\r"; exp_continue }
+    "Number of files:" { exp_continue }
+    "total size is" { exp_continue }
     eof
+}
+# Bail if rsync didn't actually run
+catch wait result
+set rc [lindex $result 3]
+if {$rc != 0} {
+    puts "\n❌ rsync failed (exit $rc) — aborting before SSH\n"
+    exit 1
 }
 
 # ─── PHASE 2: SSH — run idempotent setup + pm2 reload ────────────────────────
