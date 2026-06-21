@@ -1,12 +1,16 @@
-import { component$, Slot } from '@builder.io/qwik';
+import { component$, Slot, useVisibleTask$ } from '@builder.io/qwik';
 import { useLocation } from '@builder.io/qwik-city';
 import TopBar from '~/components/TopBar';
 import BottomNav from '~/components/BottomNav';
 import TrackerInit from '~/components/TrackerInit';
+import { initClientLogs } from '~/lib/clientLogs';
 
 export default component$(() => {
   const loc = useLocation();
   const isAdmin = loc.url.pathname.startsWith('/admin');
+
+  // eslint-disable-next-line qwik/no-use-visible-task
+  useVisibleTask$(() => { initClientLogs(); });
 
   if (isAdmin) {
     return (

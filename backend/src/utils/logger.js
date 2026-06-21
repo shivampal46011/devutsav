@@ -1,12 +1,16 @@
 import winston from 'winston';
 import fs from 'fs';
 import path from 'path';
+import { MongoTransport, startDbLogger } from './dbLogger.js';
 
 // Ensure logs directory exists
 const logsDir = path.join(process.cwd(), 'logs');
 if (!fs.existsSync(logsDir)) {
   fs.mkdirSync(logsDir);
 }
+
+// Start the batched DB-log flusher (no-op until something is logged).
+startDbLogger();
 
 // 1. Standard Logger for general API application logs
 export const logger = winston.createLogger({
@@ -24,7 +28,8 @@ export const logger = winston.createLogger({
         })
       )
     }),
-    new winston.transports.File({ filename: path.join(logsDir, 'api.log') })
+    new winston.transports.File({ filename: path.join(logsDir, 'api.log') }),
+    new MongoTransport({ service: 'api', source: 'server' })
   ]
 });
 
@@ -49,7 +54,8 @@ export const devpunyaLogger = winston.createLogger({
   ),
   transports: [
     new winston.transports.File({ filename: path.join(logsDir, 'devpunya.log') }),
-    new winston.transports.File({ filename: path.join(logsDir, 'api.log') })
+    new winston.transports.File({ filename: path.join(logsDir, 'api.log') }),
+    new MongoTransport({ service: 'devpunya', source: 'server' })
   ]
 });
 
@@ -67,6 +73,7 @@ export const llmLogger = winston.createLogger({
     })
   ),
   transports: [
-    new winston.transports.File({ filename: path.join(logsDir, 'llm.log') })
+    new winston.transports.File({ filename: path.join(logsDir, 'llm.log') }),
+    new MongoTransport({ service: 'llm', source: 'server' })
   ]
 });

@@ -1,0 +1,18 @@
+{
+  "name": "devutsav-logs-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "MCP server exposing DevUtsav's centralized logs (server, HTTP, client, agents) for debugging.",
+  "bin": {
+    "devutsav-logs-mcp": "index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "mongodb": "^6.10.0",
+    "zod": "^3.23.8"
+  }
+}

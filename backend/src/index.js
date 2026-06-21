@@ -10,6 +10,8 @@ import whisperRoutes from './routes/whisperRoutes.js';
 import communityRoutes from './routes/communityRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import agentRoutes from './routes/agentRoutes.js';
+import { publicRouter as logsPublicRoutes, adminRouter as logsAdminRoutes } from './routes/logsRoutes.js';
+import { requestLogger } from './utils/dbLogger.js';
 import blogRoutes from './routes/blogRoutes.js';
 import horoscopeRoutes from './routes/horoscopeRoutes.js';
 import trackingRoutes from './routes/trackingRoutes.js';
@@ -56,7 +58,9 @@ app.use(
   })
 );
 app.use(express.json({ limit: '2mb' }));
-app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
+// Console access logs (morgan) + structured access logs persisted to the ServerLog store.
+app.use(morgan('combined', { stream: { write: message => process.stdout.write(message) } }));
+app.use(requestLogger);
 
 // Database connection
 const connectDB = async () => {
@@ -75,6 +79,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/analyzer', intentRoutes);
 app.use('/api/whispers', whisperRoutes);
 app.use('/api/community', communityRoutes);
+app.use('/api/logs', logsPublicRoutes);
+app.use('/api/admin/logs', logsAdminRoutes);
 app.use('/api/admin/agents', agentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/blogs', blogRoutes);

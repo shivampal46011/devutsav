@@ -12,12 +12,24 @@ dist-ssr/
 .output/
 server/
 
-# Logs
-logs/
+# Logs (anchor to the actual log-output dirs — an unanchored `logs/` also matched
+# source folders like sattva-qwik/src/routes/admin/logs and broke the deploy upload)
+/logs/
+backend/logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
+
+# Agent runtime state (logs/tickets/runs/campaign are local text files, not committed)
+agent/logs/
+agent/tickets/
+agent/runs.jsonl
+agent/content/campaign.jsonl
+agent/content/CALENDAR.md
+agent/state/
+agent/reports/
+agent/secrets/
 
 # Lock files (keep bun.lock or package-lock.json, not both)
 package-lock.json
