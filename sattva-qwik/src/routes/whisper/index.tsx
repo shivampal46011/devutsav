@@ -25,36 +25,36 @@ export default component$(() => {
   });
 
   return (
-    <main class="pb-32 relative bg-[#FDF9F5] min-h-screen">
+    <main class="pb-24 relative bg-[#FDF9F5] min-h-screen">
       {step.value === 1 && (
         <>
-          <section class="relative h-[400px] md:h-[500px] w-full overflow-hidden">
-            <img alt="Sacred Nandi" class="absolute inset-0 w-full h-full object-cover object-top" width={800} height={500} loading="lazy" decoding="async" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnR6FN-tLR55kZzBGt6Rh3hrntlALyMrZHeKhr8F3FCTMp-fiJzUwH37SqW6IFFk8401bmr7bzTmeqY_b2WUWeJXUUAdDdF-C2TJZfOZPOlz3ujJPPOZFQxhnX17LjK3aagm4FHJPHHF-8snJRDtP6wPnp2qGFqcjr_bq-GEvtafr-xeX6T9V8aI1XDlzudYL7a_ElELohKCIv7nUNulnOqyeLkJYdDCHyG28kzgqut47WT-P5gn8ARh1AnK-NilnD4I0E564y-yF0" />
+          <section class="relative h-[200px] md:h-[260px] w-full overflow-hidden">
+            <img alt="Sacred Nandi" class="absolute inset-0 w-full h-full object-cover object-top" width={800} height={300} loading="lazy" decoding="async" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnR6FN-tLR55kZzBGt6Rh3hrntlALyMrZHeKhr8F3FCTMp-fiJzUwH37SqW6IFFk8401bmr7bzTmeqY_b2WUWeJXUUAdDdF-C2TJZfOZPOlz3ujJPPOZFQxhnX17LjK3aagm4FHJPHHF-8snJRDtP6wPnp2qGFqcjr_bq-GEvtafr-xeX6T9V8aI1XDlzudYL7a_ElELohKCIv7nUNulnOqyeLkJYdDCHyG28kzgqut47WT-P5gn8ARh1AnK-NilnD4I0E564y-yF0" />
             <div class="absolute inset-0 bg-gradient-to-t from-[#FDF9F5] via-[#FDF9F5]/40 to-transparent" />
-            <div class="absolute bottom-10 left-0 right-0 p-6 text-center">
-              <h1 class="font-headline text-4xl md:text-5xl font-black text-on-surface leading-tight mb-2">
+            <div class="absolute bottom-4 left-0 right-0 px-6 text-center">
+              <h1 class="font-headline text-3xl md:text-4xl font-black text-on-surface leading-tight mb-1">
                 Nandi Whisper <span class="text-primary italic">Ritual</span>
               </h1>
-              <p class="font-headline text-lg italic text-on-surface-variant max-w-lg mx-auto">
+              <p class="font-headline text-sm md:text-base italic text-on-surface-variant max-w-lg mx-auto">
                 Speak your heart to Nandi, the ultimate carrier of wishes to Lord Shiva.
               </p>
             </div>
           </section>
 
-          <section class="max-w-6xl mx-auto w-full mt-8 px-6 pb-24 relative z-10 space-y-12">
+          <section class="max-w-2xl mx-auto w-full mt-4 px-5 pb-12 relative z-10 space-y-6">
             {/* Personal Details */}
             <div>
-              <h2 class="font-headline text-2xl font-bold text-on-surface mb-6 flex items-center gap-2">
-                <span class="material-symbols-outlined text-primary">person</span> Petitioner Details
+              <h2 class="font-headline text-lg font-bold text-on-surface mb-3 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-xl">person</span> Petitioner Details
               </h2>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
                 <div>
-                  <label class="block text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-3">Name *</label>
+                  <label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1.5">Name *</label>
                   <input
                     value={form.name}
                     onInput$={(e) => { form.name = (e.target as HTMLInputElement).value; if (errors.name) errors.name = ''; }}
                     onBlur$={() => (errors.name = validateName(form.name))}
-                    class={`w-full bg-surface-container-low border rounded-2xl px-6 py-5 text-on-surface text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow ${errors.name ? 'border-error' : 'border-outline-variant/20'}`}
+                    class={`w-full bg-surface-container-low border rounded-2xl px-4 py-3 text-on-surface text-base focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow ${errors.name ? 'border-error' : 'border-outline-variant/20'}`}
                     placeholder="Devotee Name"
                     aria-invalid={errors.name ? 'true' : 'false'}
                   />
@@ -63,11 +63,11 @@ export default component$(() => {
                 <div>
                   <div class="flex gap-4">
                     <div class="w-[30%]">
-                      <label class="block text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-3">ISD</label>
-                      <input value={form.isd_code} onInput$={(e) => (form.isd_code = sanitizeIsdInput((e.target as HTMLInputElement).value))} class="w-full bg-surface-container-low border border-outline-variant/20 rounded-2xl px-4 py-5 text-on-surface text-center text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow" aria-label="Country code" />
+                      <label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1.5">ISD</label>
+                      <input value={form.isd_code} onInput$={(e) => (form.isd_code = sanitizeIsdInput((e.target as HTMLInputElement).value))} class="w-full bg-surface-container-low border border-outline-variant/20 rounded-2xl px-2 py-3 text-on-surface text-center text-base focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow" aria-label="Country code" />
                     </div>
                     <div class="flex-1">
-                      <label class="block text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-3">Phone *</label>
+                      <label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1.5">Phone *</label>
                       <input
                         type="tel"
                         inputMode="numeric"
@@ -75,7 +75,7 @@ export default component$(() => {
                         value={form.phone}
                         onInput$={(e) => { form.phone = onlyDigits((e.target as HTMLInputElement).value).slice(0, phoneMaxLen(form.isd_code)); if (errors.phone) errors.phone = ''; }}
                         onBlur$={() => (errors.phone = validatePhone(form.phone, form.isd_code))}
-                        class={`w-full bg-surface-container-low border rounded-2xl px-6 py-5 text-on-surface text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow ${errors.phone ? 'border-error' : 'border-outline-variant/20'}`}
+                        class={`w-full bg-surface-container-low border rounded-2xl px-4 py-3 text-on-surface text-base focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow ${errors.phone ? 'border-error' : 'border-outline-variant/20'}`}
                         placeholder="10-digit mobile number"
                         aria-invalid={errors.phone ? 'true' : 'false'}
                       />
@@ -87,24 +87,24 @@ export default component$(() => {
             </div>
 
             {/* Wish */}
-            <div class="pt-8 border-t border-outline-variant/20">
-              <h2 class="font-headline text-2xl font-bold text-on-surface mb-6 flex items-center gap-2">
-                <span class="material-symbols-outlined text-primary">record_voice_over</span> Your Wish
+            <div class="pt-5 border-t border-outline-variant/20">
+              <h2 class="font-headline text-lg font-bold text-on-surface mb-3 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-xl">record_voice_over</span> Your Wish
               </h2>
-              <div class="space-y-8">
+              <div class="space-y-4">
                 <textarea
                   value={form.wish_text}
                   onInput$={(e) => { form.wish_text = (e.target as HTMLTextAreaElement).value; if (errors.wish) errors.wish = ''; }}
-                  class={`w-full bg-surface-container-low border focus:ring-2 focus:ring-primary/50 rounded-2xl p-6 text-on-surface text-lg outline-none resize-none font-body transition-shadow shadow-sm ${errors.wish ? 'border-error' : 'border-outline-variant/20 focus:border-primary'}`}
-                  placeholder="Type your pure wish here..." rows={4}
+                  class={`w-full bg-surface-container-low border focus:ring-2 focus:ring-primary/50 rounded-2xl p-4 text-on-surface text-base outline-none resize-none font-body transition-shadow shadow-sm ${errors.wish ? 'border-error' : 'border-outline-variant/20 focus:border-primary'}`}
+                  placeholder="Type your pure wish here..." rows={3}
                 />
-                {errors.wish && <p class="text-sm font-semibold text-error -mt-4">{errors.wish}</p>}
+                {errors.wish && <p class="text-sm font-semibold text-error -mt-2">{errors.wish}</p>}
                 <div class="flex items-center justify-center gap-4">
                   <div class="h-px bg-outline-variant/30 flex-1"></div>
-                  <div class="text-sm font-bold text-on-surface-variant uppercase tracking-widest">OR RECORD AUDIO</div>
+                  <div class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">OR RECORD AUDIO</div>
                   <div class="h-px bg-outline-variant/30 flex-1"></div>
                 </div>
-                <div class="flex flex-col items-center justify-center p-8 bg-surface-container-low rounded-[2rem] border border-outline-variant/20 w-full shadow-sm">
+                <div class="flex flex-col items-center justify-center p-5 bg-surface-container-low rounded-3xl border border-outline-variant/20 w-full shadow-sm">
                   {!isRecording.value ? (
                     <button
                       onClick$={async () => {
@@ -138,32 +138,32 @@ export default component$(() => {
                           }
                         }, 120000);
                       }}
-                      class="w-20 h-20 bg-primary rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform text-white hover:opacity-90"
+                      class="w-14 h-14 bg-primary rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform text-white hover:opacity-90"
                     >
-                      <span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1">mic</span>
+                      <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1">mic</span>
                     </button>
                   ) : (
                     <div class="relative">
                       <div class="absolute inset-0 bg-error/20 rounded-full animate-ping" />
                       <button
                         onClick$={() => { mediaRecorderRef.value?.stop(); isRecording.value = false; }}
-                        class="relative z-10 w-20 h-20 bg-error text-white rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform"
+                        class="relative z-10 w-14 h-14 bg-error text-white rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform"
                       >
-                        <span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1">stop</span>
+                        <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1">stop</span>
                       </button>
                     </div>
                   )}
                   {audioDataUrl.value && !isRecording.value && (
-                    <span class="text-sm font-bold text-primary mt-6 flex items-center gap-2 bg-primary/10 px-6 py-2 rounded-full shadow-sm">
+                    <span class="text-xs font-bold text-primary mt-3 flex items-center gap-2 bg-primary/10 px-4 py-1.5 rounded-full shadow-sm">
                       <span class="material-symbols-outlined text-sm">check_circle</span> Audio Attached
                     </span>
                   )}
-                  {isRecording.value && <span class="text-sm font-bold text-error mt-6 animate-pulse">Recording... Click to Stop</span>}
+                  {isRecording.value && <span class="text-xs font-bold text-error mt-3 animate-pulse">Recording... Click to Stop</span>}
                 </div>
               </div>
             </div>
 
-            <div class="pt-8 flex justify-end w-full border-t border-outline-variant/20 mt-12">
+            <div class="pt-5 flex justify-end w-full border-t border-outline-variant/20 mt-2">
               <button
                 onClick$={async () => {
                   validationError.value = '';
@@ -189,9 +189,9 @@ export default component$(() => {
                     step.value = 1;
                   }
                 }}
-                class="px-12 py-5 bg-gradient-to-r from-primary to-primary-container text-white font-bold text-lg rounded-2xl shadow-xl active:scale-95 transition-transform flex items-center justify-center gap-3 uppercase tracking-widest"
+                class="w-full md:w-auto px-8 py-3.5 bg-gradient-to-r from-primary to-primary-container text-white font-bold text-base rounded-2xl shadow-xl active:scale-95 transition-transform flex items-center justify-center gap-2 uppercase tracking-widest"
               >
-                Transmit Wish to Nandi <span class="text-2xl">🐂</span>
+                Transmit Wish to Nandi <span class="text-xl">🐂</span>
               </button>
             </div>
           </section>
