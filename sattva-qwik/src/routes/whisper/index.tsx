@@ -1,6 +1,7 @@
 import { component$, useSignal, useStore, useVisibleTask$ } from '@builder.io/qwik';
 import { type DocumentHead } from '@builder.io/qwik-city';
 import { getApiBase } from '~/lib/apiBase';
+import { onlyDigits, sanitizeIsdInput, validateName, validatePhone, phoneMaxLen } from '~/lib/formValidation';
 
 export default component$(() => {
   const step = useSignal(1);
@@ -14,6 +15,7 @@ export default component$(() => {
   const form = useStore({
     name: '', isd_code: '+91', phone: '', wish_text: '',
   });
+  const errors = useStore({ name: '', phone: '', wish: '' });
 
   // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
@@ -48,17 +50,38 @@ export default component$(() => {
               <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                 <div>
                   <label class="block text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-3">Name *</label>
-                  <input value={form.name} onInput$={(e) => (form.name = (e.target as HTMLInputElement).value)} class="w-full bg-surface-container-low border border-outline-variant/20 rounded-2xl px-6 py-5 text-on-surface text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow" placeholder="Devotee Name" />
+                  <input
+                    value={form.name}
+                    onInput$={(e) => { form.name = (e.target as HTMLInputElement).value; if (errors.name) errors.name = ''; }}
+                    onBlur$={() => (errors.name = validateName(form.name))}
+                    class={`w-full bg-surface-container-low border rounded-2xl px-6 py-5 text-on-surface text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow ${errors.name ? 'border-error' : 'border-outline-variant/20'}`}
+                    placeholder="Devotee Name"
+                    aria-invalid={errors.name ? 'true' : 'false'}
+                  />
+                  {errors.name && <p class="text-sm font-semibold text-error mt-2">{errors.name}</p>}
                 </div>
-                <div class="flex gap-4">
-                  <div class="w-[30%]">
-                    <label class="block text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-3">ISD</label>
-                    <input value={form.isd_code} onInput$={(e) => (form.isd_code = (e.target as HTMLInputElement).value)} class="w-full bg-surface-container-low border border-outline-variant/20 rounded-2xl px-6 py-5 text-on-surface text-center text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow" />
+                <div>
+                  <div class="flex gap-4">
+                    <div class="w-[30%]">
+                      <label class="block text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-3">ISD</label>
+                      <input value={form.isd_code} onInput$={(e) => (form.isd_code = sanitizeIsdInput((e.target as HTMLInputElement).value))} class="w-full bg-surface-container-low border border-outline-variant/20 rounded-2xl px-4 py-5 text-on-surface text-center text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow" aria-label="Country code" />
+                    </div>
+                    <div class="flex-1">
+                      <label class="block text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-3">Phone *</label>
+                      <input
+                        type="tel"
+                        inputMode="numeric"
+                        maxLength={phoneMaxLen(form.isd_code)}
+                        value={form.phone}
+                        onInput$={(e) => { form.phone = onlyDigits((e.target as HTMLInputElement).value).slice(0, phoneMaxLen(form.isd_code)); if (errors.phone) errors.phone = ''; }}
+                        onBlur$={() => (errors.phone = validatePhone(form.phone, form.isd_code))}
+                        class={`w-full bg-surface-container-low border rounded-2xl px-6 py-5 text-on-surface text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow ${errors.phone ? 'border-error' : 'border-outline-variant/20'}`}
+                        placeholder="10-digit mobile number"
+                        aria-invalid={errors.phone ? 'true' : 'false'}
+                      />
+                    </div>
                   </div>
-                  <div class="flex-1">
-                    <label class="block text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-3">Phone *</label>
-                    <input value={form.phone} onInput$={(e) => (form.phone = (e.target as HTMLInputElement).value)} class="w-full bg-surface-container-low border border-outline-variant/20 rounded-2xl px-6 py-5 text-on-surface text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow" placeholder="10 Digits" />
-                  </div>
+                  {errors.phone && <p class="text-sm font-semibold text-error mt-2">{errors.phone}</p>}
                 </div>
               </div>
             </div>
@@ -71,10 +94,11 @@ export default component$(() => {
               <div class="space-y-8">
                 <textarea
                   value={form.wish_text}
-                  onInput$={(e) => (form.wish_text = (e.target as HTMLTextAreaElement).value)}
-                  class="w-full bg-surface-container-low border border-outline-variant/20 focus:border-primary focus:ring-2 focus:ring-primary/50 rounded-2xl p-6 text-on-surface text-lg outline-none resize-none font-body transition-shadow shadow-sm"
+                  onInput$={(e) => { form.wish_text = (e.target as HTMLTextAreaElement).value; if (errors.wish) errors.wish = ''; }}
+                  class={`w-full bg-surface-container-low border focus:ring-2 focus:ring-primary/50 rounded-2xl p-6 text-on-surface text-lg outline-none resize-none font-body transition-shadow shadow-sm ${errors.wish ? 'border-error' : 'border-outline-variant/20 focus:border-primary'}`}
                   placeholder="Type your pure wish here..." rows={4}
                 />
+                {errors.wish && <p class="text-sm font-semibold text-error -mt-4">{errors.wish}</p>}
                 <div class="flex items-center justify-center gap-4">
                   <div class="h-px bg-outline-variant/30 flex-1"></div>
                   <div class="text-sm font-bold text-on-surface-variant uppercase tracking-widest">OR RECORD AUDIO</div>
@@ -143,9 +167,14 @@ export default component$(() => {
               <button
                 onClick$={async () => {
                   validationError.value = '';
-                  if (!form.name.trim()) { validationError.value = 'Name is required.'; setTimeout(() => validationError.value = '', 4000); return; }
-                  if (!/^[0-9]{10}$/.test(form.phone)) { validationError.value = 'Invalid 10-digit phone number.'; setTimeout(() => validationError.value = '', 4000); return; }
-                  if (!form.wish_text.trim() && !audioDataUrl.value) { validationError.value = 'Please write or record your wish.'; setTimeout(() => validationError.value = '', 4000); return; }
+                  errors.name = validateName(form.name);
+                  errors.phone = validatePhone(form.phone, form.isd_code);
+                  errors.wish = (!form.wish_text.trim() && !audioDataUrl.value) ? 'Please write or record your wish.' : '';
+                  if (errors.name || errors.phone || errors.wish) {
+                    validationError.value = 'Please fix the highlighted fields.';
+                    setTimeout(() => validationError.value = '', 4000);
+                    return;
+                  }
                   step.value = 2;
                   try {
                     const res = await fetch(`${getApiBase()}/api/whispers`, {

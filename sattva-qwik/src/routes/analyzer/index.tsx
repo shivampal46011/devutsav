@@ -1,5 +1,6 @@
 import { $, component$, useSignal, useStore, useVisibleTask$ } from '@builder.io/qwik';
 import { type DocumentHead } from '@builder.io/qwik-city';
+import { onlyDigits, sanitizeIsdInput, validateName, validatePhone, validateEmail, validateDobParts, phoneMaxLen } from '~/lib/formValidation';
 
 const LOADING_MSGS = [
   'Fetching Kundali...', 'Aligning cosmic coordinates...',
@@ -32,6 +33,7 @@ export default component$(() => {
     dob_y: '', dob_m: '', dob_d: '', tob_h: '', tob_m: '', pob: '', pob_lat: null as number | null, pob_lon: null as number | null,
     pob_city: '', pob_state: '', pob_country: '', place_id: '',
   });
+  const errors = useStore({ name: '', phone: '', email: '', dob: '', tob: '', pob: '' });
 
   // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
@@ -106,30 +108,56 @@ export default component$(() => {
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
               <div>
                 <label class="block text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-3">Full Name *</label>
-                <input value={form.name} onInput$={(e) => (form.name = (e.target as HTMLInputElement).value)} class="w-full bg-surface-container-low border border-outline-variant/20 rounded-2xl px-6 py-5 text-on-surface text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow" placeholder="e.g. Rahul Sharma" />
+                <input
+                  value={form.name}
+                  onInput$={(e) => { form.name = (e.target as HTMLInputElement).value; if (errors.name) errors.name = ''; }}
+                  onBlur$={() => (errors.name = validateName(form.name))}
+                  class={`w-full bg-surface-container-low border rounded-2xl px-6 py-5 text-on-surface text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow ${errors.name ? 'border-error' : 'border-outline-variant/20'}`}
+                  placeholder="e.g. Rahul Sharma"
+                  aria-invalid={errors.name ? 'true' : 'false'}
+                />
+                {errors.name && <p class="text-sm font-semibold text-error mt-2">{errors.name}</p>}
               </div>
-              <div class="flex gap-4">
-                <div class="w-[30%]">
-                  <label class="block text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-3">ISD</label>
-                  <input value={form.isd_code} onInput$={(e) => (form.isd_code = (e.target as HTMLInputElement).value)} class="w-full bg-surface-container-low border border-outline-variant/20 rounded-2xl px-6 py-5 text-on-surface text-center text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow" />
+              <div>
+                <label class="block text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-3">Phone *</label>
+                <div class="flex gap-4">
+                  <input value={form.isd_code} onInput$={(e) => (form.isd_code = sanitizeIsdInput((e.target as HTMLInputElement).value))} class="w-[30%] bg-surface-container-low border border-outline-variant/20 rounded-2xl px-3 py-5 text-on-surface text-center text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow" aria-label="Country code" />
+                  <input
+                    type="tel"
+                    inputMode="numeric"
+                    maxLength={phoneMaxLen(form.isd_code)}
+                    value={form.phone}
+                    onInput$={(e) => { form.phone = onlyDigits((e.target as HTMLInputElement).value).slice(0, phoneMaxLen(form.isd_code)); if (errors.phone) errors.phone = ''; }}
+                    onBlur$={() => (errors.phone = validatePhone(form.phone, form.isd_code))}
+                    class={`flex-1 bg-surface-container-low border rounded-2xl px-6 py-5 text-on-surface text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow ${errors.phone ? 'border-error' : 'border-outline-variant/20'}`}
+                    placeholder="10-digit mobile"
+                    aria-invalid={errors.phone ? 'true' : 'false'}
+                  />
                 </div>
-                <div class="flex-1">
-                  <label class="block text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-3">Phone *</label>
-                  <input type="tel" value={form.phone} onInput$={(e) => (form.phone = (e.target as HTMLInputElement).value)} class="w-full bg-surface-container-low border border-outline-variant/20 rounded-2xl px-6 py-5 text-on-surface text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow" placeholder="10 Digits" />
-                </div>
+                {errors.phone && <p class="text-sm font-semibold text-error mt-2">{errors.phone}</p>}
               </div>
               <div>
                 <label class="block text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-3">Email (Optional)</label>
-                <input type="email" value={form.email} onInput$={(e) => (form.email = (e.target as HTMLInputElement).value)} class="w-full bg-surface-container-low border border-outline-variant/20 rounded-2xl px-6 py-5 text-on-surface text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow" placeholder="rahul@example.com" />
+                <input
+                  type="email"
+                  value={form.email}
+                  onInput$={(e) => { form.email = (e.target as HTMLInputElement).value; if (errors.email) errors.email = ''; }}
+                  onBlur$={() => (errors.email = validateEmail(form.email))}
+                  class={`w-full bg-surface-container-low border rounded-2xl px-6 py-5 text-on-surface text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow ${errors.email ? 'border-error' : 'border-outline-variant/20'}`}
+                  placeholder="rahul@example.com"
+                  aria-invalid={errors.email ? 'true' : 'false'}
+                />
+                {errors.email && <p class="text-sm font-semibold text-error mt-2">{errors.email}</p>}
               </div>
             </div>
             <div class="mt-12 flex justify-end">
               <button
                 onClick$={async () => {
                   validationError.value = '';
-                  if (!form.name.trim()) { validationError.value = 'Name is required.'; return; }
-                  if (!/^[0-9]{10}$/.test(form.phone)) { validationError.value = 'Invalid 10-digit phone number.'; return; }
-                  if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) { validationError.value = 'Invalid Email.'; return; }
+                  errors.name = validateName(form.name);
+                  errors.phone = validatePhone(form.phone, form.isd_code);
+                  errors.email = validateEmail(form.email);
+                  if (errors.name || errors.phone || errors.email) { validationError.value = 'Please fix the highlighted fields.'; return; }
                   try {
                     const api = import.meta.env.PUBLIC_API_URL || 'http://localhost:5001';
                     await fetch(`${api}/api/market/auth/devpunya`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ isdCode: form.isd_code, phone: form.phone, fullname: form.name, email: form.email || undefined, platform: 'web' }) });
@@ -164,10 +192,11 @@ export default component$(() => {
               <div>
                 <label class="block text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-3">Date of Birth (Year, Month, Date) *</label>
                 <div class="flex gap-2">
-                  <input type="number" placeholder="YYYY" value={form.dob_y} onInput$={(e) => (form.dob_y = (e.target as HTMLInputElement).value)} class="w-[40%] bg-surface-container-low border border-outline-variant/20 rounded-2xl px-4 py-5 text-on-surface text-center text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow" />
-                  <input type="number" placeholder="MM" value={form.dob_m} onInput$={(e) => (form.dob_m = (e.target as HTMLInputElement).value)} class="w-[30%] bg-surface-container-low border border-outline-variant/20 rounded-2xl px-4 py-5 text-on-surface text-center text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow" />
-                  <input type="number" placeholder="DD" value={form.dob_d} onInput$={(e) => (form.dob_d = (e.target as HTMLInputElement).value)} class="w-[30%] bg-surface-container-low border border-outline-variant/20 rounded-2xl px-4 py-5 text-on-surface text-center text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow" />
+                  <input type="number" inputMode="numeric" placeholder="YYYY" value={form.dob_y} onInput$={(e) => { form.dob_y = (e.target as HTMLInputElement).value; if (errors.dob) errors.dob = ''; }} onBlur$={() => (errors.dob = validateDobParts(form.dob_y, form.dob_m, form.dob_d))} class={`w-[40%] bg-surface-container-low border rounded-2xl px-4 py-5 text-on-surface text-center text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow ${errors.dob ? 'border-error' : 'border-outline-variant/20'}`} />
+                  <input type="number" inputMode="numeric" placeholder="MM" value={form.dob_m} onInput$={(e) => { form.dob_m = (e.target as HTMLInputElement).value; if (errors.dob) errors.dob = ''; }} onBlur$={() => (errors.dob = validateDobParts(form.dob_y, form.dob_m, form.dob_d))} class={`w-[30%] bg-surface-container-low border rounded-2xl px-4 py-5 text-on-surface text-center text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow ${errors.dob ? 'border-error' : 'border-outline-variant/20'}`} />
+                  <input type="number" inputMode="numeric" placeholder="DD" value={form.dob_d} onInput$={(e) => { form.dob_d = (e.target as HTMLInputElement).value; if (errors.dob) errors.dob = ''; }} onBlur$={() => (errors.dob = validateDobParts(form.dob_y, form.dob_m, form.dob_d))} class={`w-[30%] bg-surface-container-low border rounded-2xl px-4 py-5 text-on-surface text-center text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow ${errors.dob ? 'border-error' : 'border-outline-variant/20'}`} />
                 </div>
+                {errors.dob && <p class="text-sm font-semibold text-error mt-2">{errors.dob}</p>}
               </div>
               
               <div>
@@ -177,23 +206,25 @@ export default component$(() => {
                     <input type="checkbox" checked={tobUnknown.value} onChange$={() => {
                       tobUnknown.value = !tobUnknown.value;
                       if (tobUnknown.value) { form.tob_h = ''; form.tob_m = ''; }
+                      errors.tob = '';
                     }} class="w-4 h-4 rounded border-outline-variant/30 text-primary cursor-pointer focus:ring-primary/50" />
                     <span>I don't know</span>
                   </label>
                 </div>
                 <div class="flex gap-2 relative group">
-                  <select disabled={tobUnknown.value} value={form.tob_h} onChange$={(e) => (form.tob_h = (e.target as HTMLSelectElement).value)} class="w-1/2 bg-surface-container-low border border-outline-variant/20 rounded-2xl px-4 py-5 text-on-surface text-lg text-center focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm disabled:opacity-50 appearance-none">
+                  <select disabled={tobUnknown.value} value={form.tob_h} onChange$={(e) => { form.tob_h = (e.target as HTMLSelectElement).value; if (errors.tob) errors.tob = ''; }} class="w-1/2 bg-surface-container-low border border-outline-variant/20 rounded-2xl px-4 py-5 text-on-surface text-lg text-center focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm disabled:opacity-50 appearance-none">
                     <option value="" disabled selected>Hour (00)</option>
                     {Array.from({length: 24}).map((_, i) => <option value={i.toString().padStart(2, '0')}>{i.toString().padStart(2, '0')}</option>)}
                   </select>
                   <div class="absolute left-1/4 top-1/2 -translate-y-1/2 -translate-x-3 pointer-events-none text-on-surface-variant group-hover:text-primary"><span class="material-symbols-outlined text-sm">expand_more</span></div>
 
-                  <select disabled={tobUnknown.value} value={form.tob_m} onChange$={(e) => (form.tob_m = (e.target as HTMLSelectElement).value)} class="w-1/2 bg-surface-container-low border border-outline-variant/20 rounded-2xl px-4 py-5 text-on-surface text-lg text-center focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm disabled:opacity-50 appearance-none">
+                  <select disabled={tobUnknown.value} value={form.tob_m} onChange$={(e) => { form.tob_m = (e.target as HTMLSelectElement).value; if (errors.tob) errors.tob = ''; }} class="w-1/2 bg-surface-container-low border border-outline-variant/20 rounded-2xl px-4 py-5 text-on-surface text-lg text-center focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm disabled:opacity-50 appearance-none">
                     <option value="" disabled selected>Min (00)</option>
                     {Array.from({length: 60}).map((_, i) => <option value={i.toString().padStart(2, '0')}>{i.toString().padStart(2, '0')}</option>)}
                   </select>
                   <div class="absolute right-[calc(25%-12px)] top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant group-hover:text-primary"><span class="material-symbols-outlined text-sm">expand_more</span></div>
                 </div>
+                {errors.tob && <p class="text-sm font-semibold text-error mt-2">{errors.tob}</p>}
               </div>
 
               <div class="relative">
@@ -205,13 +236,17 @@ export default component$(() => {
                       const v = (e.target as HTMLInputElement).value;
                       form.pob = v; form.pob_lat = null; form.pob_lon = null;
                       form.pob_city = ''; form.pob_state = ''; form.pob_country = ''; form.place_id = '';
+                      if (errors.pob) errors.pob = '';
                       fetchSuggestions(v);
                     }}
-                    class="w-full bg-surface-container-low border border-outline-variant/20 rounded-2xl px-6 py-5 text-on-surface text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow"
+                    class={`w-full bg-surface-container-low border rounded-2xl px-6 py-5 text-on-surface text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm transition-shadow ${errors.pob ? 'border-error' : 'border-outline-variant/20'}`}
+                    aria-invalid={errors.pob ? 'true' : 'false'}
                   />
                   {isSearchingPob.value && <div class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />}
                 </div>
-                <span class="text-xs text-on-surface-variant/60 mt-3 block pl-2">Select matched city from dropdown!</span>
+                {errors.pob
+                  ? <p class="text-sm font-semibold text-error mt-3 pl-2">{errors.pob}</p>
+                  : <span class="text-xs text-on-surface-variant/60 mt-3 block pl-2">Select matched city from dropdown!</span>}
                 {pobSuggestions.value.length > 0 && (
                   <div class="absolute top-[85px] w-full bg-white border border-outline-variant/30 rounded-2xl shadow-2xl z-20 overflow-hidden max-h-56 overflow-y-auto">
                     {pobSuggestions.value.map((place: any, idx: number) => (
@@ -228,19 +263,14 @@ export default component$(() => {
               <button
                 onClick$={async () => {
                   validationError.value = '';
-                  // Validate birth fields inline
-                  if (!form.dob_y || !form.dob_m || !form.dob_d) { validationError.value = 'Detailed Date of Birth is required.'; return; }
-                  
-                  const y = parseInt(form.dob_y, 10);
-                  const m = parseInt(form.dob_m, 10);
-                  const d = parseInt(form.dob_d, 10);
-                  if (y < 1900 || y > 2100 || m < 1 || m > 12 || d < 1 || d > 31) { validationError.value = 'Please enter a valid date.'; return; }
-                  const dobParsed = `${form.dob_y}-${form.dob_m.padStart(2, '0')}-${form.dob_d.padStart(2, '0')}`;
+                  errors.dob = validateDobParts(form.dob_y, form.dob_m, form.dob_d);
+                  errors.tob = (!tobUnknown.value && (!form.tob_h || !form.tob_m)) ? "Set the time of birth, or tick ‘I don't know’." : '';
+                  errors.pob = (!form.pob.trim() || !form.pob_lat) ? 'Select a valid place of birth from the suggestions.' : '';
+                  if (errors.dob || errors.tob || errors.pob) { validationError.value = 'Please fix the highlighted fields.'; return; }
 
-                  if (!tobUnknown.value && (!form.tob_h || !form.tob_m)) { validationError.value = "Time of Birth components required or check 'I don't know'."; return; }
+                  const dobParsed = `${form.dob_y}-${form.dob_m.padStart(2, '0')}-${form.dob_d.padStart(2, '0')}`;
                   const tobParsed = tobUnknown.value ? null : `${form.tob_h}:${form.tob_m}`;
 
-                  if (!form.pob.trim() || !form.pob_lat) { validationError.value = 'Please select a valid Place of Birth from suggestions.'; return; }
                   isAnalyzing.value = true;
                   step.value = 3;
                   const interval = setInterval(() => { loadingMsgIdx.value = (loadingMsgIdx.value + 1) % LOADING_MSGS.length; }, 800);

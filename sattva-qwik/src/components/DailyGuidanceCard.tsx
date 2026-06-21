@@ -1,6 +1,7 @@
 import { $, component$, useSignal, useStore, useVisibleTask$ } from '@builder.io/qwik';
 import { getApiBase } from '~/lib/apiBase';
 import { track } from '~/lib/track';
+import { onlyDigits, sanitizeIsdInput, normalizeIsd, validateName, validatePhone, validateEmail, phoneMaxLen } from '~/lib/formValidation';
 
 const STORAGE_KEY = 'du_guidance_unlocked_v1';
 const PAYLOAD_KEY = 'du_guidance_today';
@@ -24,6 +25,7 @@ export default component$(() => {
     pob_city: '', pob_state: '', pob_country: '', pob_place_id: '',
     tob_unknown: true, email_subscribe: true,
   });
+  const errors = useStore({ name: '', phone: '', email: '', pob: '' });
 
   const pobSuggestions = useSignal<{ description: string; place_id: string }[]>([]);
   const isSearchingPob = useSignal(false);
@@ -100,21 +102,22 @@ export default component$(() => {
 
   const submit = $(async () => {
     validationError.value = '';
-    if (!form.name.trim()) { validationError.value = 'Name is required.'; return; }
-    const phoneClean = form.phone.replace(/\D/g, '');
-    if (phoneClean.length < 6) { validationError.value = 'Valid phone number required.'; return; }
-    if (!form.pob.trim()) { validationError.value = 'Place of birth is required.'; return; }
-    if (!form.pob_lat || !form.pob_lon) { validationError.value = 'Pick your place of birth from the suggestions.'; return; }
+    errors.name = validateName(form.name);
+    errors.phone = validatePhone(form.phone, form.isd_code);
+    errors.email = validateEmail(form.email);
+    errors.pob = (!form.pob.trim() || !form.pob_lat || !form.pob_lon)
+      ? 'Pick your place of birth from the suggestions.' : '';
+    if (errors.name || errors.phone || errors.email || errors.pob) {
+      validationError.value = 'Please fix the highlighted fields.';
+      return;
+    }
+    const phoneClean = onlyDigits(form.phone);
 
     submitting.value = true;
     try {
       let session_id = '';
       try { session_id = localStorage.getItem('du_session_id') || ''; } catch {}
-      const isdClean = (() => {
-        const raw = form.isd_code.trim();
-        const digits = raw.replace(/\D/g, '');
-        return digits ? `+${digits.slice(0, 4)}` : '+91';
-      })();
+      const isdClean = normalizeIsd(form.isd_code);
       const res = await fetch(`${getApiBase()}/api/guidance/unlock`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -219,7 +222,15 @@ export default component$(() => {
             <div class="space-y-4">
               <div>
                 <label class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Name *</label>
-                <input value={form.name} onInput$={(e) => (form.name = (e.target as HTMLInputElement).value)} class="w-full bg-surface-container-low border border-outline-variant/30 focus:border-primary rounded-xl px-4 py-3 outline-none text-sm" placeholder="Your name" />
+                <input
+                  value={form.name}
+                  onInput$={(e) => { form.name = (e.target as HTMLInputElement).value; if (errors.name) errors.name = ''; }}
+                  onBlur$={() => (errors.name = validateName(form.name))}
+                  class={`w-full bg-surface-container-low border rounded-xl px-4 py-3 outline-none text-sm focus:border-primary ${errors.name ? 'border-error' : 'border-outline-variant/30'}`}
+                  placeholder="Your name"
+                  aria-invalid={errors.name ? 'true' : 'false'}
+                />
+                {errors.name && <p class="text-[11px] font-semibold text-error mt-1">{errors.name}</p>}
               </div>
 
               <div>
@@ -228,23 +239,24 @@ export default component$(() => {
                   <input
                     type="tel"
                     value={form.isd_code}
-                    onInput$={(e) => {
-                      let v = (e.target as HTMLInputElement).value.replace(/[^\d+]/g, '');
-                      if (!v.startsWith('+')) v = '+' + v.replace(/\+/g, '');
-                      form.isd_code = v.slice(0, 5);
-                    }}
+                    onInput$={(e) => (form.isd_code = sanitizeIsdInput((e.target as HTMLInputElement).value))}
                     class="w-20 bg-surface-container-low border border-outline-variant/30 focus:border-primary rounded-xl px-3 py-3 outline-none text-sm text-center font-bold"
                     placeholder="+91"
                     aria-label="Country code"
                   />
                   <input
                     type="tel"
+                    inputMode="numeric"
+                    maxLength={phoneMaxLen(form.isd_code)}
                     value={form.phone}
-                    onInput$={(e) => (form.phone = (e.target as HTMLInputElement).value)}
-                    class="flex-1 bg-surface-container-low border border-outline-variant/30 focus:border-primary rounded-xl px-4 py-3 outline-none text-sm"
+                    onInput$={(e) => { form.phone = onlyDigits((e.target as HTMLInputElement).value).slice(0, phoneMaxLen(form.isd_code)); if (errors.phone) errors.phone = ''; }}
+                    onBlur$={() => (errors.phone = validatePhone(form.phone, form.isd_code))}
+                    class={`flex-1 bg-surface-container-low border rounded-xl px-4 py-3 outline-none text-sm focus:border-primary ${errors.phone ? 'border-error' : 'border-outline-variant/30'}`}
                     placeholder="10-digit phone"
+                    aria-invalid={errors.phone ? 'true' : 'false'}
                   />
                 </div>
+                {errors.phone && <p class="text-[11px] font-semibold text-error mt-1">{errors.phone}</p>}
               </div>
 
               <div class="relative">
@@ -264,15 +276,19 @@ export default component$(() => {
                       form.pob_state = '';
                       form.pob_country = '';
                       form.pob_place_id = '';
+                      if (errors.pob) errors.pob = '';
                       fetchPobSuggestions(v);
                     }}
-                    class="w-full bg-surface-container-low border border-outline-variant/30 focus:border-primary rounded-xl px-4 py-3 outline-none text-sm"
+                    class={`w-full bg-surface-container-low border rounded-xl px-4 py-3 outline-none text-sm focus:border-primary ${errors.pob ? 'border-error' : 'border-outline-variant/30'}`}
+                    aria-invalid={errors.pob ? 'true' : 'false'}
                   />
                   {isSearchingPob.value && (
                     <div class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
                   )}
                 </div>
-                <p class="text-[10px] text-on-surface-variant/60 mt-1">Pick the matching city from the list</p>
+                {errors.pob
+                  ? <p class="text-[11px] font-semibold text-error mt-1">{errors.pob}</p>
+                  : <p class="text-[10px] text-on-surface-variant/60 mt-1">Pick the matching city from the list</p>}
                 {pobSuggestions.value.length > 0 && (
                   <div class="absolute top-[68px] left-0 right-0 bg-white border border-outline-variant/30 rounded-xl shadow-2xl z-30 overflow-hidden max-h-52 overflow-y-auto">
                     {pobSuggestions.value.map((place, idx) => (
@@ -290,7 +306,16 @@ export default component$(() => {
 
               <div>
                 <label class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Email (optional)</label>
-                <input type="email" value={form.email} onInput$={(e) => (form.email = (e.target as HTMLInputElement).value)} class="w-full bg-surface-container-low border border-outline-variant/30 focus:border-primary rounded-xl px-4 py-3 outline-none text-sm" placeholder="you@example.com" />
+                <input
+                  type="email"
+                  value={form.email}
+                  onInput$={(e) => { form.email = (e.target as HTMLInputElement).value; if (errors.email) errors.email = ''; }}
+                  onBlur$={() => (errors.email = validateEmail(form.email))}
+                  class={`w-full bg-surface-container-low border rounded-xl px-4 py-3 outline-none text-sm focus:border-primary ${errors.email ? 'border-error' : 'border-outline-variant/30'}`}
+                  placeholder="you@example.com"
+                  aria-invalid={errors.email ? 'true' : 'false'}
+                />
+                {errors.email && <p class="text-[11px] font-semibold text-error mt-1">{errors.email}</p>}
               </div>
 
               <div>

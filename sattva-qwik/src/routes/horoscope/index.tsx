@@ -1,5 +1,7 @@
 import { $, component$, useSignal, useStore, useVisibleTask$ } from '@builder.io/qwik';
 import { type DocumentHead } from '@builder.io/qwik-city';
+import { getApiBase } from '~/lib/apiBase';
+import { onlyDigits, validateName, validatePhone, validateDobParts } from '~/lib/formValidation';
 
 const ZODIAC_SIGNS = [
   { name: 'Aries', emoji: '♈️' }, { name: 'Taurus', emoji: '♉️' }, { name: 'Gemini', emoji: '♊️' },
@@ -16,12 +18,19 @@ export default component$(() => {
   const showModal = useSignal(false);
   const validationError = useSignal('');
   const form = useStore({ name: '', phone: '', dob_y: '', dob_m: '', dob_d: '' });
+  const errors = useStore({ name: '', phone: '', dob: '' });
+
+  const validateAll = $(() => {
+    errors.name = validateName(form.name);
+    errors.phone = validatePhone(form.phone, '+91');
+    errors.dob = validateDobParts(form.dob_y, form.dob_m, form.dob_d);
+    return !errors.name && !errors.phone && !errors.dob;
+  });
 
   const fetchHoroscope = $(async (sign: string, time: string) => {
     isLoading.value = true;
     try {
-      const apiBase = import.meta.env.PUBLIC_API_URL || 'http://localhost:5001';
-      const res = await fetch(`${apiBase}/api/horoscope?zodiac=${sign}&timeframe=${time}`);
+      const res = await fetch(`${getApiBase()}/api/horoscope?zodiac=${sign}&timeframe=${time}`);
       const data = await res.json();
       
       if (typeof data.content === 'string') {
@@ -119,29 +128,48 @@ export default component$(() => {
             <div class="space-y-4">
               <div>
                 <label class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Name</label>
-                <input value={form.name} onInput$={(e) => (form.name = (e.target as HTMLInputElement).value)} class="w-full bg-surface-container-low border border-outline-variant/30 focus:border-primary rounded-xl px-4 py-2.5 outline-none text-sm" placeholder="e.g. Rahul" />
+                <input
+                  value={form.name}
+                  onInput$={(e) => { form.name = (e.target as HTMLInputElement).value; if (errors.name) errors.name = ''; }}
+                  onBlur$={() => (errors.name = validateName(form.name))}
+                  class={`w-full bg-surface-container-low border rounded-xl px-4 py-2.5 outline-none text-sm focus:border-primary ${errors.name ? 'border-error' : 'border-outline-variant/30'}`}
+                  placeholder="e.g. Rahul"
+                  aria-invalid={errors.name ? 'true' : 'false'}
+                />
+                {errors.name && <p class="text-[11px] font-semibold text-error mt-1">{errors.name}</p>}
               </div>
               <div>
                 <label class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Phone</label>
-                <input type="tel" value={form.phone} onInput$={(e) => (form.phone = (e.target as HTMLInputElement).value)} class="w-full bg-surface-container-low border border-outline-variant/30 focus:border-primary rounded-xl px-4 py-2.5 outline-none text-sm" placeholder="10 Digits" />
+                <input
+                  type="tel"
+                  inputMode="numeric"
+                  maxLength={10}
+                  value={form.phone}
+                  onInput$={(e) => { form.phone = onlyDigits((e.target as HTMLInputElement).value).slice(0, 10); if (errors.phone) errors.phone = ''; }}
+                  onBlur$={() => (errors.phone = validatePhone(form.phone, '+91'))}
+                  class={`w-full bg-surface-container-low border rounded-xl px-4 py-2.5 outline-none text-sm focus:border-primary ${errors.phone ? 'border-error' : 'border-outline-variant/30'}`}
+                  placeholder="10-digit mobile number"
+                  aria-invalid={errors.phone ? 'true' : 'false'}
+                />
+                {errors.phone && <p class="text-[11px] font-semibold text-error mt-1">{errors.phone}</p>}
               </div>
               <div>
                 <label class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Date of Birth (Year, Month, Date)</label>
                 <div class="flex gap-2">
-                  <input type="number" placeholder="YYYY" value={form.dob_y} onInput$={(e) => (form.dob_y = (e.target as HTMLInputElement).value)} class="w-1/3 bg-surface-container-low border border-outline-variant/30 focus:border-primary rounded-xl px-4 py-2.5 outline-none text-sm text-center" />
-                  <input type="number" placeholder="MM" value={form.dob_m} onInput$={(e) => (form.dob_m = (e.target as HTMLInputElement).value)} class="w-1/3 bg-surface-container-low border border-outline-variant/30 focus:border-primary rounded-xl px-4 py-2.5 outline-none text-sm text-center" />
-                  <input type="number" placeholder="DD" value={form.dob_d} onInput$={(e) => (form.dob_d = (e.target as HTMLInputElement).value)} class="w-1/3 bg-surface-container-low border border-outline-variant/30 focus:border-primary rounded-xl px-4 py-2.5 outline-none text-sm text-center" />
+                  <input type="number" inputMode="numeric" placeholder="YYYY" value={form.dob_y} onInput$={(e) => { form.dob_y = (e.target as HTMLInputElement).value; if (errors.dob) errors.dob = ''; }} onBlur$={() => (errors.dob = validateDobParts(form.dob_y, form.dob_m, form.dob_d))} class={`w-1/3 bg-surface-container-low border rounded-xl px-4 py-2.5 outline-none text-sm text-center focus:border-primary ${errors.dob ? 'border-error' : 'border-outline-variant/30'}`} />
+                  <input type="number" inputMode="numeric" placeholder="MM" value={form.dob_m} onInput$={(e) => { form.dob_m = (e.target as HTMLInputElement).value; if (errors.dob) errors.dob = ''; }} onBlur$={() => (errors.dob = validateDobParts(form.dob_y, form.dob_m, form.dob_d))} class={`w-1/3 bg-surface-container-low border rounded-xl px-4 py-2.5 outline-none text-sm text-center focus:border-primary ${errors.dob ? 'border-error' : 'border-outline-variant/30'}`} />
+                  <input type="number" inputMode="numeric" placeholder="DD" value={form.dob_d} onInput$={(e) => { form.dob_d = (e.target as HTMLInputElement).value; if (errors.dob) errors.dob = ''; }} onBlur$={() => (errors.dob = validateDobParts(form.dob_y, form.dob_m, form.dob_d))} class={`w-1/3 bg-surface-container-low border rounded-xl px-4 py-2.5 outline-none text-sm text-center focus:border-primary ${errors.dob ? 'border-error' : 'border-outline-variant/30'}`} />
                 </div>
+                {errors.dob && <p class="text-[11px] font-semibold text-error mt-1">{errors.dob}</p>}
               </div>
               <div class="pt-4 flex flex-col gap-3">
                 <button
                   onClick$={async () => {
-                    if (!form.name || !form.phone || !form.dob_y || !form.dob_m || !form.dob_d) { validationError.value = 'All fields are required.'; return; }
-                    const y = parseInt(form.dob_y, 10);
+                    validationError.value = '';
+                    if (!(await validateAll())) { validationError.value = 'Please fix the highlighted fields.'; return; }
                     const m = parseInt(form.dob_m, 10);
                     const d = parseInt(form.dob_d, 10);
-                    if (y < 1900 || y > 2100 || m < 1 || m > 12 || d < 1 || d > 31) { validationError.value = 'Please enter a valid date.'; return; }
-                    
+
                     const entries = [
                       [1,20,'Aquarius'],[2,19,'Pisces'],[3,21,'Aries'],[4,20,'Taurus'],
                       [5,21,'Gemini'],[6,21,'Cancer'],[7,23,'Leo'],[8,23,'Virgo'],
