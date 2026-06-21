@@ -1,0 +1,14 @@
+{
+  "apphosting": [
+    {
+      "backendId": "web",
+      "rootDir": "./sattva-qwik",
+      "ignore": ["node_modules", ".git", "dist", "server", "server-ssg", ".firebase"]
+    },
+    {
+      "backendId": "api",
+      "rootDir": "./backend",
+      "ignore": ["node_modules", ".git", "logs"]
+    }
+  ]
+}

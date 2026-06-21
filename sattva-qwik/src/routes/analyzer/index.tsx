@@ -6,6 +6,14 @@ const LOADING_MSGS = [
   'Analyzing planetary positions...', 'Finding deep-rooted Doshas...', 'Compiling spiritual remedies...',
 ];
 
+// Severity → colour/label mapping. Class strings are written as literals so
+// Tailwind's JIT picks them up. Green (low) / amber (medium) / red (high).
+const sevMeta = (pct: number) => {
+  if (pct >= 71) return { label: 'High', bar: 'bg-[#ba1a1a]', text: 'text-[#ba1a1a]', chip: 'bg-[#ba1a1a]/10 text-[#ba1a1a]', icon: 'priority_high' };
+  if (pct >= 31) return { label: 'Medium', bar: 'bg-[#b45309]', text: 'text-[#b45309]', chip: 'bg-[#b45309]/10 text-[#b45309]', icon: 'warning' };
+  return { label: 'Low', bar: 'bg-[#15803d]', text: 'text-[#15803d]', chip: 'bg-[#15803d]/10 text-[#15803d]', icon: 'check_circle' };
+};
+
 export default component$(() => {
   const step = useSignal(1);
   const tobUnknown = useSignal(false);
@@ -291,15 +299,144 @@ export default component$(() => {
 
       {/* Step 4 — Results */}
       {step.value === 4 && report.value && (
-        <section class="px-6 max-w-3xl mx-auto space-y-12">
-          <div class="bg-surface-container rounded-3xl p-8 shadow-xl shadow-primary/10 border border-primary/20">
-            <h2 class="font-headline text-3xl font-black text-on-surface mb-6">Your Dosha Report</h2>
-            {kundaliLink.value && (
-              <a href={kundaliLink.value} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mb-6 px-5 py-2.5 bg-primary/10 text-primary rounded-xl text-sm font-bold hover:bg-primary hover:text-white transition-colors">
-                <span class="material-symbols-outlined text-sm">open_in_new</span> View Full Kundali Chart
-              </a>
-            )}
-            <pre class="whitespace-pre-wrap text-on-surface-variant leading-relaxed text-sm">{JSON.stringify(report.value, null, 2)}</pre>
+        <section class="px-2 sm:px-6 max-w-3xl mx-auto">
+          {/* Hero summary */}
+          <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary via-primary to-secondary p-8 md:p-10 shadow-xl shadow-primary/20 text-white mb-8">
+            <div class="absolute -right-6 -top-8 opacity-10 pointer-events-none">
+              <span class="material-symbols-outlined" style="font-size:170px" aria-hidden="true">stars</span>
+            </div>
+            <div class="relative">
+              <span class="font-label text-xs uppercase tracking-[0.2em] font-bold text-white/80">Your personalised</span>
+              <h2 class="font-headline text-3xl md:text-4xl font-black mt-1 mb-6">Kundali Dosha Report</h2>
+              <div class="flex flex-wrap gap-3">
+                <div class="bg-white/15 backdrop-blur-sm rounded-2xl px-5 py-3">
+                  <div class="text-3xl font-black leading-none tabular-nums">{report.value.summary?.total_doshas ?? report.value.doshas?.length ?? 0}</div>
+                  <div class="text-[11px] uppercase tracking-wider text-white/80 mt-1.5 font-bold">Doshas Found</div>
+                </div>
+                <div class="bg-white/15 backdrop-blur-sm rounded-2xl px-5 py-3">
+                  <div class="text-3xl font-black leading-none capitalize">{report.value.summary?.overall_severity || '—'}</div>
+                  <div class="text-[11px] uppercase tracking-wider text-white/80 mt-1.5 font-bold">Overall Severity</div>
+                </div>
+              </div>
+              {kundaliLink.value && (
+                <a href={kundaliLink.value} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-6 px-5 py-2.5 bg-white text-primary rounded-xl text-sm font-bold hover:bg-white/90 transition-colors">
+                  <span class="material-symbols-outlined text-sm">picture_as_pdf</span> View Full Kundali Chart
+                </a>
+              )}
+            </div>
+          </div>
+
+          {/* Dosha cards */}
+          <div class="space-y-6">
+            {(report.value.doshas || []).map((d: any, i: number) => {
+              const pct = Math.max(0, Math.min(100, Number(d.severity_percentage) || 0));
+              const m = sevMeta(pct);
+              return (
+                <article key={i} class="bg-surface-container-low rounded-3xl border border-outline-variant/20 shadow-lg shadow-primary/5 overflow-hidden">
+                  <div class="p-6 md:p-8 border-b border-outline-variant/15">
+                    <div class="flex items-start justify-between gap-3 mb-5">
+                      <div>
+                        <h3 class="font-headline text-2xl font-bold text-on-surface leading-tight">{d.name}</h3>
+                        {d.short_description && <p class="text-on-surface-variant mt-2 leading-relaxed">{d.short_description}</p>}
+                      </div>
+                      <span class={`shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-black uppercase tracking-wider ${m.chip}`}>
+                        <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">{m.icon}</span>{m.label}
+                      </span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <div class="flex-1 h-2.5 bg-surface-variant rounded-full overflow-hidden">
+                        <div class={`h-full rounded-full ${m.bar} transition-all duration-700`} style={`width:${pct}%`} />
+                      </div>
+                      <span class={`text-sm font-black tabular-nums ${m.text}`}>{pct}%</span>
+                    </div>
+                  </div>
+
+                  <div class="p-6 md:p-8 space-y-7">
+                    {d.explanation?.description && (
+                      <div>
+                        <div class="flex items-center gap-2 mb-2">
+                          <span class="material-symbols-outlined text-primary text-xl">auto_stories</span>
+                          <h4 class="font-bold text-on-surface text-lg">{d.explanation.title || 'What this means'}</h4>
+                        </div>
+                        <p class="text-on-surface-variant leading-relaxed sm:pl-7">{d.explanation.description}</p>
+                      </div>
+                    )}
+
+                    {d.awareness?.points?.length > 0 && (
+                      <div>
+                        <div class="flex items-center gap-2 mb-3">
+                          <span class="material-symbols-outlined text-primary text-xl">visibility</span>
+                          <h4 class="font-bold text-on-surface text-lg">{d.awareness.title || 'What to be aware of'}</h4>
+                        </div>
+                        <ul class="space-y-2 sm:pl-7">
+                          {d.awareness.points.map((p: string, j: number) => (
+                            <li key={j} class="flex gap-2 text-on-surface-variant leading-relaxed">
+                              <span class="material-symbols-outlined text-secondary text-base mt-0.5 shrink-0">arrow_right</span>
+                              <span>{p}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {d.insights && (d.insights.risk_level || d.insights.focus_areas?.length > 0) && (
+                      <div class="bg-surface-container rounded-2xl p-5 flex flex-wrap items-center gap-x-4 gap-y-3">
+                        {d.insights.risk_level && (
+                          <span class="inline-flex items-center gap-1.5 text-sm font-bold text-on-surface">
+                            <span class="material-symbols-outlined text-primary text-lg">monitoring</span>
+                            Risk Level:&nbsp;<span class="capitalize">{d.insights.risk_level}</span>
+                          </span>
+                        )}
+                        {d.insights.focus_areas?.length > 0 && (
+                          <div class="flex flex-wrap gap-2">
+                            {d.insights.focus_areas.map((f: string, k: number) => (
+                              <span key={k} class="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-bold capitalize">{f}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {d.daily_actions?.points?.length > 0 && (
+                      <div class="bg-gradient-to-br from-tertiary-fixed/40 to-surface-container rounded-2xl p-6 border border-tertiary/20">
+                        <div class="flex items-center gap-2 mb-4">
+                          <span class="material-symbols-outlined text-tertiary text-xl" style="font-variation-settings:'FILL' 1">task_alt</span>
+                          <h4 class="font-bold text-on-surface text-lg">{d.daily_actions.title || 'What You Can Do'}</h4>
+                        </div>
+                        <ul class="space-y-3">
+                          {d.daily_actions.points.map((p: string, j: number) => (
+                            <li key={j} class="flex gap-3 items-start">
+                              <span class="shrink-0 w-6 h-6 rounded-full bg-tertiary text-white flex items-center justify-center text-xs font-black mt-0.5">{j + 1}</span>
+                              <span class="text-on-surface-variant leading-relaxed">{p}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+
+          {/* Remedies CTA */}
+          <div class="mt-8 rounded-3xl bg-surface-container border border-primary/15 p-7 text-center">
+            <span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings:'FILL' 1">temple_hindu</span>
+            <h3 class="font-headline text-xl font-bold text-on-surface mt-2 mb-2">Looking for remedies?</h3>
+            <p class="text-on-surface-variant text-sm max-w-md mx-auto mb-5">Explore verified pujas and chadhawa offerings performed by trusted pandits to help balance these planetary influences.</p>
+            <a href="/puja" class="inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-primary to-primary-container text-white font-bold rounded-2xl shadow-lg active:scale-95 transition-all text-sm tracking-wide uppercase">
+              Explore Pujas <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </a>
+          </div>
+
+          {/* Start over */}
+          <div class="text-center mt-6 pb-4">
+            <button
+              onClick$={() => { localStorage.removeItem('dosha_report_cache'); report.value = null; kundaliLink.value = null; step.value = 1; }}
+              class="text-on-surface-variant hover:text-primary text-sm font-bold inline-flex items-center gap-1.5 transition-colors"
+            >
+              <span class="material-symbols-outlined text-sm">refresh</span> Analyze another birth chart
+            </button>
           </div>
         </section>
       )}
