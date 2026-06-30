@@ -1,6 +1,8 @@
 import { $, component$, useSignal, useStore, useVisibleTask$ } from '@builder.io/qwik';
 import { getApiBase } from '~/lib/apiBase';
 import { TOKEN_KEY, fmtDate, dur } from '../shared';
+import OrchestratorChat from './OrchestratorChat';
+import MemoryPanel from './MemoryPanel';
 
 interface AgentSummary {
   agent: string;
@@ -161,9 +163,15 @@ export default component$(() => {
       )}
       {store.err && <div class="term-red">{store.err}</div>}
 
-      {/* Trigger a run */}
+      {/* Orchestrator: natural-language control that proposes a plan across agents */}
+      <OrchestratorChat />
+
+      {/* Persistent memory the whole fleet reads */}
+      <MemoryPanel />
+
+      {/* Trigger a run (manual single-agent fallback) */}
       <div class="term-panel p-3 space-y-3">
-        <div class="term-amber font-bold tracking-widest text-[11px]">TALK TO AN AGENT — TRIGGER A RUN</div>
+        <div class="term-amber font-bold tracking-widest text-[11px]">OR TRIGGER A SINGLE AGENT DIRECTLY</div>
         <div class="flex flex-wrap gap-2 items-start">
           <select
             value={sel.agent}

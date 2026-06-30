@@ -5,9 +5,11 @@ import mongoose from 'mongoose';
 // status + result back here. This is the "talk to the agents" channel.
 const agentCommandSchema = new mongoose.Schema(
   {
-    agent: { type: String, required: true, enum: ['writer', 'healer', 'audit', 'analytics'], index: true },
+    agent: { type: String, required: true, enum: ['writer', 'healer', 'audit', 'analytics', 'orchestrator'], index: true },
     prompt: { type: String, default: '' },
     options: { type: mongoose.Schema.Types.Mixed, default: {} },
+    // For orchestrator planning jobs and approved child runs: the chat this command belongs to.
+    chat_id: { type: mongoose.Schema.Types.ObjectId, default: null, index: true },
     status: {
       type: String,
       enum: ['queued', 'running', 'done', 'error', 'canceled'],
