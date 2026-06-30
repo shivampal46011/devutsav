@@ -10,6 +10,7 @@ import AgentCommand from '../models/AgentCommand.js';
 import AgentHeartbeat from '../models/AgentHeartbeat.js';
 import OrchestratorChat from '../models/OrchestratorChat.js';
 import AgentMemory from '../models/AgentMemory.js';
+import AgentInstruction from '../models/AgentInstruction.js';
 
 const router = express.Router();
 
@@ -386,6 +387,50 @@ router.delete('/memory/:id', async (req, res) => {
     const r = await AgentMemory.findByIdAndDelete(req.params.id);
     if (!r) return res.status(404).json({ error: 'not found' });
     res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── Operator instructions (system-prompt override) ─────────────────────────
+// Markdown the operator authors to override an agent's built-in behavior. One doc per scope.
+// Injected into the agent's Claude call as an authoritative system prompt.
+const INSTRUCTION_SCOPES = ['global', 'orchestrator', 'writer', 'healer', 'audit', 'analytics'];
+
+// All instruction docs (so the panel can show every scope, even empty ones).
+router.get('/instructions', async (_req, res) => {
+  try {
+    const docs = await AgentInstruction.find().lean();
+    const byScope = Object.fromEntries(docs.map((d) => [d.scope, d]));
+    // Return one entry per known scope, filling blanks so the editor always has all tabs.
+    res.json(
+      INSTRUCTION_SCOPES.map((scope) => ({
+        scope,
+        content: byScope[scope]?.content || '',
+        enabled: byScope[scope] ? byScope[scope].enabled : true,
+        updatedAt: byScope[scope]?.updatedAt || null,
+      }))
+    );
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Upsert a scope's instructions. Body: { content, enabled }.
+router.put('/instructions/:scope', async (req, res) => {
+  try {
+    const scope = req.params.scope;
+    if (!INSTRUCTION_SCOPES.includes(scope)) {
+      return res.status(400).json({ error: `scope must be one of: ${INSTRUCTION_SCOPES.join(', ')}` });
+    }
+    const content = String(req.body?.content || '').slice(0, 12000);
+    const enabled = req.body?.enabled !== false;
+    const doc = await AgentInstruction.findOneAndUpdate(
+      { scope },
+      { $set: { content, enabled, updated_by: 'admin' } },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+    res.json(doc);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

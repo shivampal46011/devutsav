@@ -3,6 +3,7 @@ import { getApiBase } from '~/lib/apiBase';
 import { TOKEN_KEY, fmtDate, dur } from '../shared';
 import OrchestratorChat from './OrchestratorChat';
 import MemoryPanel from './MemoryPanel';
+import InstructionsPanel from './InstructionsPanel';
 
 interface AgentSummary {
   agent: string;
@@ -165,6 +166,9 @@ export default component$(() => {
 
       {/* Orchestrator: natural-language control that proposes a plan across agents */}
       <OrchestratorChat />
+
+      {/* Operator instructions — override each agent's system prompt */}
+      <InstructionsPanel />
 
       {/* Persistent memory the whole fleet reads */}
       <MemoryPanel />
